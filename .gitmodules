@@ -1,0 +1,3 @@
+[submodule "SpringEngine/lib/FBXImport"]
+	path = SpringEngine/lib/FBXImport
+	url = https://github.com/WinteryFox/FBXImport
