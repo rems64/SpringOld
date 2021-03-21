@@ -18,5 +18,6 @@ namespace SE
 		m_rotation = other.m_rotation;
 		m_parent = other.m_parent;
 		m_components = other.m_components;
+		return *this;
 	}
 }

@@ -19,6 +19,6 @@ SE::Application* SE::CreateApplication()
 	SE::Application* application = new FlightSimulatorApp();
 	SE::DebugUILayer* uiDebugLayer = new SE::DebugUILayer("UI Debug");
 	application->pushOverlay(uiDebugLayer);
-	application->getDataManager()->loadFBX("../ressources/sample.fbx");
+	application->getDataManager()->loadFBX("../ressources/sample.fbx", nullptr);
 	return application;
 }

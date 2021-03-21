@@ -13,7 +13,7 @@ namespace SE
 		~DataManager();
 
 		const void parseObj(const char* path);
-		bool loadFBX(const char* path, Scene scene);
+		bool loadFBX(const char* path, Scene* scene);
 	private:
 
 	};

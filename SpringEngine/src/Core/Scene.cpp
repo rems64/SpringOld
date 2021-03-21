@@ -13,5 +13,6 @@ namespace SE
 	bool Scene::addComponentToScene(Component& component)
 	{
 		m_components.push_back(component);
+		return true;
 	}
 }

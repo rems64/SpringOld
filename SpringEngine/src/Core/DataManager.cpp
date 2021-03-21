@@ -21,7 +21,7 @@ namespace SE
 	{
 	}
 
-	bool DataManager::loadFBX(const char* path, Scene scene)
+	bool DataManager::loadFBX(const char* path, Scene* sceneRef)
 	{
 		ofbx::IScene* scene = nullptr;
 
@@ -44,7 +44,7 @@ namespace SE
 		for (unsigned int mesh = 0; mesh < scene->getMeshCount(); mesh++)
 		{
 			SE_CORE_INFO("Mesh with index ({0}) is named {1}", mesh, scene->getMesh(mesh)->name);
-			for (unsigned int i; i < scene->getMesh(mesh)->getGeometry()->getVertexCount(); i++)
+			for (unsigned int i=0; i < scene->getMesh(mesh)->getGeometry()->getVertexCount(); i++)
 			{
 
 			}
