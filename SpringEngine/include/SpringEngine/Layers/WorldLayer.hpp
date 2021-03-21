@@ -3,11 +3,13 @@
 #include <SpringEngine/Core/Layer.hpp>
 #include <SpringEngine/Misc/Logger.hpp>
 #include <SpringEngine/Core/SceneElement.hpp>
+#include <SpringEngine/Core/Scene.hpp>
 
 #include <SpringEngine/core.hpp>
 
 namespace SE
 {
+
 	class SE_API WorldLayer : public Layer
 	{
 	public:
@@ -23,6 +25,6 @@ namespace SE
 		virtual void onImGuiRender() override;
 
 	private:
-		SceneElement m_element;
+		Scene m_currentScene;
 	};
 }

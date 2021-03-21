@@ -2,11 +2,16 @@
 
 namespace SE
 {
-	Scene::Scene() : m_elements(), m_viewCamera()
+	Scene::Scene() : m_components(), m_viewCamera()
 	{
 	}
 
 	Scene::~Scene()
 	{
+	}
+
+	bool Scene::addComponentToScene(Component& component)
+	{
+		m_components.push_back(component);
 	}
 }

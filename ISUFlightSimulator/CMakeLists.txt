@@ -15,3 +15,5 @@ set(SRCS
 
 add_executable (FlightSimulator ${SRCS})
 target_link_libraries(FlightSimulator PUBLIC SpringEngine)
+
+file(COPY "ressources/" DESTINATION ${CMAKE_BINARY_DIR}/ressources)

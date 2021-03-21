@@ -17,8 +17,10 @@ namespace SE
 		inline CameraComponent* getViewCamera() { return m_viewCamera; };
 		void setViewCamera(CameraComponent* newCamera) { m_viewCamera = newCamera; };
 
+		bool addComponentToScene(Component& component);
+
 	private:
-		std::vector<SceneElement> m_elements;
+		std::vector<Component> m_components;
 		CameraComponent* m_viewCamera;
 	};
 }

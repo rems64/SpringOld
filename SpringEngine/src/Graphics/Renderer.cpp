@@ -1,4 +1,5 @@
 #include <SpringEngine/Graphics/Renderer.hpp>
+#include <SpringEngine/Core/Scene.hpp>
 
 namespace SE
 {
@@ -13,5 +14,10 @@ namespace SE
 		element->getVertexArray()->unbind();
 		element->getIndexBuffer()->unbind();
 		element->getShader()->unbind();
+	}
+
+	void Renderer::renderScene(Scene* scene)
+	{
+
 	}
 }

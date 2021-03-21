@@ -26,15 +26,21 @@ set(IMGUI_SRCS
 	"lib/ImGui/backends/imgui_impl_glfw.cpp"
 )
 
+set(OPENFBX_SRCS
+	"lib/OpenFBX/src/miniz.c"
+	"lib/OpenFBX/src/ofbx.cpp"
+)
+add_library(SpringEngine SHARED ${SRCS} ${IMGUI_SRCS} ${OPENFBX_SRCS})
 
-add_library(SpringEngine SHARED ${SRCS} ${IMGUI_SRCS})
 
-target_include_directories(SpringEngine PUBLIC "lib/ImGui" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include")
+target_include_directories(SpringEngine PUBLIC "lib/ImGui" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include" "lib/OpenFBX/include")
+#target_include_directories(test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}lib/FBXImporter/importer/include")
 
 find_package(OpengL REQUIRED COMPONENTS OpenGL)
 
 add_subdirectory("lib/spdlog")
 
+#target_link_libraries(test FBXImport)
 
 target_link_libraries(SpringEngine ./lib/GLFW/glfw3)
 target_link_libraries(SpringEngine ./lib/GLEW/glew32)

@@ -4,13 +4,16 @@
 
 namespace SE
 {
+	class Scene;
+
 	class SE_API DataManager
 	{
 	public:
 		DataManager();
 		~DataManager();
 
-		const char* openFile(const char* filepath);
+		const void parseObj(const char* path);
+		bool loadFBX(const char* path, Scene scene);
 	private:
 
 	};

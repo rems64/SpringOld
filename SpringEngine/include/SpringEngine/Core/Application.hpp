@@ -31,7 +31,8 @@ namespace SE
 		void init();
 		int mainLoop();
 
-		SE::Window& getMainWindow();
+		Window& getMainWindow();
+		inline DataManager* getDataManager() { return m_dataManager; };
 
 		void onEvent(Event& event);
 

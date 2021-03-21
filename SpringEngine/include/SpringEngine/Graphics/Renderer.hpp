@@ -8,10 +8,12 @@
 
 namespace SE
 {
+	class Scene;
 	class SE_API Renderer
 	{
 	public:
 		static void renderSceneElement(SceneElement* element);
+		static void renderScene(Scene* scene);
 	private:
 
 	};

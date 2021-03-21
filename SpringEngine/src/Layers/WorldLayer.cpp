@@ -4,7 +4,7 @@
 
 namespace SE
 {
-	WorldLayer::WorldLayer() : Layer("World layer"), m_element()
+	WorldLayer::WorldLayer() : Layer("World layer"), m_currentScene()
 	{
 	}
 
@@ -26,7 +26,8 @@ namespace SE
 
 	void WorldLayer::onUpdate(double deltaTime)
 	{
-		Renderer::renderSceneElement(&m_element);
+		//Renderer::renderSceneElement(&m_element);
+		Renderer::renderScene(&m_currentScene);
 	}
 
 	void WorldLayer::onImGuiRender()
