@@ -5,7 +5,7 @@ class FlightSimulatorApp : public SE::Application
 public:
 	FlightSimulatorApp() : SE::Application("Flight simulator")
 	{
-
+		pushLayer(new SE::DebugUILayer("UI Debug"));
 	}
 
 	~FlightSimulatorApp()
@@ -17,8 +17,6 @@ public:
 SE::Application* SE::CreateApplication()
 {
 	SE::Application* application = new FlightSimulatorApp();
-	SE::DebugUILayer* uiDebugLayer = new SE::DebugUILayer("UI Debug");
-	application->pushOverlay(uiDebugLayer);
 	application->getDataManager()->loadFBX("../ressources/sample.fbx", nullptr);
 	return application;
 }
