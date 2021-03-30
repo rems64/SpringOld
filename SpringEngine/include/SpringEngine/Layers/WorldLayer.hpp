@@ -24,7 +24,9 @@ namespace SE
 
 		virtual void onImGuiRender() override;
 
+		Scene* getScene() { return m_currentScene.get(); }
+
 	private:
-		Scene m_currentScene;
+		std::shared_ptr<Scene> m_currentScene;
 	};
 }

@@ -22,7 +22,10 @@ namespace SE
 		inline T y() const { return m_y; };
 		inline T z() const { return m_z; };
 
-	private:
+		inline void x(T value) { m_x = value; };
+		inline void y(T value) { m_y = value; };
+		inline void z(T value) { m_z = value; };
+	protected:
 		T m_x;
 		T m_y;
 		T m_z;
@@ -37,9 +40,9 @@ namespace SE
 	template <typename T>
 	inline Vector3<T>& operator +=(Vector3<T>& left, const Vector3<T>& right)
 	{
-		left.m_x += right.m_x;
-		left.m_y += right.m_y;
-		left.m_z += right.m_z;
+		left.x(left.x() + right.x());
+		left.y(left.y() + right.y());
+		left.z(left.z() + right.z());
 
 		return left;
 	}

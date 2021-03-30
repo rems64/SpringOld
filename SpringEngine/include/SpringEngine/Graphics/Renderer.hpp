@@ -13,7 +13,7 @@ namespace SE
 	{
 	public:
 		static void renderSceneElement(SceneElement* element);
-		static void renderScene(Scene* scene);
+		static void renderScene(Scene* scene, double deltaMillis);
 	private:
 
 	};

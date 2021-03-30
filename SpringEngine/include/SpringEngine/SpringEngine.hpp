@@ -1,3 +1,4 @@
+#include <SpringEngine/core.hpp>
 #include <SpringEngine/Core/Application.hpp>
 
 #include <SpringEngine/Core/Layer.hpp>

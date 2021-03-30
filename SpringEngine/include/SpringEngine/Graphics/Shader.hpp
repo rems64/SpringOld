@@ -19,6 +19,7 @@ namespace SE
 	{
 	public:
 		Shader();
+		Shader(const Shader& src);
 		Shader(const std::string&);
 		~Shader();
 
@@ -31,6 +32,8 @@ namespace SE
 		std::string& getVertexSource();
 
 		GLint getUniform(const GLchar*);
+		void setUniform1b(const GLchar*, bool);
+
 		void setUniform1i(const GLchar*, GLint);
 
 		void setUniform1ui(const GLchar*, GLuint);

@@ -14,7 +14,7 @@ namespace SE
 		IndexBuffer(const unsigned int* data, unsigned int count);
 		~IndexBuffer();
 
-		void setBuffer(const unsigned int* data, unsigned int count);
+		void setBuffer(const void* data, unsigned int count);
 		void setBuffer(const unsigned long* data, unsigned int count);
 
 		void bind() const;

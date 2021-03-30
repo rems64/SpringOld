@@ -14,6 +14,7 @@
 #include <SpringEngine/Graphics/Renderer.hpp>
 #include <SpringEngine/Core/SceneElement.hpp>
 #include <SpringEngine/Core/DataManager.hpp>
+#include <SpringEngine/Core/Scene.hpp>
 
 #include<SpringEngine/core.hpp>
 
@@ -33,6 +34,7 @@ namespace SE
 
 		Window& getMainWindow();
 		inline DataManager* getDataManager() { return m_dataManager; };
+		inline Scene* getCurrentScene() { return m_worldLayer->getScene(); }
 
 		void onEvent(Event& event);
 
@@ -42,6 +44,7 @@ namespace SE
 		bool onWindowCloseEvent(WindowCloseEvent& event);
 
 		double getFPS();
+		double getDeltaSeconds() { return m_deltaSeconds; };
 
 		static Application& get() { return *s_instance; }
 	private:
@@ -51,6 +54,7 @@ namespace SE
 		std::string m_name;
 		bool m_appRunning;
 		double m_frameRate;
+		double m_deltaSeconds;
 
 		LayerStack m_layerStack;
 		ImGuiLayer* m_imGuiLayer;

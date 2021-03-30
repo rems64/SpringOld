@@ -19,7 +19,7 @@ SE::IndexBuffer::~IndexBuffer()
 	GLCall(glDeleteBuffers(1, &m_id));
 }
 
-void SE::IndexBuffer::setBuffer(const unsigned int* data, unsigned int count)
+void SE::IndexBuffer::setBuffer(const void* data, unsigned int count)
 {
 	m_count = count;
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id));

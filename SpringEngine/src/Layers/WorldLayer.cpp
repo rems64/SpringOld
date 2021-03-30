@@ -4,7 +4,7 @@
 
 namespace SE
 {
-	WorldLayer::WorldLayer() : Layer("World layer"), m_currentScene()
+	WorldLayer::WorldLayer() : Layer("World layer"), m_currentScene(std::make_shared<Scene>())
 	{
 	}
 
@@ -27,7 +27,7 @@ namespace SE
 	void WorldLayer::onUpdate(double deltaTime)
 	{
 		//Renderer::renderSceneElement(&m_element);
-		Renderer::renderScene(&m_currentScene);
+		Renderer::renderScene(m_currentScene.get(), deltaTime);
 	}
 
 	void WorldLayer::onImGuiRender()

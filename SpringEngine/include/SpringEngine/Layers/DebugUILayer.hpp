@@ -5,6 +5,9 @@
 
 #include <SpringEngine/core.hpp>
 
+
+#define SE_DEBUGUI_HISTOGRAM_COUNT 100
+
 namespace SE
 {
 	class SE_API DebugUILayer : public Layer
@@ -20,7 +23,7 @@ namespace SE
 
 
 	private:
-		float m_frameRateOverTime[50];
+		float m_frameRateOverTime[SE_DEBUGUI_HISTOGRAM_COUNT];
 		double m_lastHistogramUpdate;
 	};
 }

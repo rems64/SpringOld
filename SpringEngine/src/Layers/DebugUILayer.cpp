@@ -39,17 +39,17 @@ void left_rotate_by_one(T arr[], int n)
 void SE::DebugUILayer::onImGuiRender()
 {
 	double currentTime = glfwGetTime();
-	if (currentTime - m_lastHistogramUpdate >= 0.1)
+	if (currentTime - m_lastHistogramUpdate >= (5.f/SE_DEBUGUI_HISTOGRAM_COUNT))
 	{
 
-		left_rotate_by_one(m_frameRateOverTime, 50);
-		m_frameRateOverTime[49] = Application::get().getFPS();
+		left_rotate_by_one(m_frameRateOverTime, SE_DEBUGUI_HISTOGRAM_COUNT);
+		m_frameRateOverTime[SE_DEBUGUI_HISTOGRAM_COUNT-1] = Application::get().getFPS();
 
 		m_lastHistogramUpdate = currentTime;
 	}
 
 	ImGui::Begin("Stats");
 	ImGui::Text("Framerate");
-	ImGui::PlotLines("Frame Times", m_frameRateOverTime, 50, 0, 0, 0);
+	ImGui::PlotLines("Frame Times", m_frameRateOverTime, SE_DEBUGUI_HISTOGRAM_COUNT, 0, 0, 0);
 	ImGui::End();
 }

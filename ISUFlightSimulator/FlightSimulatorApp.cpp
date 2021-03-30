@@ -17,6 +17,6 @@ public:
 SE::Application* SE::CreateApplication()
 {
 	SE::Application* application = new FlightSimulatorApp();
-	application->getDataManager()->loadFBX("../ressources/sample.fbx", nullptr);
+	application->getDataManager()->loadFBX("ressources/sample.fbx", application->getCurrentScene());
 	return application;
 }

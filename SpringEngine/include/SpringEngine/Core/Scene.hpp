@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include <SpringEngine/Core/SceneElement.hpp>
 #include <SpringEngine/Components/CameraComponent.hpp>
 
@@ -17,10 +18,12 @@ namespace SE
 		inline CameraComponent* getViewCamera() { return m_viewCamera; };
 		void setViewCamera(CameraComponent* newCamera) { m_viewCamera = newCamera; };
 
-		bool addComponentToScene(Component& component);
-
+		bool addComponentToScene(Component* component);
+		std::vector<std::shared_ptr<Component>>* getComponents() {
+			return &m_components;
+		};
 	private:
-		std::vector<Component> m_components;
+		std::vector<std::shared_ptr<Component>> m_components;
 		CameraComponent* m_viewCamera;
 	};
 }
