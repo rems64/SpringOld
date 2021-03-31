@@ -4,7 +4,7 @@
 
 SE::Application* SE::Application::s_instance = nullptr;
 
-SE::Application::Application(std::string name) : m_windows(), m_name(name), m_appRunning(true), m_windowsNbr(0), m_frameRate(60)
+SE::Application::Application(std::string name) : m_windows(), m_name(name), m_appRunning(true), m_windowsNbr(0), m_frameRate(60), m_dataManager(new DataManager())
 {
 	SE::Log::init();
 	SE_CORE_WARN("Application \"{0}\" started", name);
@@ -20,6 +20,7 @@ SE::Application::Application(std::string name) : m_windows(), m_name(name), m_ap
 	m_windowsNbr++;
 
 	win->makeContextCurrent();
+	win->setVSync(true);
 
 	unsigned int glewInitResult = glewInit();
 	if (glewInitResult)

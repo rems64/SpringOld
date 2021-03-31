@@ -11,11 +11,12 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <SpringEngine/Graphics/Material.hpp>
 #include <SpringEngine/Graphics/Texture.hpp>
 
 namespace SE
 {
-	DataManager::DataManager()
+	DataManager::DataManager() : m_materials()
 	{
 	}
 
@@ -37,6 +38,22 @@ namespace SE
 			SE_CORE_ERROR("Failed to read file {0}", path);
 			return false;
 		}
+
+
+		if(aScene->HasMaterials())
+		{
+			for (unsigned int i = 0; i < aScene->mNumMaterials; i++)
+			{
+				std::shared_ptr<Material> newMaterial = std::make_shared<Material>();
+				aiColor3D color;
+				aScene->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+				SE_CORE_INFO("New color: r({}) g({}) b({})", color.r, color.g, color.b);
+				newMaterial->setDiffuseColor(color.r, color.g, color.b);
+
+				m_materials.emplace(m_materials.size(), newMaterial);
+			}
+		}
+
 
 		if (aScene->HasMeshes())
 		{
@@ -96,10 +113,9 @@ namespace SE
 				finalMesh->getVertexArray()->addBuffer(*finalMesh->getVertexBuffer(), *finalMesh->getVertexBufferLayout());
 				finalMesh->getVertexArray()->unbind();
 
+				finalMesh->setMaterial(m_materials.find(0)->second.get());
+
 				sceneRef->addComponentToScene(finalMesh);
-
-
-				aScene->mMaterials[meshes[meshIdx]->mMaterialIndex]->GetTexture()
 			}
 		}
 
@@ -108,7 +124,7 @@ namespace SE
 	}
 	Texture* DataManager::getDefaultTexture()
 	{
-
+		return nullptr;
 	}
 
 	int DataManager::loadTexture(const char* path)
@@ -116,5 +132,6 @@ namespace SE
 		Texture* newTexture = new SE::Texture();
 		newTexture->loadPNG(path, false, false);
 		m_textures.emplace_back(std::shared_ptr<Texture>(newTexture));
+		return 0;
 	}
 }
