@@ -1,10 +1,10 @@
-***Spring Engine***
+# Spring Engine
 
-**The engine**
+## **The engine**
 
 Spring Engine is a small game engine written in modern c++. It aims at both being simple and practical in order to learn from it but also use it to create simple games.
 
-*Dependencies*
+### *Dependencies*
 -[Assimp](http://assimp.org/)
 -[FMOD](https://www.fmod.com/)
 -[GLEW](https://github.com/nigels-com/glew)
@@ -13,6 +13,6 @@ Spring Engine is a small game engine written in modern c++. It aims at both bein
 -[spdlog](https://github.com/gabime/spdlog)
 
 
-**ISU Flight simulator**
+## **ISU Flight simulator**
 
 Still working on the engine for now
