@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <memory>
 #include <SpringEngine/Core/SceneElement.hpp>
 #include <SpringEngine/Components/CameraComponent.hpp>
 

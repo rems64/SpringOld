@@ -1,7 +1,5 @@
 #include <SpringEngine/Core/Application.hpp>
 
-#include <chrono>
-
 SE::Application* SE::Application::s_instance = nullptr;
 
 SE::Application::Application(std::string name) : m_windows(), m_name(name), m_appRunning(true), m_windowsNbr(0), m_frameRate(60), m_dataManager(new DataManager())
@@ -65,39 +63,44 @@ void SE::Application::init()
 
 int SE::Application::mainLoop()
 {
-	std::vector<SE::Window*>::iterator windowIterator = m_windows.begin();
-	std::chrono::high_resolution_clock::time_point loopStart = std::chrono::high_resolution_clock::now();
-	std::chrono::high_resolution_clock::time_point loopEnd = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double, std::milli> deltaTime = loopEnd - loopStart;
+	m_loopStart = std::chrono::high_resolution_clock::now();
+	m_loopEnd = std::chrono::high_resolution_clock::now();
+	m_deltaTime = m_loopEnd - m_loopStart;
 
 	while (m_appRunning)
 	{
-		loopStart = std::chrono::high_resolution_clock::now();
-		(**windowIterator).makeContextCurrent();
-		(**windowIterator).swapBuffers();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		for (Layer* layer : m_layerStack)
-			layer->onUpdate(deltaTime.count());
-
-		m_imGuiLayer->begin();
-		{
-			for (Layer* layer : m_layerStack)
-				layer->onImGuiRender();
-		}
-		m_imGuiLayer->end();
-
-
-		// Events
-		glfwPollEvents();
-
-		loopEnd = std::chrono::high_resolution_clock::now();
-		deltaTime = loopEnd - loopStart;
-		m_deltaSeconds = deltaTime.count()/1000.;
-		m_frameRate = 1/m_deltaSeconds;
+		frame();
 	}
 	SE_INFO("Stopping application");
 	return 0;
+}
+
+void SE::Application::frame()
+{
+	std::vector<SE::Window*>::iterator windowIterator = m_windows.begin();
+	m_loopStart = std::chrono::high_resolution_clock::now();
+	(**windowIterator).makeContextCurrent();
+	(**windowIterator).swapBuffers();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	for (Layer* layer : m_layerStack)
+		layer->onUpdate(m_deltaTime.count());
+
+	m_imGuiLayer->begin();
+	{
+		for (Layer* layer : m_layerStack)
+			layer->onImGuiRender();
+	}
+	m_imGuiLayer->end();
+
+
+	// Events
+	glfwPollEvents();
+
+	m_loopEnd = std::chrono::high_resolution_clock::now();
+	m_deltaTime = m_loopEnd - m_loopStart;
+	m_deltaSeconds = m_deltaTime.count() / 1000.;
+	m_frameRate = 1 / m_deltaSeconds;
 }
 
 SE::Window& SE::Application::getMainWindow()
@@ -109,6 +112,8 @@ void SE::Application::onEvent(Event& event)
 {
 	EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::onWindowCloseEvent, this, std::placeholders::_1));
+	dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::onWindowResizeEvent, this, std::placeholders::_1));
+	dispatcher.Dispatch<WindowMoveEvent>(std::bind(&Application::onWindowMoveEvent, this, std::placeholders::_1));
 
 	for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
 	{
@@ -149,6 +154,19 @@ bool SE::Application::onWindowCloseEvent(WindowCloseEvent& event)
 	//if (m_windows.empty())
 	//{
 	//}
+	return true;
+}
+
+bool SE::Application::onWindowResizeEvent(WindowResizeEvent& event)
+{
+	//event.getWindow()->
+	frame();
+	return true;
+}
+
+bool SE::Application::onWindowMoveEvent(WindowMoveEvent& event)
+{
+	//frame();
 	return true;
 }
 

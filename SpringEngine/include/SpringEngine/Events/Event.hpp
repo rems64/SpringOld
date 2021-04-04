@@ -1,6 +1,5 @@
 #pragma once
 
-#include <ostream>
 #include <SpringEngine/core.hpp>
 
 #define EVENT_CLASS_TYPE(type) static  EventType     getStaticType()                  { return EventType::type; }\

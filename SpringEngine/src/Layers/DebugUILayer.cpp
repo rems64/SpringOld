@@ -2,7 +2,6 @@
 
 #include <SpringEngine/Core/Application.hpp>
 #include <GLFW/glfw3.h>
-#include <imgui.h>
 
 SE::DebugUILayer::DebugUILayer(const char* name) : Layer(name), m_lastHistogramUpdate(0)
 {

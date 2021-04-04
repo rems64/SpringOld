@@ -4,10 +4,6 @@
 
 #include <SpringEngine/Misc/Macros.hpp>
 
-#include <glm/common.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/mat4x4.hpp>
-
 #include <SpringEngine/Core/Application.hpp>
 
 namespace SE
@@ -30,8 +26,9 @@ namespace SE
 		std::vector<std::shared_ptr<Component>>* components = scene->getComponents();
 		Component* currentComp = nullptr;
 		std::shared_ptr<Mesh> currentMesh=nullptr;
-		glm::mat4 m_projectionMatrix = glm::perspective(glm::radians(60.f), 640.f/480.f, 0.1f, 1000.0f);
-		glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(3, 3, 3), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
+		float ratio = Application::get().getMainWindow().getRatio();
+		glm::mat4 m_projectionMatrix = glm::perspective(glm::radians(60.f), ratio, 0.1f, 1000.0f);
+		glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(scene->getViewCamera()->getPosition().x(), scene->getViewCamera()->getPosition().y(), scene->getViewCamera()->getPosition().z()), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
 		glm::mat4 m_PV = m_projectionMatrix * m_viewMatrix;
 
 		for (unsigned int i = 0; i < components->size(); i++)

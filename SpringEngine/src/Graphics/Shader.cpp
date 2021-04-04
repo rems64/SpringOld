@@ -1,7 +1,5 @@
 #include <SpringEngine/Graphics/Shader.hpp>
 
-#include <iostream> // Deprecated to be removed
-
 
 namespace SE
 {

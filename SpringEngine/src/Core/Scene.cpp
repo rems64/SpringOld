@@ -1,11 +1,10 @@
 #include <SpringEngine/Core/Scene.hpp>
 
-#include <memory>
-
 namespace SE
 {
-	Scene::Scene() : m_viewCamera(), m_components()
+	Scene::Scene() : m_viewCamera(new CameraComponent()), m_components()
 	{
+		m_viewCamera->setPosition(Vector3f(3, 3, 3));
 	}
 
 	Scene::~Scene()

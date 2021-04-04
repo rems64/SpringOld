@@ -1,6 +1,5 @@
 #include <SpringEngine/Components/Mesh.hpp>
 
-#include <SpringEngine/Misc/Logger.hpp>
 #include <SpringEngine/core.hpp>
 
 namespace SE

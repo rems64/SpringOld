@@ -2,7 +2,7 @@
 
 namespace SE
 {
-	CameraComponent::CameraComponent() : Component()
+	CameraComponent::CameraComponent() : Component(), m_projection()
 	{
 	}
 

@@ -1,9 +1,5 @@
 #include <SpringEngine/Core/DataManager.hpp>
 
-#include <ofbx.h>
-#include <iostream>
-#include <memory>
-
 #include <SpringEngine/Misc/Logger.hpp>
 #include <SpringEngine/Core/Scene.hpp>
 #include <SpringEngine/Components/Mesh.hpp>
@@ -42,6 +38,23 @@ namespace SE
 
 		if(aScene->HasMaterials())
 		{
+			if (aScene->HasTextures())
+			{
+				SE_CORE_TRACE("Material has textures");
+				for (unsigned int i = 0; i < aScene->mNumTextures; i++)
+				{
+					SE_CORE_INFO("Texture");
+					if (aScene->mTextures[i]->CheckFormat("png"))
+					{
+						SE_CORE_INFO("New texture with format ({0})", aScene->mTextures[i]->mFilename.C_Str());
+						loadTexture(aScene->mTextures[i]->mFilename.C_Str());
+					}
+				}
+			}
+			else
+			{
+				SE_CORE_TRACE("Material doesn't have textures");
+			}
 			for (unsigned int i = 0; i < aScene->mNumMaterials; i++)
 			{
 				std::shared_ptr<Material> newMaterial = std::make_shared<Material>();
@@ -132,6 +145,6 @@ namespace SE
 		Texture* newTexture = new SE::Texture();
 		newTexture->loadPNG(path, false, false);
 		m_textures.emplace_back(std::shared_ptr<Texture>(newTexture));
-		return 0;
+		return m_textures.size();
 	}
 }

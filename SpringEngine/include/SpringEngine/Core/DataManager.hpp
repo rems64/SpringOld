@@ -1,9 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <memory>
-#include <map>
-
 #include <SpringEngine/core.hpp>
 
 namespace SE

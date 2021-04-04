@@ -44,6 +44,25 @@ void SE::Window::constructWindow()
 			data.m_eventCallback(event);
 		}
 	);
+
+	glfwSetWindowSizeCallback(m_window, [](GLFWwindow* win, int width, int height)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(win);
+			data.m_width = width;
+			data.m_height = height;
+			glViewport(0, 0, width, height);
+			WindowResizeEvent event(data.m_owner, width, height);
+			data.m_eventCallback(event);
+		}
+	);
+
+	glfwSetWindowPosCallback(m_window, [](GLFWwindow* win, int x, int y)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(win);
+			WindowMoveEvent event(data.m_owner, x, y);
+			data.m_eventCallback(event);
+		}
+	);
 	glfwSetCursorPosCallback(m_window, [](GLFWwindow* win, double x, double y)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(win);

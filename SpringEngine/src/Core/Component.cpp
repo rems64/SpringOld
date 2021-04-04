@@ -1,11 +1,5 @@
 #include <SpringEngine/Core/Component.hpp>
 
-#include <SpringEngine/Misc/Logger.hpp>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 namespace SE
 {
 	Component::Component() : m_isVisible(true), m_position(0., 0., 0.), m_scale(1., 1., 1.), m_rotation(0., 0., 0.), m_parent(nullptr), m_components()

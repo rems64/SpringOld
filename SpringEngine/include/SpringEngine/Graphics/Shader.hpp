@@ -1,9 +1,5 @@
 #pragma once
 
-#include <string>
-#include <fstream>
-#include <sstream>
-
 #include <GL/glew.h>
 #include <filesystem>
 

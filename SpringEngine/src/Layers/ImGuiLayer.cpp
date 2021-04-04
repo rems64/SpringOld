@@ -1,9 +1,5 @@
 #include <SpringEngine/Layers/ImGuiLayer.hpp>
 
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
-
 #include <SpringEngine/Core/Application.hpp>
 
 SE::ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")

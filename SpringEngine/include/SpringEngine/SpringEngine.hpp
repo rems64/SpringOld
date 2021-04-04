@@ -7,4 +7,3 @@
 // ############### ENTRY POINT ###############
 #include <SpringEngine/Core/EntryPoint.hpp>//#
 // ###########################################
-

@@ -3,7 +3,6 @@
 #include <SpringEngine/core.hpp>
 #include <SpringEngine/Graphics/Shader.hpp>
 #include <SpringEngine/Core/Vector3.hpp>
-#include <vector>
 
 namespace SE
 {

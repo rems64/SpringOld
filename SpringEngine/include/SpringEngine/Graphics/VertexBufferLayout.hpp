@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <SpringEngine/Misc/Macros.hpp>
 #include <SpringEngine/Misc/Logger.hpp>
 #include <GL/glew.h>

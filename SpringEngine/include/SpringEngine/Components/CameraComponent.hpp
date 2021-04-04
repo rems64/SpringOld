@@ -2,8 +2,6 @@
 
 #include <SpringEngine/Core/Component.hpp>
 
-#include <glm/common.hpp>
-#include <glm/mat4x4.hpp>
 #include <SpringEngine/Core/Vector3.hpp>
 
 #include <SpringEngine/core.hpp>

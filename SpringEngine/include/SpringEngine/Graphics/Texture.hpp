@@ -4,10 +4,6 @@
 #include <SpringEngine/Misc/Macros.hpp>
 #include <SpringEngine/Misc/Logger.hpp>
 #include <GL/glew.h>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <filesystem>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_STATIC

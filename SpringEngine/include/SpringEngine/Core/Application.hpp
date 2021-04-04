@@ -1,10 +1,9 @@
 #pragma once
 
 #include <GL/glew.h>
+
 #include <GLFW/glfw3.h>
 
-#include <vector>
-#include <string>
 #include <SpringEngine/Core/Window.hpp>
 #include <SpringEngine/Events/Event.hpp>
 #include <SpringEngine/Core/Layer.hpp>
@@ -31,6 +30,7 @@ namespace SE
 
 		void init();
 		int mainLoop();
+		void frame();
 
 		Window& getMainWindow();
 		inline DataManager* getDataManager() { return m_dataManager; };
@@ -42,6 +42,8 @@ namespace SE
 		void pushOverlay(Layer* layer);
 
 		bool onWindowCloseEvent(WindowCloseEvent& event);
+		bool onWindowResizeEvent(WindowResizeEvent& event);
+		bool onWindowMoveEvent(WindowMoveEvent& event);
 
 		double getFPS();
 		double getDeltaSeconds() { return m_deltaSeconds; };
@@ -60,6 +62,10 @@ namespace SE
 		ImGuiLayer* m_imGuiLayer;
 		WorldLayer* m_worldLayer;
 		DataManager* m_dataManager;
+		
+		std::chrono::high_resolution_clock::time_point m_loopStart;
+		std::chrono::high_resolution_clock::time_point m_loopEnd;
+		std::chrono::duration<double, std::milli> m_deltaTime;
 	};
 
 	Application* CreateApplication();

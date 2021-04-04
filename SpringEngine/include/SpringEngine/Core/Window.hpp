@@ -1,10 +1,5 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-
-#include <glm/common.hpp>
-#include <glm/vec2.hpp>
 #include <GLFW/glfw3.h>
 #include <SpringEngine/Misc/Logger.hpp>
 #include <SpringEngine/Events/Event.hpp>
@@ -32,6 +27,8 @@ namespace SE
 		glm::vec2 getSize();
 		void setPosition(int x, int y);
 		glm::vec2 getPosition();
+
+		float getRatio() { return (float)m_data.m_width / (float)m_data.m_height; };
 
 		void setVSync(bool set);
 

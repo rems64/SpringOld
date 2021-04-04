@@ -20,6 +20,39 @@ namespace SE
 		Window* m_window;
 	};
 
+	class SE_API WindowResizeEvent : public Event
+	{
+	public:
+		WindowResizeEvent(Window* win, int width, int height) : m_window(win), m_width(width), m_height(height) {};
+
+		EVENT_CLASS_TYPE(WindowResize);
+		EVENT_CLASS_CATEGORY(EventCategoryWindow);
+		
+		inline int getWidth() { return m_width; };
+		inline int getHeight() { return m_height; };
+		inline Window* getWindow() { return m_window; };
+	private:
+		Window* m_window;
+		int m_width;
+		int m_height;
+	};
+
+	class SE_API WindowMoveEvent : public Event
+	{
+	public:
+		WindowMoveEvent(Window* win, int x, int y) : m_window(win), m_x(x), m_y(y) {};
+
+		EVENT_CLASS_TYPE(WindowResize);
+		EVENT_CLASS_CATEGORY(EventCategoryWindow);
+
+		inline int getX() { return m_x; };
+		inline int getY() { return m_y; };
+	private:
+		Window* m_window;
+		int m_x;
+		int m_y;
+	};
+
 	class SE_API MouseMove : public Event
 	{
 	public:

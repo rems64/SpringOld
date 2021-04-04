@@ -1,8 +1,6 @@
 #pragma once
 
 #include <SpringEngine/Events/Event.hpp>
-#include <imgui.h>
-#include <iostream>
 
 #include "../core.hpp"
 

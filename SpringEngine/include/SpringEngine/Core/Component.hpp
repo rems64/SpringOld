@@ -1,13 +1,8 @@
 #pragma once
 
-#include <vector>
-
 #include <SpringEngine/Core/SpringObject.hpp>
 #include <SpringEngine/Core/Vector3.hpp>
 #include <SpringEngine/core.hpp>
-
-#include <glm/common.hpp>
-#include <glm/mat4x4.hpp>
 
 namespace SE
 {
