@@ -37,7 +37,9 @@ set(SRCS
 	"src/Layers/WorldLayer.cpp"
 	"src/Components/CameraComponent.cpp"
 	"src/Components/Mesh.cpp"
- "src/Graphics/Material.cpp")
+	"src/Graphics/Material.cpp"
+	"src/Components/Actor.cpp"
+)
 
 set(IMGUI_SRCS
 	"lib/ImGui/imgui.cpp"
@@ -56,11 +58,15 @@ set(OPENFBX_SRCS
 
 add_library(SpringEngine SHARED ${SRCS} ${IMGUI_SRCS} ${OPENFBX_SRCS})
 
-
 target_include_directories(SpringEngine PUBLIC "lib/ImGui" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include" "lib/OpenFBX/include" "lib/Assimp/Include/")
 #target_include_directories(test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}lib/FBXImporter/importer/include")
 
 find_package(OpengL REQUIRED COMPONENTS OpengL)
+
+target_precompile_headers(SpringEngine
+  PUBLIC
+    "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/pch.hpp>"
+)
 
 add_subdirectory("lib/spdlog")
 
