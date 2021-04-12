@@ -1,27 +1,32 @@
 #pragma once
 
-#include <SpringEngine/Core/SceneElement.hpp>
-#include <SpringEngine/Components/CameraComponent.hpp>
 
 #include "../core.hpp"
+#include <SpringEngine/Core/CameraComponent.hpp>
 
 namespace SE
 {
+	class Component;
+	class Actor;
+	class Event;
 	class SE_API Scene
 	{
 	public:
 		Scene();
 		~Scene();
 
-		inline CameraComponent* getViewCamera() { return m_viewCamera; };
-		void setViewCamera(CameraComponent* newCamera) { m_viewCamera = newCamera; };
+
+		void onEvent(Event& ev);
+		void update(double deltaSeconds);
 
 		bool addComponentToScene(Component* component);
-		std::vector<std::shared_ptr<Component>>* getComponents() {
-			return &m_components;
-		};
+
+		void importFBX(const char* path);
+		bool registerActor(Actor* actor);
+		std::vector<Actor*>* getRegisteredActors() { return &m_registeredActors; };
+		CameraComponent* getMainCamera();
 	private:
-		std::vector<std::shared_ptr<Component>> m_components;
-		CameraComponent* m_viewCamera;
+		std::vector<Actor*> m_registeredActors;
+		glm::mat4 m_projection;
 	};
 }

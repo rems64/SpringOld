@@ -5,6 +5,7 @@
 
 #include <SpringEngine/core.hpp>
 
+#include <GL/glew.h>
 
 #define SE_DEBUGUI_HISTOGRAM_COUNT 100
 
@@ -23,6 +24,8 @@ namespace SE
 
 
 	private:
+		const GLubyte* m_glVersion;
+
 		float m_frameRateOverTime[SE_DEBUGUI_HISTOGRAM_COUNT];
 		double m_lastHistogramUpdate;
 	};

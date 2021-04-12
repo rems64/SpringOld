@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 
 #include <SpringEngine/core.hpp>
+#include <SpringEngine/Core/Vector3.hpp>
 
 namespace SE
 {
@@ -41,6 +42,7 @@ namespace SE
 		void setUniform2f(GLint, GLfloat, GLfloat);
 
 		void setUniform3f(const char*, GLfloat, GLfloat, GLfloat);
+		void setUniform3f(const char*, Vector3<float>&);
 
 		void setUniformMat4f(const std::string& name, const glm::mat4& matrix);
 		void setUniformSampler2D(const std::string& name, const unsigned int* texture);

@@ -7,7 +7,6 @@ namespace SE
 	{
 	public:
 		Vector3() : m_x(0), m_y(0), m_z(0) {};
-		//Vector3(std::initializer_list<T> initList) : m_x(initList[0]), m_y(initList[1]), m_z(initList[2]) {};
 		Vector3(T x, T y, T z) : m_x(x), m_y(y), m_z(z) {};
 		template <typename U>
 		Vector3(const Vector3<U>& src) : m_x(static_cast<T>(src.m_x)), m_y(static_cast<T>(src.m_y)), m_z(static_cast<T>(src.m_z)) {};
@@ -23,6 +22,11 @@ namespace SE
 		inline void x(T value) { m_x = value; };
 		inline void y(T value) { m_y = value; };
 		inline void z(T value) { m_z = value; };
+
+		inline glm::vec3 getGlm()					// Temporary solution
+		{
+			return glm::vec3(m_x, m_y, m_z);
+		}
 	protected:
 		T m_x;
 		T m_y;

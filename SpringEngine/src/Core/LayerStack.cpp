@@ -13,12 +13,14 @@ SE::LayerStack::~LayerStack()
 
 void SE::LayerStack::pushLayer(SE::Layer* layer)
 {
+	SE_PROFILE_FUNCTION();
 	m_layers.emplace(m_layers.begin() + m_layerStackIndex, layer);
 	m_layerStackIndex++;
 }
 
 void SE::LayerStack::popLayer(SE::Layer* layer)
 {
+	SE_PROFILE_FUNCTION();
 	std::vector<SE::Layer*>::iterator it = std::find(m_layers.begin(), m_layers.begin() + m_layerStackIndex, layer);
 	if (it != m_layers.begin() + m_layerStackIndex)
 	{
@@ -35,6 +37,7 @@ void SE::LayerStack::pushOverlay(SE::Layer* layer)
 
 void SE::LayerStack::popOverlay(SE::Layer* layer)
 {
+	SE_PROFILE_FUNCTION();
 	std::vector<SE::Layer*>::iterator it = std::find(m_layers.begin() + m_layerStackIndex, m_layers.end(), layer);
 	if (it != m_layers.end())
 	{

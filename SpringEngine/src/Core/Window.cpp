@@ -33,6 +33,7 @@ GLFWwindow* SE::Window::getWindow()
 
 void SE::Window::constructWindow()
 {
+	SE_PROFILE_FUNCTION();
 	m_window = glfwCreateWindow(m_data.m_width, m_data.m_height, m_data.m_title, NULL, NULL);
 
 	glfwSetWindowUserPointer(m_window, &m_data);

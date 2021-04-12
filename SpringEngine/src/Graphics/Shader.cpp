@@ -140,6 +140,11 @@ namespace SE
         glUniform3f(GetUniformLocation(location), v1, v2, v3);
     }
 
+    void Shader::setUniform3f(const char* location, Vector3<float>& v)
+    {
+        glUniform3f(GetUniformLocation(location), v.x(), v.y(), v.z());
+    }
+
     void Shader::setUniformMat4f(const std::string& name, const glm::mat4& matrix)
     {
         GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));

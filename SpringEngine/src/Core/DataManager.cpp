@@ -2,17 +2,17 @@
 
 #include <SpringEngine/Misc/Logger.hpp>
 #include <SpringEngine/Core/Scene.hpp>
-#include <SpringEngine/Components/Mesh.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <SpringEngine/Graphics/Material.hpp>
 #include <SpringEngine/Graphics/Texture.hpp>
+#include <SpringEngine/Core/Mesh.hpp>
 
 namespace SE
 {
-	DataManager::DataManager() : m_materials()
+	DataManager::DataManager() : m_textures(), m_dataBlocks()
 	{
 	}
 
@@ -20,56 +20,60 @@ namespace SE
 	{
 	}
 
-	const void DataManager::parseObj(const char* path)
+	std::vector<unsigned long> DataManager::loadFBX(const char* path)
 	{
-	}
-
-	bool DataManager::loadFBX(const char* path, Scene* sceneRef)
-	{
+		SE_PROFILE_FUNCTION();
+		std::vector<unsigned long> meshList;
 		Assimp::Importer* importer = new Assimp::Importer();
 
-		const aiScene* aScene = importer->ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
+		const aiScene* aScene = importer->ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
 		if (!aScene)
 		{
 			SE_CORE_ERROR("Failed to read file {0}", path);
-			return false;
+			return std::vector<unsigned long>();
 		}
 
+		std::vector<Material*> materials;
 
 		if(aScene->HasMaterials())
 		{
-			if (aScene->HasTextures())
-			{
-				SE_CORE_TRACE("Material has textures");
-				for (unsigned int i = 0; i < aScene->mNumTextures; i++)
-				{
-					SE_CORE_INFO("Texture");
-					if (aScene->mTextures[i]->CheckFormat("png"))
-					{
-						SE_CORE_INFO("New texture with format ({0})", aScene->mTextures[i]->mFilename.C_Str());
-						loadTexture(aScene->mTextures[i]->mFilename.C_Str());
-					}
-				}
-			}
-			else
-			{
-				SE_CORE_TRACE("Material doesn't have textures");
-			}
+			SE_PROFILE_SCOPE("loading materials");
+
 			for (unsigned int i = 0; i < aScene->mNumMaterials; i++)
 			{
-				std::shared_ptr<Material> newMaterial = std::make_shared<Material>();
-				aiColor3D color;
-				aScene->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-				SE_CORE_INFO("New color: r({}) g({}) b({})", color.r, color.g, color.b);
-				newMaterial->setDiffuseColor(color.r, color.g, color.b);
+				Material* newMaterial = new Material();
 
-				m_materials.emplace(m_materials.size(), newMaterial);
+
+				aiString texture_file;
+				aScene->mMaterials[i]->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_file);
+				if (auto texture = aScene->GetEmbeddedTexture(texture_file.C_Str()))
+				{
+					SE_CORE_INFO("Embeded texture");
+					SE_CORE_WARN("PANIK embeded textures are not managed yet");
+				}
+				else
+				{
+					if (texture_file.length>0)
+					{
+						SE_CORE_INFO("Path to texture ({0})", texture_file.C_Str());
+						Texture* idx = loadTexture(texture_file.C_Str());
+						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::DIFFUSE, SE_MATERIAL_PROPERTY_TYPE::TEXTURE, idx));
+					}
+					else
+					{
+						SE_CORE_INFO("No texture");
+						aiColor3D color(0.f, 0.f, 0.f);
+						aScene->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::DIFFUSE, SE_MATERIAL_PROPERTY_TYPE::COLOR, Vector3f(color.r, color.g, color.b)));
+					}
+				}
+				materials.push_back(newMaterial);
 			}
 		}
 
-
 		if (aScene->HasMeshes())
 		{
+			SE_PROFILE_SCOPE("loading meshes");
 			aiMesh** meshes = aScene->mMeshes;
 			for (unsigned int meshIdx = 0; meshIdx < aScene->mNumMeshes; meshIdx++)
 			{
@@ -92,7 +96,6 @@ namespace SE
 				SE_CORE_TRACE("Mesh has {0}normals", hasNormals ? "" : "no ");
 				SE_CORE_TRACE("Mesh has {0}UVs", hasUVs ? "" : "no ");
 				std::vector<float> finalVertices;
-				//const struct aiVector3D* = (aiVector3D*)(meshes[meshIdx]->mTextureCoords[0]);
 				for (unsigned int i = 0; i < meshes[meshIdx]->mNumVertices; i++)
 				{
 					finalVertices.push_back(meshes[meshIdx]->mVertices[i].x);
@@ -112,39 +115,47 @@ namespace SE
 						finalVertices.push_back(meshes[meshIdx]->mTextureCoords[0][i].y);
 					}
 				}
-				Mesh* finalMesh = new Mesh();
-				finalMesh->getVertexBuffer()->setBuffer(finalVertices.data(), finalVertices.size()*sizeof(float));
-				finalMesh->getIndexBuffer()->setBuffer(finalIndices.data(), finalIndices.size());
+				VertexBuffer* vb = new VertexBuffer();
+				vb->setBuffer(finalVertices.data(), finalVertices.size() * sizeof(float));
+
+				IndexBuffer* ib = new IndexBuffer();
+				ib->setBuffer(finalIndices.data(), finalIndices.size());
+
+				VertexBufferLayout* vbl = new VertexBufferLayout();
+				vbl->Push<float>(3);
+				vbl->Push<float>(3);
+				vbl->Push<float>(2);
+
+				VertexArray* va = new VertexArray();
+				va->addBuffer(*vb, *vbl);
+				Mesh* mesh = new Mesh();
+				mesh->setIndexBuffer(ib);
+				mesh->setVertexArray(va);
+				mesh->setVertexBuffer(vb);
+				mesh->setVertexBufferLayout(vbl);
+				mesh->setMaterial(materials[meshes[meshIdx]->mMaterialIndex]);
 				
-				finalMesh->getVertexBufferLayout()->Push<float>(3);
-				if(hasNormals)
-					finalMesh->getVertexBufferLayout()->Push<float>(3);
-				if(hasUVs)
-					finalMesh->getVertexBufferLayout()->Push<float>(2);
+				int loc = registerDataBlock<Mesh>(mesh);
 
-				finalMesh->getVertexArray()->bind();
-				finalMesh->getVertexArray()->addBuffer(*finalMesh->getVertexBuffer(), *finalMesh->getVertexBufferLayout());
-				finalMesh->getVertexArray()->unbind();
-
-				finalMesh->setMaterial(m_materials.find(0)->second.get());
-
-				sceneRef->addComponentToScene(finalMesh);
+				meshList.push_back(loc);
 			}
 		}
 
 		delete importer;
-		return true;
+		return meshList;
 	}
+
 	Texture* DataManager::getDefaultTexture()
 	{
 		return nullptr;
 	}
 
-	int DataManager::loadTexture(const char* path)
+	Texture* DataManager::loadTexture(const char* path)
 	{
+		SE_PROFILE_FUNCTION();
 		Texture* newTexture = new SE::Texture();
 		newTexture->loadPNG(path, false, false);
 		m_textures.emplace_back(std::shared_ptr<Texture>(newTexture));
-		return m_textures.size();
+		return newTexture;
 	}
 }

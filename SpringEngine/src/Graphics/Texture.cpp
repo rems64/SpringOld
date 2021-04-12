@@ -120,6 +120,10 @@ namespace SE
         else
             colorSpace = GL_RGB;
         data = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, STBI_rgb_alpha);
+        if (!data)
+        {
+            SE_CORE_WARN("Unable to laod texture ({0})", path.c_str());
+        }
 
         GLCall(glGenTextures(1, &m_texture));
 

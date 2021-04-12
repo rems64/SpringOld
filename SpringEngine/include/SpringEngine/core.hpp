@@ -18,9 +18,3 @@
 	#define SE_MP(path);
 #endif
 */
-
-#ifdef SE_DEBUG
-	#define SE_PATH(path) "../../"path
-#else
-	#define SE_PATH(path) "."path
-#endif

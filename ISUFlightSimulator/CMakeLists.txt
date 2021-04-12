@@ -11,7 +11,7 @@ include_directories("../SpringEngine/include")
 
 set(SRCS
 	
- "src/FlightSimulatorApp.cpp" )
+ "src/FlightSimulatorApp.cpp"  )
 
 
 

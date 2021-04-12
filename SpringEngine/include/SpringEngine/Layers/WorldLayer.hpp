@@ -2,7 +2,6 @@
 
 #include <SpringEngine/Core/Layer.hpp>
 #include <SpringEngine/Misc/Logger.hpp>
-#include <SpringEngine/Core/SceneElement.hpp>
 #include <SpringEngine/Core/Scene.hpp>
 
 #include <SpringEngine/core.hpp>

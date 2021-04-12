@@ -22,12 +22,18 @@ namespace SE
 		{
 			SE_CORE_INFO("Event on world layer {0}", event.toString());
 		}
+		m_currentScene->onEvent(event);
+
 	}
 
 	void WorldLayer::onUpdate(double deltaTime)
 	{
 		//Renderer::renderSceneElement(&m_element);
-		Renderer::renderScene(m_currentScene.get(), deltaTime);
+		m_currentScene->update(deltaTime);
+		Renderer::beginSceneDraw(m_currentScene.get());
+		int nbrDrawCalls = Renderer::endSceneDraw();
+		
+		SE_CORE_TRACE("Rendered scene with {0} draw calls", nbrDrawCalls);
 	}
 
 	void WorldLayer::onImGuiRender()

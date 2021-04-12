@@ -14,9 +14,6 @@
 
 namespace SE
 {
-	static enum TEXTURE_TYPES {
-		SPUI_TEX_BMP
-	};
 	class SE_API Texture
 	{
 	public:

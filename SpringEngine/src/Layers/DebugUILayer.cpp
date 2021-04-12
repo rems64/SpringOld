@@ -10,11 +10,14 @@ SE::DebugUILayer::DebugUILayer(const char* name) : Layer(name), m_lastHistogramU
 
 void SE::DebugUILayer::onAttach()
 {
-	//SE_CORE_INFO("Attaching Debug UI layer {}", m_name);
+	SE_PROFILE_FUNCTION();
+	m_glVersion = glGetString(GL_VERSION);
+	SE_CORE_INFO("DebugUI layer running on renderer {0}", m_glVersion);
 }
 
 void SE::DebugUILayer::onDetach()
 {
+	SE_PROFILE_FUNCTION();
 	//SE_CORE_INFO("Detaching Debug UI layer {}", m_name);
 }
 
@@ -37,6 +40,7 @@ void left_rotate_by_one(T arr[], int n)
 
 void SE::DebugUILayer::onImGuiRender()
 {
+	SE_PROFILE_FUNCTION();
 	double currentTime = glfwGetTime();
 	if (currentTime - m_lastHistogramUpdate >= (5.f/SE_DEBUGUI_HISTOGRAM_COUNT))
 	{
@@ -50,5 +54,6 @@ void SE::DebugUILayer::onImGuiRender()
 	ImGui::Begin("Stats");
 	ImGui::Text("Framerate");
 	ImGui::PlotLines("Frame Times", m_frameRateOverTime, SE_DEBUGUI_HISTOGRAM_COUNT, 0, 0, 0);
+	ImGui::Text((const char*)(m_glVersion));
 	ImGui::End();
 }

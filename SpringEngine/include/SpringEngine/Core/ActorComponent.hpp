@@ -4,11 +4,13 @@
 
 namespace SE
 {
-	class SE_API SpringObject
+	class ActorComponent
 	{
 	public:
-		SpringObject();
-		virtual ~SpringObject();
+		ActorComponent();
+		virtual ~ActorComponent();
+
 	private:
+
 	};
 }

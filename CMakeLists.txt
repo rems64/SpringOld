@@ -10,3 +10,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Incluez les sous-projets.
 add_subdirectory ("SpringEngine")
 add_subdirectory ("ISUFlightSimulator")
+add_subdirectory ("SpringEditor")

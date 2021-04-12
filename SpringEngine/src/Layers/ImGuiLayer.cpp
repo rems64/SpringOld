@@ -21,12 +21,12 @@ void SE::ImGuiLayer::onAttach()
 	GLFWwindow* window = static_cast<GLFWwindow*>(app.getMainWindow().getNativeWindow());
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	//const char* v = (const char*)glGetIntegerv(GL_VERSION);
-	SE_CORE_INFO("ImGui layer running on renderer {0}", glGetString(GL_VERSION));
 	ImGui_ImplOpenGL3_Init("#version 410");
 	//ImGui_ImplOpenGL3_Init();
 
 	auto font_default = io.Fonts->AddFontDefault();
+
+	m_blockEvents = true;
 }
 
 void SE::ImGuiLayer::onDetach()

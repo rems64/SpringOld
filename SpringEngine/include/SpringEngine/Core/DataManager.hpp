@@ -7,6 +7,8 @@ namespace SE
 	class Scene;
 	class Texture;
 	class Material;
+	class Mesh;
+	class DataBlock;
 
 	class SE_API DataManager
 	{
@@ -14,14 +16,27 @@ namespace SE
 		DataManager();
 		~DataManager();
 
-		const void parseObj(const char* path);
-		bool loadFBX(const char* path, Scene* scene);
+		std::vector<unsigned long> loadFBX(const char* path);
 		
+
 		// Textures
 		Texture* getDefaultTexture();
-		int loadTexture(const char* path);
+		Texture* loadTexture(const char* path);
+
+		template<class T>
+		int registerDataBlock(T* dataBlock)
+		{
+			m_dataBlocks.insert(std::make_pair(m_dataBlocks.size(), dataBlock));
+			return m_dataBlocks.size() - 1;
+		}
+		
+		template<class T>
+		T* getRegisteredDataBlock(unsigned long id)
+		{
+			return static_cast<T*>(m_dataBlocks.find(id)->second);
+		}
 	private:
 		std::vector<std::shared_ptr<Texture>> m_textures;
-		std::map<unsigned int, std::shared_ptr<Material>> m_materials;
+		std::map<unsigned long, DataBlock*> m_dataBlocks;
 	};
 }

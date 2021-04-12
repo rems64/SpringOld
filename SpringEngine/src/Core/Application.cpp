@@ -11,6 +11,9 @@ SE::Application::Application(std::string name) : m_windows(), m_name(name), m_ap
 	s_instance = this;
 	init();
 
+	Instrumentor::get().beginSession("Application");
+	SE_PROFILE_SCOPE("Initialisaing app");
+
 	glfwWindowHint(GLFW_SAMPLES, 16);
 	SE::Window* win = new SE::Window(name.c_str());
 	win->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
@@ -50,6 +53,7 @@ SE::Application::~Application()
 {
 	m_layerStack.~LayerStack();
 	glfwTerminate();
+	Instrumentor::get().endSession();
 }
 
 void SE::Application::init()
@@ -63,6 +67,7 @@ void SE::Application::init()
 
 int SE::Application::mainLoop()
 {
+	SE_PROFILE_FUNCTION();
 	m_loopStart = std::chrono::high_resolution_clock::now();
 	m_loopEnd = std::chrono::high_resolution_clock::now();
 	m_deltaTime = m_loopEnd - m_loopStart;
@@ -77,6 +82,7 @@ int SE::Application::mainLoop()
 
 void SE::Application::frame()
 {
+	SE_PROFILE_FUNCTION();
 	std::vector<SE::Window*>::iterator windowIterator = m_windows.begin();
 	m_loopStart = std::chrono::high_resolution_clock::now();
 	(**windowIterator).makeContextCurrent();
@@ -110,6 +116,7 @@ SE::Window& SE::Application::getMainWindow()
 
 void SE::Application::onEvent(Event& event)
 {
+	SE_PROFILE_FUNCTION();
 	EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::onWindowCloseEvent, this, std::placeholders::_1));
 	dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::onWindowResizeEvent, this, std::placeholders::_1));
@@ -125,6 +132,7 @@ void SE::Application::onEvent(Event& event)
 
 void SE::Application::pushLayer(Layer* layer)
 {
+	SE_PROFILE_FUNCTION();
 	m_layerStack.pushLayer(layer);
 	layer->onAttach();
 }

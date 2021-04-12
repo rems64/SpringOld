@@ -14,12 +14,6 @@
 #include <algorithm>
 #include <thread>
 
-
-#include <SpringEngine/core.hpp>
-#include <SpringEngine/Misc/Logger.hpp>
-#include <SpringEngine/Misc/Instrumentator.hpp>
-
-
 #include <glm/glm.hpp>
 #include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>

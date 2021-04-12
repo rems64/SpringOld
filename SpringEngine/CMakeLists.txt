@@ -16,12 +16,12 @@ set(SRCS
 	"src/Misc/Logger.cpp"
 	"src/Misc/Macros.cpp"
 	"src/Core/Application.cpp"
-	"src/Core/Component.cpp"
+	
 	"src/Core/DataManager.cpp"
 	"src/Core/Layer.cpp"
 	"src/Core/LayerStack.cpp"
 	"src/Core/Scene.cpp"
-	"src/Core/SceneElement.cpp"
+	
 	"src/Core/SpringObject.cpp"
 	"src/Core/Window.cpp"
 	"src/Graphics/IndexBuffer.cpp"
@@ -35,11 +35,9 @@ set(SRCS
 	"src/Layers/ImGuiLayer.cpp"
 	"src/Layers/TestLayer.cpp"
 	"src/Layers/WorldLayer.cpp"
-	"src/Components/CameraComponent.cpp"
-	"src/Components/Mesh.cpp"
 	"src/Graphics/Material.cpp"
-	"src/Components/Actor.cpp"
-)
+	"src/Misc/Instrumentor.cpp"
+ "src/Core/Actor.cpp" "src/Core/Mesh.cpp" "src/Core/ActorComponent.cpp" "src/Core/SceneComponent.cpp" "src/Core/RendereredComponent.cpp" "include/SpringEngine/Core/MeshComponent.hpp" "src/Core/MeshComponent.cpp" "src/Core/CameraComponent.cpp" "src/Core/DataBlock.cpp")
 
 set(IMGUI_SRCS
 	"lib/ImGui/imgui.cpp"

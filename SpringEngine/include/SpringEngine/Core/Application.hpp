@@ -11,7 +11,6 @@
 #include <SpringEngine/Layers/ImGuiLayer.hpp>
 #include <SpringEngine/Layers/WorldLayer.hpp>
 #include <SpringEngine/Graphics/Renderer.hpp>
-#include <SpringEngine/Core/SceneElement.hpp>
 #include <SpringEngine/Core/DataManager.hpp>
 #include <SpringEngine/Core/Scene.hpp>
 
