@@ -4,7 +4,6 @@
 
 namespace SE
 {
-	SE_API;
 	template <typename T>
 	class Vector2
 	{
@@ -12,7 +11,7 @@ namespace SE
 		Vector2() : m_x(0), m_y(0) {};
 		Vector2(T x, T y) : m_x(x), m_y(y) {};
 		template <typename U>
-		Vector2(const Vector2<U>& src) : m_x(static_cast<T>(src.m_x)), m_y(static_cast<T>(src.m_y)) {};
+		Vector2(const Vector2<U>& src) : m_x(static_cast<T>(src.m_x)), m_y(static_cast<T>(src.y())) {};
 
 		~Vector2()
 		{
@@ -20,6 +19,13 @@ namespace SE
 
 		inline T x() const { return m_x; };
 		inline T y() const { return m_y; };
+		inline T* xPtr() const { return &m_x; };
+		inline T* yPtr() const { return &m_y; };
+
+		inline void x(T x) { m_x = x; };
+		inline void y(T y) { m_y = y; };
+
+		inline glm::vec2 getGlm() const { return glm::vec2(m_x, m_y); };
 
 	private:
 		T m_x;
@@ -79,16 +85,12 @@ namespace SE
 	{
 		return (left.m_x != right.m_x) || (left.m_y != left.m_y)
 	}
-	//template <typename T>
-	//inline T dot(const SE::Vector3<T> left, const SE::Vector3<T>& right)
-	//{
-	//	return static_cast<T>(left.x()*right.x() + left.y()*right.y() + left.z()*right.z());
-	//}
 
 	typedef Vector2<int> Vector2i;
 	typedef Vector2<unsigned int> Vector2ui;
 
 	typedef Vector2<float> Vector2f;
+	typedef Vector2<double> Vector2d;
 
 	typedef Vector2<long> Vector2l;
 	typedef Vector2<unsigned long> Vector2ul;

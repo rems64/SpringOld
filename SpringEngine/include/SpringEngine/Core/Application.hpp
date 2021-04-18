@@ -31,9 +31,12 @@ namespace SE
 		int mainLoop();
 		void frame();
 
+		void closeApplication();
+
 		Window& getMainWindow();
 		inline DataManager* getDataManager() { return m_dataManager; };
 		inline Scene* getCurrentScene() { return m_worldLayer->getScene(); }
+		inline ImGuiContext* getImguiContext() { return ImGui::GetCurrentContext(); };
 
 		void onEvent(Event& event);
 

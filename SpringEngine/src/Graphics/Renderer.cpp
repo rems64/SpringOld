@@ -1,5 +1,6 @@
 #include <SpringEngine/Graphics/Renderer.hpp>
 #include <SpringEngine/Core/Scene.hpp>
+#include <SpringEngine/Core/CameraComponent.hpp>
 
 #include <SpringEngine/Misc/Macros.hpp>
 
@@ -23,15 +24,15 @@ namespace SE
 	glm::mat4 Renderer::m_VP = glm::mat4();
 	unsigned int Renderer::m_sceneDrawCalls = 0;
 
-	void Renderer::beginSceneDraw(Scene* scene)
+	void Renderer::beginSceneDraw(CameraComponent* cam)
 	{
-		m_VP = scene->getMainCamera()->getViewProjection();
+		m_VP = cam->getViewProjection();
 		m_sceneDrawCalls = 0;
 	}
 
 	int Renderer::endSceneDraw()
 	{
-		return 0;
+		return m_sceneDrawCalls;
 	}
 
 	void Renderer::drawIndexed(const VertexArray* vertexArray, const IndexBuffer* indexBuffer, const Material* material, const glm::mat4* transform)
@@ -39,11 +40,12 @@ namespace SE
 		vertexArray->bind();
 		indexBuffer->bind();
 		material->bind();
-		material->setTransformMatrix(m_VP);
+		material->setProjectionMatrix(m_VP*(*transform));
 		material->bindTextures();
-		GLCall(glDrawElements(GL_TRIANGLES, m_ib->getCount(), GL_UNSIGNED_INT, NULL));
+		GLCall(glDrawElements(GL_TRIANGLES, indexBuffer->getCount(), GL_UNSIGNED_INT, NULL));
 		material->unbind();
 		vertexArray->unbind();
 		indexBuffer->unbind();
+		m_sceneDrawCalls++;
 	}
 }

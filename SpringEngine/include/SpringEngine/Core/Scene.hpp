@@ -2,6 +2,7 @@
 
 
 #include "../core.hpp"
+#include <SpringEngine/Core/SpringObject.hpp>
 #include <SpringEngine/Core/CameraComponent.hpp>
 
 namespace SE
@@ -9,22 +10,22 @@ namespace SE
 	class Component;
 	class Actor;
 	class Event;
-	class SE_API Scene
+	class CameraComponent;
+	class SE_API Scene : public SpringObject
 	{
 	public:
 		Scene();
-		~Scene();
+		virtual ~Scene();
 
 
 		void onEvent(Event& ev);
-		void update(double deltaSeconds);
+		void update(double deltaSeconds, CameraComponent* cam);
 
 		bool addComponentToScene(Component* component);
 
-		void importFBX(const char* path);
-		bool registerActor(Actor* actor);
+		std::vector<Actor*> importFBX(const char* path);
+		int registerActor(Actor* actor);
 		std::vector<Actor*>* getRegisteredActors() { return &m_registeredActors; };
-		CameraComponent* getMainCamera();
 	private:
 		std::vector<Actor*> m_registeredActors;
 		glm::mat4 m_projection;

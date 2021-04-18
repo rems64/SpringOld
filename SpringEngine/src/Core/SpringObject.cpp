@@ -3,7 +3,7 @@
 
 namespace SE
 {
-	SpringObject::SpringObject()
+	SpringObject::SpringObject() : m_name("default name")
 	{
 	}
 

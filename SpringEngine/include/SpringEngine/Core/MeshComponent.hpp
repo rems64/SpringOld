@@ -1,5 +1,5 @@
 #pragma once
-#include <SpringEngine/Core/RendereredComponent.hpp>
+#include <SpringEngine/Core/RenderedComponent.hpp>
 #include <SpringEngine/Core/Mesh.hpp>
 namespace SE
 {
@@ -9,7 +9,10 @@ namespace SE
 		MeshComponent(Mesh* instance);
 		virtual ~MeshComponent();
 
-		virtual int drawCall() const;
+		virtual int drawCall() const override;
+
+	protected:
+		virtual void onUpdateTransform() override;
 
 	private:
 		Mesh* m_meshInstance;

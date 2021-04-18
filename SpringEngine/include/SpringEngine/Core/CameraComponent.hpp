@@ -11,7 +11,8 @@ namespace SE
 		virtual ~CameraComponent();
 
 		glm::mat4 getViewProjection();
+		void setRatio(float newRatio) { m_ratio = newRatio; };
 	private:
-
+		float m_ratio;
 	};
 }

@@ -11,6 +11,7 @@ int main()
 	SE::Application* app = SE::CreateApplication();
 	app->mainLoop();
 	delete app;
+	return 0;
 }
 
 #endif

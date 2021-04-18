@@ -57,10 +57,12 @@ namespace SE
 			}
 			if (m_properties[i].m_type == SE_MATERIAL_PROPERTY_TYPE::TEXTURE)
 			{
+				m_shader->bind();
 				m_shader->setUniform1i(location, 0);
 			}
 			else if (m_properties[i].m_type == SE_MATERIAL_PROPERTY_TYPE::COLOR)
 			{
+				m_shader->bind();
 				m_shader->setUniform3f(location, m_properties[i].m_color);
 			}
 			else
@@ -70,7 +72,7 @@ namespace SE
 		}
 	}
 
-	void Material::setTransformMatrix(glm::mat4& matrix) const
+	void Material::setProjectionMatrix(glm::mat4& matrix) const			// WARNING : Has to be bound
 	{
 		m_shader->setUniformMat4f("u_projection", matrix);
 	}

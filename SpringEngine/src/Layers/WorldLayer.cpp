@@ -29,11 +29,15 @@ namespace SE
 	void WorldLayer::onUpdate(double deltaTime)
 	{
 		//Renderer::renderSceneElement(&m_element);
-		m_currentScene->update(deltaTime);
-		Renderer::beginSceneDraw(m_currentScene.get());
-		int nbrDrawCalls = Renderer::endSceneDraw();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// TO UPDATE in order to accord with the new standalone camera style
+
+		//Renderer::beginSceneDraw(m_currentScene.get());
+		//m_currentScene->update(deltaTime);
+		//int nbrDrawCalls = Renderer::endSceneDraw();
 		
-		SE_CORE_TRACE("Rendered scene with {0} draw calls", nbrDrawCalls);
+		//SE_CORE_TRACE("Rendered scene with {0} draw calls", nbrDrawCalls);
 	}
 
 	void WorldLayer::onImGuiRender()

@@ -17,6 +17,7 @@
 
 #include <SpringEngine/core.hpp>
 #include <SpringEngine/Misc/Logger.hpp>
+#include <SpringEngine/Misc/Macros.hpp>
 #include <SpringEngine/Misc/Instrumentator.hpp>
 
 

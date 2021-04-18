@@ -55,7 +55,14 @@ namespace SE
 		void unbind() const;
 
 		void updateShaderUniforms();
-		void setTransformMatrix(glm::mat4& projection) const;
+
+		/** Set the scene projection matrix.
+		 * This should be called from the renderer before the draw call. 
+		 * [WARNING] The shader HAS TO be bound before calling this function
+		 * @param projection The glm 4x4 projection matrix.
+		 *   In the futur this will be replaced by SE::Mat4
+		 */
+		void setProjectionMatrix(glm::mat4& projection) const;
 
 		inline Shader* getShader() { return m_shader; };
 		MaterialProperty* getProperty(SE_MATERIAL_PROPERTY_NAME name);
