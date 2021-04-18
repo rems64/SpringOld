@@ -13,7 +13,12 @@ namespace SE
 
 	int MeshComponent::drawCall() const
 	{
-		Renderer::drawIndexed(m_meshInstance->getVertexArray(), m_meshInstance->getIndexBuffer(), m_meshInstance->getMaterial(), m_);
+		m_meshInstance->getMaterial()->updateShaderUniforms();
+		Renderer::drawIndexed(m_meshInstance->getVertexArray(), m_meshInstance->getIndexBuffer(), m_meshInstance->getMaterial(), &m_transform);
 		return 1;
+	}
+
+	void MeshComponent::onUpdateTransform()
+	{
 	}
 }

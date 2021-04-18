@@ -32,6 +32,7 @@ namespace SE
 
 		void setVSync(bool set);
 
+		void close() { glfwSetWindowShouldClose(m_window, true); };
 		bool shouldClose();
 		void swapBuffers();
 

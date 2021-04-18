@@ -18,7 +18,16 @@ namespace SE
 			m_components.push_back(component);
 		}
 
+		template<class T>
+		T* getComponent(unsigned long index)
+		{
+			return static_cast<T*>(m_components[index]);
+		}
+
+		uint32_t getComponentCount() { return m_components.size(); };
+
 		virtual void tick(double deltaSeconds);
+		virtual void drawCall();
 
 	private:
 		std::vector<ActorComponent*> m_components;

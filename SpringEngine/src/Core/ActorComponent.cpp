@@ -2,8 +2,9 @@
 
 namespace SE
 {
-	ActorComponent::ActorComponent()
+	ActorComponent::ActorComponent() : SpringObject(), m_components()
 	{
+		setName("Default actor component");
 	}
 
 	ActorComponent::~ActorComponent()

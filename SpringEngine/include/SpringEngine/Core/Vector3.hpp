@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SpringEngine/core.hpp>
+
 namespace SE
 {
 	template <typename T>

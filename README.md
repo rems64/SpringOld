@@ -12,7 +12,10 @@ Spring Engine is a small game engine written in modern C++. It is intended to be
 + [Dear ImGui](https://github.com/ocornut/imgui)
 + [spdlog](https://github.com/gabime/spdlog)
 
+## **Spring Editor**
+
+Simple scene editor with its UI based on Dear ImGui.
 
 ## **ISU Flight simulator**
 
-Still working on the engine for now
+Still working on the engine and the editor for now

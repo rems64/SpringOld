@@ -4,7 +4,7 @@
 class FlightSimulatorApp : public SE::Application
 {
 public:
-	FlightSimulatorApp() : SE::Application("Flight simulator")
+	FlightSimulatorApp() : SE::Application("ISU Flight simulator")
 	{
 		SE_PROFILE_FUNCTION();
 #ifndef NDEBUG
@@ -21,6 +21,7 @@ public:
 SE::Application* SE::CreateApplication()
 {
 	SE::Application* application = new FlightSimulatorApp();
-	application->getCurrentScene()->importFBX("ressources/textured.fbx");
+	application->getCurrentScene()->importFBX("ressources/textured.fbx")[0]->getComponent<MeshComponent>(0)->setLocation(Vector3f(1.0f, 0.0f, 0.0f));
+	application->getCurrentScene()->importFBX("ressources/textured.fbx")[0]->getComponent<MeshComponent>(0)->setLocation(Vector3f(-1.0f, 0.0f, 0.0f));
 	return application;
 }

@@ -14,7 +14,6 @@ SE::Application::Application(std::string name) : m_windows(), m_name(name), m_ap
 	Instrumentor::get().beginSession("Application");
 	SE_PROFILE_SCOPE("Initialisaing app");
 
-	glfwWindowHint(GLFW_SAMPLES, 16);
 	SE::Window* win = new SE::Window(name.c_str());
 	win->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
 	m_windows.push_back(win);
@@ -30,7 +29,8 @@ SE::Application::Application(std::string name) : m_windows(), m_name(name), m_ap
 		abort;
 	}
 
-	glEnable(GL_MULTISAMPLE);
+	//glfwWindowHint(GLFW_SAMPLES, 16);
+	//glEnable(GL_MULTISAMPLE);
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
@@ -38,8 +38,8 @@ SE::Application::Application(std::string name) : m_windows(), m_name(name), m_ap
 	glDepthRange(0.0f, 1.0f);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	m_worldLayer = new WorldLayer();
-	s_instance->pushLayer(m_worldLayer);
+	//m_worldLayer = new WorldLayer();
+	//s_instance->pushLayer(m_worldLayer);
 
 	m_imGuiLayer = new ImGuiLayer();
 	s_instance->pushOverlay(m_imGuiLayer);
@@ -87,7 +87,6 @@ void SE::Application::frame()
 	m_loopStart = std::chrono::high_resolution_clock::now();
 	(**windowIterator).makeContextCurrent();
 	(**windowIterator).swapBuffers();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (Layer* layer : m_layerStack)
 		layer->onUpdate(m_deltaTime.count());
@@ -107,6 +106,14 @@ void SE::Application::frame()
 	m_deltaTime = m_loopEnd - m_loopStart;
 	m_deltaSeconds = m_deltaTime.count() / 1000.;
 	m_frameRate = 1 / m_deltaSeconds;
+}
+
+void SE::Application::closeApplication()
+{
+	for(auto i=m_windows.begin(); i!=m_windows.end(); i++)
+	{
+		(*i)->close();
+	}
 }
 
 SE::Window& SE::Application::getMainWindow()

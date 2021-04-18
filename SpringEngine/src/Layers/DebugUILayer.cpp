@@ -55,5 +55,6 @@ void SE::DebugUILayer::onImGuiRender()
 	ImGui::Text("Framerate");
 	ImGui::PlotLines("Frame Times", m_frameRateOverTime, SE_DEBUGUI_HISTOGRAM_COUNT, 0, 0, 0);
 	ImGui::Text((const char*)(m_glVersion));
+	ImGui::Text("%u draw calls", SE::Renderer::getSceneDrawCalls());
 	ImGui::End();
 }

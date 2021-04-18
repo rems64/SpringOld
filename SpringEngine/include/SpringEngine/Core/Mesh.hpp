@@ -27,6 +27,7 @@ namespace SE
 		VertexArray* getVertexArray() { return m_va; };
 		IndexBuffer* getIndexBuffer() { return m_ib; };
 		Material* getMaterial() { return m_material; };
+
 	private:
 		VertexArray* m_va;
 		VertexBuffer* m_vb;
