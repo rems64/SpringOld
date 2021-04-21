@@ -23,7 +23,6 @@ namespace SE
 		void debugPrint() const;
 
 		inline unsigned int getCount() const { return m_count; };
-
 	private:
 		unsigned int m_id;
 		unsigned int m_count;

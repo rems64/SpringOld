@@ -189,81 +189,80 @@ namespace ImGuizmo
    struct vec_t
    {
    public:
-      float x, y, z, w;
+       float x, y, z, w;
 
-      void Lerp(const vec_t& v, float t)
-      {
-         x += (v.x - x) * t;
-         y += (v.y - y) * t;
-         z += (v.z - z) * t;
-         w += (v.w - w) * t;
-      }
+       void Lerp(const vec_t& v, float t)
+       {
+           x += (v.x - x) * t;
+           y += (v.y - y) * t;
+           z += (v.z - z) * t;
+           w += (v.w - w) * t;
+       }
 
-      void Set(float v) { x = y = z = w = v; }
-      void Set(float _x, float _y, float _z = 0.f, float _w = 0.f) { x = _x; y = _y; z = _z; w = _w; }
+       void Set(float v) { x = y = z = w = v; }
+       void Set(float _x, float _y, float _z = 0.f, float _w = 0.f) { x = _x; y = _y; z = _z; w = _w; }
 
-      vec_t& operator -= (const vec_t& v) { x -= v.x; y -= v.y; z -= v.z; w -= v.w; return *this; }
-      vec_t& operator += (const vec_t& v) { x += v.x; y += v.y; z += v.z; w += v.w; return *this; }
-      vec_t& operator *= (const vec_t& v) { x *= v.x; y *= v.y; z *= v.z; w *= v.w; return *this; }
-      vec_t& operator *= (float v) { x *= v;    y *= v;    z *= v;    w *= v;    return *this; }
+       vec_t& operator -= (const vec_t& v) { x -= v.x; y -= v.y; z -= v.z; w -= v.w; return *this; }
+       vec_t& operator += (const vec_t& v) { x += v.x; y += v.y; z += v.z; w += v.w; return *this; }
+       vec_t& operator *= (const vec_t& v) { x *= v.x; y *= v.y; z *= v.z; w *= v.w; return *this; }
+       vec_t& operator *= (float v) { x *= v;    y *= v;    z *= v;    w *= v;    return *this; }
 
-      vec_t operator * (float f) const;
-      vec_t operator - () const;
-      vec_t operator - (const vec_t& v) const;
-      vec_t operator + (const vec_t& v) const;
-      vec_t operator * (const vec_t& v) const;
+       vec_t operator * (float f) const;
+       vec_t operator - () const;
+       vec_t operator - (const vec_t& v) const;
+       vec_t operator + (const vec_t& v) const;
+       vec_t operator * (const vec_t& v) const;
 
-      const vec_t& operator + () const { return (*this); }
-      float Length() const { return sqrtf(x * x + y * y + z * z); };
-      float LengthSq() const { return (x * x + y * y + z * z); };
-      vec_t Normalize() { (*this) *= (1.f / Length()); return (*this); }
-      vec_t Normalize(const vec_t& v) { this->Set(v.x, v.y, v.z, v.w); this->Normalize(); return (*this); }
-      vec_t Abs() const;
+       const vec_t& operator + () const { return (*this); }
+       float Length() const { return sqrtf(x * x + y * y + z * z); };
+       float LengthSq() const { return (x * x + y * y + z * z); };
+       vec_t Normalize() { (*this) *= (1.f / Length()); return (*this); }
+       vec_t Normalize(const vec_t& v) { this->Set(v.x, v.y, v.z, v.w); this->Normalize(); return (*this); }
+       vec_t Abs() const;
 
-      void Cross(const vec_t& v)
-      {
-         vec_t res;
-         res.x = y * v.z - z * v.y;
-         res.y = z * v.x - x * v.z;
-         res.z = x * v.y - y * v.x;
+       void Cross(const vec_t& v)
+       {
+           vec_t res;
+           res.x = y * v.z - z * v.y;
+           res.y = z * v.x - x * v.z;
+           res.z = x * v.y - y * v.x;
 
-         x = res.x;
-         y = res.y;
-         z = res.z;
-         w = 0.f;
-      }
+           x = res.x;
+           y = res.y;
+           z = res.z;
+           w = 0.f;
+       }
 
-      void Cross(const vec_t& v1, const vec_t& v2)
-      {
-         x = v1.y * v2.z - v1.z * v2.y;
-         y = v1.z * v2.x - v1.x * v2.z;
-         z = v1.x * v2.y - v1.y * v2.x;
-         w = 0.f;
-      }
+       void Cross(const vec_t& v1, const vec_t& v2)
+       {
+           x = v1.y * v2.z - v1.z * v2.y;
+           y = v1.z * v2.x - v1.x * v2.z;
+           z = v1.x * v2.y - v1.y * v2.x;
+           w = 0.f;
+       }
 
-      float Dot(const vec_t& v) const
-      {
-         return (x * v.x) + (y * v.y) + (z * v.z) + (w * v.w);
-      }
+       float Dot(const vec_t& v) const
+       {
+           return (x * v.x) + (y * v.y) + (z * v.z) + (w * v.w);
+       }
 
-      float Dot3(const vec_t& v) const
-      {
-         return (x * v.x) + (y * v.y) + (z * v.z);
-      }
+       float Dot3(const vec_t& v) const
+       {
+           return (x * v.x) + (y * v.y) + (z * v.z);
+       }
 
-      void Transform(const matrix_t& matrix);
-      void Transform(const vec_t& s, const matrix_t& matrix);
+       void Transform(const matrix_t& matrix);
+       void Transform(const vec_t& s, const matrix_t& matrix);
 
-      void TransformVector(const matrix_t& matrix);
-      void TransformPoint(const matrix_t& matrix);
-      void TransformVector(const vec_t& v, const matrix_t& matrix) { (*this) = v; this->TransformVector(matrix); }
-      void TransformPoint(const vec_t& v, const matrix_t& matrix) { (*this) = v; this->TransformPoint(matrix); }
+       void TransformVector(const matrix_t& matrix);
+       void TransformPoint(const matrix_t& matrix);
+       void TransformVector(const vec_t& v, const matrix_t& matrix) { (*this) = v; this->TransformVector(matrix); }
+       void TransformPoint(const vec_t& v, const matrix_t& matrix) { (*this) = v; this->TransformPoint(matrix); }
 
-      float& operator [] (size_t index) { return ((float*)&x)[index]; }
-      const float& operator [] (size_t index) const { return ((float*)&x)[index]; }
-      bool operator!=(const vec_t& other) const { return memcmp(this, &other, sizeof(vec_t)); }
+       float& operator [] (size_t index) { return ((float*)&x)[index]; }
+       const float& operator [] (size_t index) const { return ((float*)&x)[index]; }
+       bool operator!=(const vec_t& other) const { return memcmp(this, &other, sizeof(vec_t)); }
    };
-
    vec_t makeVect(float _x, float _y, float _z = 0.f, float _w = 0.f) { vec_t res; res.x = _x; res.y = _y; res.z = _z; res.w = _w; return res; }
    vec_t makeVect(ImVec2 v) { vec_t res; res.x = v.x; res.y = v.y; res.z = 0.f; res.w = 0.f; return res; }
    vec_t vec_t::operator * (float f) const { return makeVect(x * f, y * f, z * f, w * f); }
@@ -1002,11 +1001,12 @@ namespace ImGuizmo
       gContext.mCameraUp = viewInverse.v.up;
 
       // projection reverse
-       vec_t near, far;
-       near.Transform(makeVect(0, 0, 1.f, 1.f), gContext.mProjectionMat);
-       far.Transform(makeVect(0, 0, 2.f, 1.f), gContext.mProjectionMat);
+      vec_t ImGuizmo_near;
+      vec_t ImGuizmo_far;
+      ImGuizmo_near.Transform(makeVect(0, 0, 1.f, 1.f), gContext.mProjectionMat);
+      ImGuizmo_far.Transform(makeVect(0, 0, 2.f, 1.f), gContext.mProjectionMat);
 
-       gContext.mReversed = (near.z/near.w) > (far.z / far.w);
+       gContext.mReversed = (ImGuizmo_near.z/ ImGuizmo_near.w) > (ImGuizmo_far.z / ImGuizmo_far.w);
 
       // compute scale from the size of camera right vector projected on screen at the matrix position
       vec_t pointRight = viewInverse.v.right;

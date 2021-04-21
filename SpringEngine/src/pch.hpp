@@ -14,7 +14,6 @@
 #include <algorithm>
 #include <thread>
 
-
 #include <SpringEngine/core.hpp>
 #include <SpringEngine/Misc/Logger.hpp>
 #include <SpringEngine/Misc/Macros.hpp>
@@ -28,6 +27,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
+
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <ImGuizmo.h>

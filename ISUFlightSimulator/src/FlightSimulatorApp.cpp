@@ -21,7 +21,7 @@ public:
 SE::Application* SE::CreateApplication()
 {
 	SE::Application* application = new FlightSimulatorApp();
-	application->getCurrentScene()->importFBX("ressources/textured.fbx")[0]->getComponent<MeshComponent>(0)->setLocation(Vector3f(1.0f, 0.0f, 0.0f));
-	application->getCurrentScene()->importFBX("ressources/textured.fbx")[0]->getComponent<MeshComponent>(0)->setLocation(Vector3f(-1.0f, 0.0f, 0.0f));
+	//application->getCurrentScene()->importFBX("ressources/textured.fbx")[0]->getComponent<MeshComponent>(0)->setLocation(Vector3f(1.0f, 0.0f, 0.0f));
+	//application->getCurrentScene()->importFBX("ressources/textured.fbx")[0]->getComponent<MeshComponent>(0)->setLocation(Vector3f(-1.0f, 0.0f, 0.0f));
 	return application;
 }

@@ -89,6 +89,21 @@ void SE::Window::constructWindow()
 			}
 		}
 	);
+
+	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			switch (action)
+			{
+				case GLFW_PRESS:
+				{
+					KeyPressedEvent event(key);
+					data.m_eventCallback(event);
+					break;
+				}
+			}
+		});
 }
 
 void SE::Window::setWindow(GLFWwindow* window)

@@ -7,7 +7,12 @@
 
 namespace SE
 {
-	Material::Material() : m_shader(new Shader("../../../../ISUFlightSimulator/ressources/basic_colored.glsl")), m_properties()
+	Material::Material() : m_shader(new Shader("ressources/basic_colored.glsl")), m_properties()
+	{
+		m_shader->compile();
+	}
+
+	Material::Material(const char* path) : m_shader(new Shader(path)), m_properties()
 	{
 		m_shader->compile();
 	}
@@ -33,6 +38,7 @@ namespace SE
 
 	void Material::updateShaderUniforms()
 	{
+		bind();
 		char location[SE_MAX_PROPERTY_LENGTH];
 		for (uint32_t i = 0; i < m_properties.size(); i++)
 		{
@@ -72,9 +78,14 @@ namespace SE
 		}
 	}
 
-	void Material::setProjectionMatrix(glm::mat4& matrix) const			// WARNING : Has to be bound
+	void Material::setProjectionMatrix(glm::mat4 matrix) const			// WARNING : Has to be bound
 	{
 		m_shader->setUniformMat4f("u_projection", matrix);
+	}
+
+	void Material::setViewMatrix(glm::mat4 matrix) const			// WARNING : Has to be bound
+	{
+		m_shader->setUniformMat4f("u_view", matrix);
 	}
 
 	MaterialProperty* Material::getProperty(SE_MATERIAL_PROPERTY_NAME name)
@@ -109,6 +120,17 @@ namespace SE
 			if (m_properties[i].m_type == SE_MATERIAL_PROPERTY_TYPE::TEXTURE)
 			{
 				m_properties[i].m_texture->bind(0);
+			}
+		}
+	}
+
+	void Material::unbindTextures() const
+	{
+		for (uint32_t i = 0; i < m_properties.size(); i++)
+		{
+			if (m_properties[i].m_type == SE_MATERIAL_PROPERTY_TYPE::TEXTURE)
+			{
+				m_properties[i].m_texture->unbind();
 			}
 		}
 	}

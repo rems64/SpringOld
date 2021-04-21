@@ -10,13 +10,19 @@ namespace SE
 	class Mesh;
 	class DataBlock;
 
+
+	struct MeshImportInfo
+	{
+		const char *name;
+		unsigned int id;
+	};
 	class SE_API DataManager
 	{
 	public:
 		DataManager();
 		~DataManager();
 
-		std::vector<unsigned long> loadFBX(const char* path);
+		std::vector<MeshImportInfo> loadFBX(const char* path);
 		
 
 		// Textures

@@ -4,6 +4,7 @@
 #include <SpringEngine/Misc/Logger.hpp>
 #include <SpringEngine/Events/Event.hpp>
 #include <SpringEngine/Events/WindowEvents.hpp>
+#include <SpringEngine/Events/KeyEvents.hpp>
 
 #include <SpringEngine/core.hpp>
 

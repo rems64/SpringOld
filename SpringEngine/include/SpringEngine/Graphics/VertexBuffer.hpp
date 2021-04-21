@@ -17,6 +17,7 @@ namespace SE
 		~VertexBuffer();
 
 		void setBuffer(const void*, unsigned int);
+		void setDynamicBuffer(const void*, unsigned int);
 
 		void bind() const;
 		void unbind() const;
