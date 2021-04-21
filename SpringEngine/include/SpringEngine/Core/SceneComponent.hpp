@@ -5,10 +5,13 @@
 
 namespace SE
 {
+	class Scene;
+	class Actor;
 	class SE_API SceneComponent : public ActorComponent
 	{
 	public:
-		SceneComponent();
+		SceneComponent(ActorComponent* owner);
+		SceneComponent(Actor* owner, bool root);
 		virtual ~SceneComponent();
 
 		void setLocation(Vector3f& loc) { m_location = loc; updateTransform(); };
@@ -24,15 +27,29 @@ namespace SE
 		Vector3f getScale() { return m_scale; };
 
 		virtual void updateTransform();
-		virtual glm::mat4 getTransform() { return m_transform; };
+		virtual glm::mat4 getTransform() const { return m_hierarchicalTransform * m_transform; };
+		virtual glm::mat4 getLocalTransform() const { return m_transform; };
+		virtual glm::mat4 getParentTransform() const { return m_hierarchicalTransform; };
 
+		virtual void updateHierarchicalTransform(glm::mat4* transform);
+
+		virtual ActorComponent* getOwner() override { return (m_isRoot ? nullptr : m_owner); };
+		virtual Actor* getRootActor() { return m_actorRoot; };
+
+		Actor* getActorOwner();
+
+		virtual void destroy() override;
 
 	protected:
 		virtual void onUpdateTransform();
 
+		//Scene* m_scene;
+		bool m_isRoot;
+		Actor* m_actorRoot;
 		Vector3f m_location;
 		Vector3f m_rotation;
 		Vector3f m_scale;
 		glm::mat4 m_transform;
+		glm::mat4 m_hierarchicalTransform;
 	};
 }

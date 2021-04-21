@@ -49,6 +49,7 @@ namespace SE
 
         GLint program_comp(GL_TRUE);
         GLCall(glGetProgramiv(program, GL_LINK_STATUS, &program_comp));
+
         if (program_comp != GL_TRUE)
         {
             GLsizei log_length = 0;

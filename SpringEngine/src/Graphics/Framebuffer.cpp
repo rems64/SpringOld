@@ -63,7 +63,7 @@ namespace SE
 		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		//glBindFramebuffer(GL_READ_FRAMEBUFFER, m_id);
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_id));
-		//GLCall(glViewport(0, 0, m_size.x(), m_size.y()));
+		GLCall(glViewport(0, 0, m_size.x(), m_size.y()));
 	}
 
 	void Framebuffer::unbind()

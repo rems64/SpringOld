@@ -48,6 +48,7 @@ namespace SE
 	{
 	public:
 		Material();
+		Material(const char* path);
 		Material(const Material& src);
 		~Material();
 
@@ -62,7 +63,8 @@ namespace SE
 		 * @param projection The glm 4x4 projection matrix.
 		 *   In the futur this will be replaced by SE::Mat4
 		 */
-		void setProjectionMatrix(glm::mat4& projection) const;
+		void setProjectionMatrix(glm::mat4 projection) const;
+		void setViewMatrix(glm::mat4 view) const;
 
 		inline Shader* getShader() { return m_shader; };
 		MaterialProperty* getProperty(SE_MATERIAL_PROPERTY_NAME name);
@@ -70,6 +72,7 @@ namespace SE
 		bool registerProperty(MaterialProperty property);
 
 		void bindTextures() const;
+		void unbindTextures() const;
 	private:
 		Shader* m_shader;
 		std::vector<MaterialProperty> m_properties;

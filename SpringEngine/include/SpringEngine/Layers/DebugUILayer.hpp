@@ -21,6 +21,7 @@ namespace SE
 		virtual void onDetach() override;
 		virtual void onEvent(Event & event) override;
 		virtual void onImGuiRender() override;
+		virtual void onUpdate(double deltaTime) override;
 
 
 	private:

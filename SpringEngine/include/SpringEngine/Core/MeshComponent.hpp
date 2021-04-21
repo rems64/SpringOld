@@ -3,10 +3,11 @@
 #include <SpringEngine/Core/Mesh.hpp>
 namespace SE
 {
+	class ActorComponent;
 	class SE_API MeshComponent : public RenderedComponent
 	{
 	public:
-		MeshComponent(Mesh* instance);
+		MeshComponent(ActorComponent* owner, Mesh* instance);
 		virtual ~MeshComponent();
 
 		virtual int drawCall() const override;
