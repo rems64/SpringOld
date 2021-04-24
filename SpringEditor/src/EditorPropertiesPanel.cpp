@@ -8,7 +8,7 @@ namespace SpringEditor
 	void EditorPropertiesPanel::displayProperties(SE::SceneComponent* component)
 	{
 
-		SE::ImGuiMisc::dataBlockSelector("Default");
+		SE::ImGuiMisc::dataBlockSelector("Default", nullptr, 80.f);
 
 		SE::MeshComponent* meshComponent = dynamic_cast<SE::MeshComponent*>(component);
 		if (meshComponent)
@@ -31,6 +31,6 @@ namespace SpringEditor
 
 	void EditorPropertiesPanel::displayMeshInstanceProperties(SE::Mesh* mesh)
 	{
-		SE::ImGuiMisc::dataBlockSelector("Default");
+		//SE::ImGuiMisc::dataBlockSelector("Default");
 	}
 }

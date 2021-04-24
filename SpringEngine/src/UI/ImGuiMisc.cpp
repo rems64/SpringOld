@@ -8,7 +8,7 @@ namespace SE
 			bool modified = false;
 			ImGui::PushID(label);
 
-			ImGui::Columns(2);
+			ImGui::BeginColumns(label, 2, ImGuiColumnsFlags_NoResize);
 			ImGui::Text(label);
 			ImGui::SetColumnWidth(0, labelWidth);
 			ImGui::NextColumn();
@@ -79,17 +79,24 @@ namespace SE
 			
 			ImGui::PopStyleVar();
 
-			ImGui::Columns(1);
+			ImGui::EndColumns();
 			ImGui::PopID();
 
 			return modified;
 		}
 
-		bool ImGuiMisc::dataBlockSelector(const char* label)
+		bool ImGuiMisc::dataBlockSelector(const char* label, SE::DataBlock* datablock, float labelWidth)
 		{
 			ImGui::PushID(label);
 
-			ImGui::Image();
+			ImGui::BeginColumns("columns3", 2, ImGuiColumnsFlags_NoResize);
+			ImGui::SetColumnWidth(0, labelWidth);
+			ImGui::Text(label);
+			ImGui::NextColumn();
+			ImGui::Text("second");
+			ImGui::EndColumns();
+			//ImGui::NextColumn();
+			//ImGui::Columns(1);
 
 			ImGui::PopID();
 
