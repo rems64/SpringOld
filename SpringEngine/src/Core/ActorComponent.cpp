@@ -18,6 +18,11 @@ namespace SE
 	void ActorComponent::destroy()
 	{
 		getOwner()->removeComponent(this);
+		for (auto component : m_components)
+		{
+			m_owner->addComponent<ActorComponent>(component);
+			component->setOwner(m_owner);
+		}
 		postDestroy();
 		delete this;
 	}

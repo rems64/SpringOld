@@ -26,6 +26,7 @@ namespace SE
 
 		std::vector<Actor*> importFBX(const char* path);
 		int registerActor(Actor* actor);
+		void unregisterActor(Actor* actor);
 		std::vector<Actor*>* getRegisteredActors() { return &m_registeredActors; };
 
 		void registerRenderedComponent(RenderedComponent* component, bool front=false);

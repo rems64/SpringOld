@@ -59,6 +59,7 @@ namespace SE
 		material->setProjectionMatrix(m_VP * (*transform));
 		GLCall(glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, inputCount, count));
 		material->unbind();
+		m_sceneDrawCalls++;
 	}
 
 	void Renderer::drawIndexedInstanced(size_t inputCount, size_t count, const unsigned int* indices, const Material* material, const glm::mat4* transform)
@@ -70,5 +71,6 @@ namespace SE
 		material->setViewMatrix(m_view);
 		GLCall(glDrawElementsInstanced(GL_TRIANGLES, count, GL_UNSIGNED_INT, indices, inputCount));
 		material->unbind();
+		m_sceneDrawCalls++;
 	}
 }

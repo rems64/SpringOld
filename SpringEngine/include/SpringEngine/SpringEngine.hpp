@@ -11,6 +11,7 @@
 #include <SpringEngine/Core/Scene.hpp>
 
 #include <SpringEngine/Core/Layer.hpp>
+#include <SpringEngine/Layers/WorldLayer.hpp>
 #include <SpringEngine/Layers/DebugUILayer.hpp>
 
 #include <SpringEngine/Graphics/Framebuffer.hpp>
@@ -26,3 +27,5 @@
 #include <SpringEngine/Core/RenderedComponent.hpp>
 #include <SpringEngine/Core/MeshComponent.hpp>
 #include <SpringEngine/Core/ParticleEmitterComponent.hpp>
+
+#include <SpringEngine/UI/ImGuiMisc.hpp>

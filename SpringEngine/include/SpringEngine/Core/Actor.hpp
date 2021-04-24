@@ -38,7 +38,7 @@ namespace SE
 		virtual void setScene(Scene* scene) { m_scene = scene; };
 		virtual Scene* getScene() { return m_scene; };
 
-	private:
+	protected:
 		Scene* m_scene;
 		SceneComponent* m_rootComponent;
 		bool isPendingKill;

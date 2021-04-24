@@ -46,7 +46,12 @@ namespace SE
 		uint32_t getComponentCount() { return m_components.size(); };
 		std::vector<ActorComponent*>* getComponents() { return &m_components; };
 
-		virtual void tick(double deltaSeconds) {};
+		virtual void tick(double deltaSeconds) {
+			for (auto component : m_components)
+			{
+				component->tick(deltaSeconds);
+			};
+		};
 
 		virtual ActorComponent* getOwner() { return m_owner; };
 		void setOwner(ActorComponent* owner) { m_owner = owner; };

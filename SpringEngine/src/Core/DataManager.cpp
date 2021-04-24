@@ -136,6 +136,7 @@ namespace SE
 				char * name = new char[64];
 				strcpy(name, futurDestroyedName->c_str());
 				mesh->setName(name);
+				mesh->setValid(true);
 				
 				int loc = registerDataBlock<Mesh>(mesh);
 				meshList.push_back({ "", (unsigned int)loc });

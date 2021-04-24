@@ -1,6 +1,6 @@
 #include <SpringEngine/Core/Window.hpp>
 
-SE::Window::Window() : m_window(nullptr), m_data(this, "Default window", 0, 0, 640, 480, true)
+SE::Window::Window() : m_window(nullptr), m_data(this, "Default window", 0, 0, 1280, 720, true)
 {
 	constructWindow();
 }
@@ -10,7 +10,7 @@ SE::Window::Window(const SE::Window& src) : m_window(src.m_window), m_data(src.m
 	SE_CORE_TRACE("Copying window with title {}", m_data.m_title);
 }
 
-SE::Window::Window(const char* title) : m_window(nullptr), m_data(this, title, 0, 0, 640, 480, true)
+SE::Window::Window(const char* title) : m_window(nullptr), m_data(this, title, 0, 0, 1280, 720, true)
 {
 	constructWindow();
 }

@@ -2,8 +2,9 @@
 
 namespace SE
 {
-	Mesh::Mesh() : m_va(), m_vb(), m_vbl(), m_ib(), m_material()
+	Mesh::Mesh() : DataBlock(), m_va(), m_vb(), m_vbl(), m_ib(), m_material()
 	{
+		m_isValid = false;
 	}
 
 	Mesh::~Mesh()
