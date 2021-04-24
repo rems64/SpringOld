@@ -8,9 +8,15 @@ public:
 	{
 		SE_PROFILE_FUNCTION();
 #ifndef NDEBUG
+		m_worldLayer = new SE::WorldLayer();
+		pushLayer(m_worldLayer);
 		pushLayer(new SE::DebugUILayer("UI Debug"));
 #endif
 	}
+
+	SE::Scene* getScene() { return m_worldLayer->getScene(); };
+	private:
+		SE::WorldLayer* m_worldLayer;
 
 	~FlightSimulatorApp()
 	{
@@ -20,8 +26,8 @@ public:
 
 SE::Application* SE::CreateApplication()
 {
-	SE::Application* application = new FlightSimulatorApp();
-	application->getCurrentScene()->importFBX("ressources/textured.fbx")[0]->getComponent<MeshComponent>(0)->setLocation(Vector3f(1.0f, 0.0f, 0.0f));
-	application->getCurrentScene()->importFBX("ressources/textured.fbx")[0]->getComponent<MeshComponent>(0)->setLocation(Vector3f(-1.0f, 0.0f, 0.0f));
+	FlightSimulatorApp* application = new FlightSimulatorApp();
+	std::vector<SE::Actor*> actors = application->getScene()->importFBX("ressources/shuttle.fbx");
+	application->getScene()->registerRenderedComponent(actors[0]->getComponent<SE::MeshComponent>(0));
 	return application;
 }

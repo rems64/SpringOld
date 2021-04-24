@@ -114,11 +114,6 @@ namespace SE
     bool Texture::loadPNG(const std::string& path, unsigned int depth, bool invert)
     {
         stbi_set_flip_vertically_on_load(1);
-        unsigned int colorSpace;
-        if (invert)
-            colorSpace = GL_BGR;
-        else
-            colorSpace = GL_RGB;
         data = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, STBI_rgb_alpha);
         if (!data)
         {
@@ -128,13 +123,6 @@ namespace SE
         GLCall(glGenTextures(1, &m_texture));
 
         bind();
-
-        /*
-        for (int i = 0; i < m_width * m_height; i++)
-        {
-            std::cout << data[i] << std::endl;
-        }
-        */
 
         GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data));
 

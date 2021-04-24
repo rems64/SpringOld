@@ -38,6 +38,12 @@ void left_rotate_by_one(T arr[], int n)
 	arr[i] = temp;
 }
 
+void SE::DebugUILayer::onUpdate(double deltaTime)
+{
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 void SE::DebugUILayer::onImGuiRender()
 {
 	SE_PROFILE_FUNCTION();

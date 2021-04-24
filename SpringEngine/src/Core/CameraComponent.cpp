@@ -2,7 +2,7 @@
 
 namespace SE
 {
-	CameraComponent::CameraComponent() : SceneComponent()
+	CameraComponent::CameraComponent(ActorComponent* owner) : SceneComponent(owner), m_ratio(1.0f)
 	{
 		setName("Default camera component");
 	}
@@ -13,14 +13,29 @@ namespace SE
 
 	glm::mat4 CameraComponent::getViewProjection()
 	{
+		return getProjection() * getView();
+	}
+
+	glm::mat4 CameraComponent::getView()
+	{
+		//return glm::lookAt(
+		//	m_location.getGlm(),
+		//	glm::vec3(0, 0, 0),
+		//	glm::vec3(0, 0, 1));
+		//return glm::inverse(getLocalTransform());
+
+		//return glm::inverse(glm::translate(glm::toMat4(glm::quat(m_rotation.getGlm())), m_location.getGlm()));
+
+		return glm::inverse(getTransform());
+	}
+
+	glm::mat4 CameraComponent::getProjection()
+	{
 		return glm::perspective(
-			glm::radians(45.f),
+			glm::radians(30.f),
 			m_ratio,
 			0.1f,
 			100.0f
-		) * glm::lookAt(
-			m_location.getGlm(),
-			glm::vec3(0, 0, 0),
-			glm::vec3(0, 0, 1));
+		);
 	}
 }

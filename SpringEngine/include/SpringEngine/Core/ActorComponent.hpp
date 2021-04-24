@@ -5,10 +5,12 @@
 
 namespace SE
 {
+	class Actor;
 	class ActorComponent : public SpringObject
 	{
 	public:
 		ActorComponent();
+		ActorComponent(ActorComponent* owner);
 		virtual ~ActorComponent();
 
 		template<typename T>
@@ -23,9 +25,40 @@ namespace SE
 			return static_cast<T*>(m_components[index]);
 		}
 
-		uint32_t getComponentCount() { return m_components.size(); };
+		void removeComponent(ActorComponent* componentToRemove)
+		{
+			for (std::vector<ActorComponent*>::iterator component = m_components.begin(); component!=m_components.end();)
+			{
+				if (*component == componentToRemove)
+				{
+					m_components.erase(component);
+					break;
+				}
+				else
+				{
+					component++;
+				}
+			}
+		}
 
-	private:
+		virtual void postDestroy() {};
+
+		uint32_t getComponentCount() { return m_components.size(); };
+		std::vector<ActorComponent*>* getComponents() { return &m_components; };
+
+		virtual void tick(double deltaSeconds) {
+			for (auto component : m_components)
+			{
+				component->tick(deltaSeconds);
+			};
+		};
+
+		virtual ActorComponent* getOwner() { return m_owner; };
+		void setOwner(ActorComponent* owner) { m_owner = owner; };
+
+		virtual void destroy();
+	protected:
+		ActorComponent* m_owner;
 		std::vector<ActorComponent*> m_components;
 	};
 }

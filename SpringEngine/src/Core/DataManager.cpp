@@ -20,17 +20,17 @@ namespace SE
 	{
 	}
 
-	std::vector<unsigned long> DataManager::loadFBX(const char* path)
+	std::vector<MeshImportInfo> DataManager::loadFBX(const char* path)
 	{
 		SE_PROFILE_FUNCTION();
-		std::vector<unsigned long> meshList;
+		std::vector<MeshImportInfo> meshList;
 		Assimp::Importer* importer = new Assimp::Importer();
 
 		const aiScene* aScene = importer->ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
 		if (!aScene)
 		{
 			SE_CORE_ERROR("Failed to read file {0}", path);
-			return std::vector<unsigned long>();
+			return std::vector<MeshImportInfo>();
 		}
 
 		std::vector<Material*> materials;
@@ -38,7 +38,6 @@ namespace SE
 		if(aScene->HasMaterials())
 		{
 			SE_PROFILE_SCOPE("loading materials");
-
 			for (unsigned int i = 0; i < aScene->mNumMaterials; i++)
 			{
 				Material* newMaterial = new Material();
@@ -48,20 +47,21 @@ namespace SE
 				aScene->mMaterials[i]->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_file);
 				if (auto texture = aScene->GetEmbeddedTexture(texture_file.C_Str()))
 				{
-					SE_CORE_INFO("Embeded texture");
-					SE_CORE_WARN("PANIK embeded textures are not managed yet");
+					SE_CORE_WARN("Embeded textures are not managed yet");
 				}
 				else
 				{
 					if (texture_file.length>0)
 					{
-						SE_CORE_INFO("Path to texture ({0})", texture_file.C_Str());
-						Texture* idx = loadTexture(texture_file.C_Str());
+						std::string texturePath = path;
+						size_t pos = texturePath.find_last_of("/\\");
+						texturePath = texturePath.substr(0, pos+1).append(texture_file.C_Str());
+						Texture* idx = loadTexture(texturePath.c_str());
 						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::DIFFUSE, SE_MATERIAL_PROPERTY_TYPE::TEXTURE, idx));
 					}
 					else
 					{
-						SE_CORE_INFO("No texture");
+						SE_CORE_INFO("No texture, using color");
 						aiColor3D color(0.f, 0.f, 0.f);
 						aScene->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, color);
 						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::DIFFUSE, SE_MATERIAL_PROPERTY_TYPE::COLOR, Vector3f(color.r, color.g, color.b)));
@@ -78,7 +78,6 @@ namespace SE
 			for (unsigned int meshIdx = 0; meshIdx < aScene->mNumMeshes; meshIdx++)
 			{
 				std::vector<unsigned int> finalIndices;
-				SE_CORE_INFO("Loading mesh named {0}", meshes[meshIdx]->mName.C_Str());
 				if (meshes[meshIdx]->HasFaces())
 				{
 					aiFace* faces = meshes[meshIdx]->mFaces;
@@ -93,8 +92,6 @@ namespace SE
 				}
 				bool hasNormals = meshes[meshIdx]->HasNormals();
 				bool hasUVs = meshes[meshIdx]->HasTextureCoords(0);
-				SE_CORE_TRACE("Mesh has {0}normals", hasNormals ? "" : "no ");
-				SE_CORE_TRACE("Mesh has {0}UVs", hasUVs ? "" : "no ");
 				std::vector<float> finalVertices;
 				for (unsigned int i = 0; i < meshes[meshIdx]->mNumVertices; i++)
 				{
@@ -135,9 +132,14 @@ namespace SE
 				mesh->setVertexBufferLayout(vbl);
 				mesh->setMaterial(materials[meshes[meshIdx]->mMaterialIndex]);
 				
+				std::string* futurDestroyedName = new std::string(meshes[meshIdx]->mName.C_Str());
+				char * name = new char[64];
+				strcpy(name, futurDestroyedName->c_str());
+				mesh->setName(name);
+				mesh->setValid(true);
+				
 				int loc = registerDataBlock<Mesh>(mesh);
-
-				meshList.push_back(loc);
+				meshList.push_back({ "", (unsigned int)loc });
 			}
 		}
 

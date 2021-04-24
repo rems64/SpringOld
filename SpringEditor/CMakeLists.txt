@@ -18,7 +18,7 @@ include_directories("../SpringEngine/include" "include/")
 set(SRCS
 	"src/SpringEditorApp.cpp"
 	"src/EditorLayer.cpp"
-)
+ "src/EditorCamera.cpp" "src/EditorPropertiesPanel.cpp")
 
 set(IMGUI_SRCS
 	"../SpringEngine/lib/ImGui/imgui.cpp"
@@ -28,6 +28,7 @@ set(IMGUI_SRCS
 	"../SpringEngine/lib/ImGui/imgui_draw.cpp"
 	"../SpringEngine/lib/ImGui/backends/imgui_impl_opengl3.cpp"
 	"../SpringEngine/lib/ImGui/backends/imgui_impl_glfw.cpp"
+	"../SpringEngine/lib/ImGuizmo-master/ImGuizmo.cpp"
 )
 
 

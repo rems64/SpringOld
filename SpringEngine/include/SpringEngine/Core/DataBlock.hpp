@@ -10,7 +10,10 @@ namespace SE
 		DataBlock();
 		virtual ~DataBlock();
 
-	private:
+		virtual bool isValid() { return m_isValid; };
+		virtual void setValid(bool valid) { m_isValid = valid; };
 
+	protected:
+		bool m_isValid;
 	};
 }

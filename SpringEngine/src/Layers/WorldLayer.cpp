@@ -1,6 +1,7 @@
 #include <SpringEngine/Layers/WorldLayer.hpp>
 
 #include <SpringEngine/Graphics/Renderer.hpp>
+#include <SpringEngine/Core/Actor.hpp>
 
 namespace SE
 {
@@ -10,6 +11,12 @@ namespace SE
 
 	void WorldLayer::onAttach()
 	{
+		Actor* cameraActor = new Actor();
+		CameraComponent* cam = new CameraComponent(cameraActor->getRoot());
+		//cameraActor->getRoot()->setLocation(Vector3f(4.0, 4.0, 6.0));
+		cam->setLocation(Vector3f(4.0, 4.0, 6.0));
+		m_currentScene->registerActor(cameraActor);
+		m_currentScene->setCurrentCamera(cam);
 	}
 
 	void WorldLayer::onDetach()
@@ -33,9 +40,9 @@ namespace SE
 
 		// TO UPDATE in order to accord with the new standalone camera style
 
-		//Renderer::beginSceneDraw(m_currentScene.get());
-		//m_currentScene->update(deltaTime);
-		//int nbrDrawCalls = Renderer::endSceneDraw();
+		Renderer::beginSceneDraw(m_currentScene->getCurrentCamera());
+		m_currentScene->update(deltaTime, m_currentScene->getCurrentCamera());
+		int nbrDrawCalls = Renderer::endSceneDraw();
 		
 		//SE_CORE_TRACE("Rendered scene with {0} draw calls", nbrDrawCalls);
 	}

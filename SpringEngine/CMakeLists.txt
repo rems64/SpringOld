@@ -11,7 +11,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_compile_definitions(SE_DEBUG)
 endif()
 
-include_directories( "include/" "lib/ImGui" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include" "lib/Assimp/Include")
+include_directories( "include/" "lib/ImGui" "lib/ImGuizmo-master" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include" "lib/Assimp/Include")
 
 set(SRCS
 	
@@ -39,7 +39,19 @@ set(SRCS
 	"src/Layers/WorldLayer.cpp"
 	"src/Graphics/Material.cpp"
 	"src/Misc/Instrumentor.cpp"
- "src/Core/Actor.cpp" "src/Core/Mesh.cpp" "src/Core/ActorComponent.cpp" "src/Core/SceneComponent.cpp" "src/Core/RenderedComponent.cpp" "include/SpringEngine/Core/MeshComponent.hpp" "src/Core/MeshComponent.cpp" "src/Core/CameraComponent.cpp" "src/Core/DataBlock.cpp" "src/Core/Box2D.cpp" "src/Graphics/Framebuffer.cpp")
+	"src/Core/Actor.cpp"
+	"src/Core/Mesh.cpp"
+	"src/Core/ActorComponent.cpp"
+	"src/Core/SceneComponent.cpp"
+	"src/Core/RenderedComponent.cpp"
+	"include/SpringEngine/Core/MeshComponent.hpp"
+	"src/Core/MeshComponent.cpp"
+	"src/Core/CameraComponent.cpp"
+	"src/Core/DataBlock.cpp"
+	"src/Core/Box2D.cpp"
+	"src/Graphics/Framebuffer.cpp"
+	"src/Core/FileDialogs.cpp"
+	 "src/Core/ParticleEmitter.cpp" "src/Core/Math.cpp" "src/Core/ParticleEmitterComponent.cpp" "src/UI/ImGuiMisc.cpp")
 
 set(IMGUI_SRCS
 	"lib/ImGui/imgui.cpp"
@@ -49,6 +61,7 @@ set(IMGUI_SRCS
 	"lib/ImGui/imgui_draw.cpp"
 	"lib/ImGui/backends/imgui_impl_opengl3.cpp"
 	"lib/ImGui/backends/imgui_impl_glfw.cpp"
+	"lib/ImGuizmo-master/ImGuizmo.cpp"
 )
 
 set(OPENFBX_SRCS
@@ -58,7 +71,7 @@ set(OPENFBX_SRCS
 
 add_library(SpringEngine SHARED ${SRCS} ${IMGUI_SRCS} ${OPENFBX_SRCS})
 
-target_include_directories(SpringEngine PUBLIC "lib/ImGui" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include" "lib/OpenFBX/include" "lib/Assimp/Include/")
+target_include_directories(SpringEngine PUBLIC "lib/ImGui" "lib/ImGuizmo-master" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include" "lib/OpenFBX/include" "lib/Assimp/Include/")
 #target_include_directories(test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}lib/FBXImporter/importer/include")
 
 find_package(OpengL REQUIRED COMPONENTS OpengL)

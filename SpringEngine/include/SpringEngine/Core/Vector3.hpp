@@ -9,6 +9,7 @@ namespace SE
 	{
 	public:
 		Vector3() : m_x(0), m_y(0), m_z(0) {};
+		Vector3(glm::vec3 vec) : m_x(vec.x), m_y(vec.y), m_z(vec.z) {};
 		Vector3(T x, T y, T z) : m_x(x), m_y(y), m_z(z) {};
 		template <typename U>
 		Vector3(const Vector3<U>& src) : m_x(static_cast<T>(src.m_x)), m_y(static_cast<T>(src.m_y)), m_z(static_cast<T>(src.m_z)) {};
@@ -20,6 +21,10 @@ namespace SE
 		inline T x() const { return m_x; };
 		inline T y() const { return m_y; };
 		inline T z() const { return m_z; };
+
+		inline T* xPtr() { return &m_x; };
+		inline T* yPtr() { return &m_y; };
+		inline T* zPtr() { return &m_z; };
 
 		inline void x(T value) { m_x = value; };
 		inline void y(T value) { m_y = value; };
@@ -76,7 +81,7 @@ namespace SE
 	template <typename T>
 	inline Vector3<T> operator *(const Vector3<T>& left, const T right)
 	{
-		return Vector3<T>(left.m_x * right, left.m_y * right, left.m_z * right);
+		return Vector3<T>(left.x() * right, left.y() * right, left.z() * right);
 	}
 
 	template <typename T>

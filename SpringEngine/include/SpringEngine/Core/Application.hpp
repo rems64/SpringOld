@@ -4,7 +4,9 @@
 
 #include <GLFW/glfw3.h>
 
+#include <SpringEngine/Core/Vector2.hpp>
 #include <SpringEngine/Core/Window.hpp>
+#include <SpringEngine/Core/Input.hpp>
 #include <SpringEngine/Events/Event.hpp>
 #include <SpringEngine/Core/Layer.hpp>
 #include <SpringEngine/Core/LayerStack.hpp>
@@ -35,8 +37,8 @@ namespace SE
 
 		Window& getMainWindow();
 		inline DataManager* getDataManager() { return m_dataManager; };
-		inline Scene* getCurrentScene() { return m_worldLayer->getScene(); }
 		inline ImGuiContext* getImguiContext() { return ImGui::GetCurrentContext(); };
+		inline ImGuiLayer* getImGuiLayer() { return m_imGuiLayer; };
 
 		void onEvent(Event& event);
 
@@ -46,6 +48,10 @@ namespace SE
 		bool onWindowCloseEvent(WindowCloseEvent& event);
 		bool onWindowResizeEvent(WindowResizeEvent& event);
 		bool onWindowMoveEvent(WindowMoveEvent& event);
+
+		bool isKeyPressed(const KeyCode key);
+		bool isMouseButtonDown(const MouseCode button);
+		Vector2d getMousePosition();
 
 		double getFPS();
 		double getDeltaSeconds() { return m_deltaSeconds; };
