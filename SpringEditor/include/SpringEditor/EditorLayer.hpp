@@ -1,10 +1,12 @@
 #include <SpringEngine/SpringEngine.hpp>
+#include <SpringEditor/EditorCamera.hpp>
 
 namespace SpringEditor
 {
 	enum class SE_EDITOR_PANELS {
 		VIEWPORT,
-		PROPERTIES
+		PROPERTIES,
+		OUTLINER
 	};
 	class EditorLayer : public SE::Layer
 	{
@@ -23,16 +25,18 @@ namespace SpringEditor
 		void drawActorComponentInList(SE::ActorComponent* component);
 
 		void openModelFromDialog();
+		void openModelFromDialogToMeshComponent();
 
 	private:
 		SE::Vector2<float> m_viewport;
 		SE::Framebuffer* m_framebuffer;
 		std::shared_ptr<SE::Scene> m_currentScene;
-		SE::CameraComponent* m_editorCamera;
+		EditorCamera* m_editorCamera;
 		SE::SceneComponent* m_selectedComponent;
 		uint32_t m_actorComponentRecursiveDepth;
 		std::vector<SE::ActorComponent*> m_actorComponentRecursiveStack;
 		ImGuizmo::OPERATION m_guizmoOperation;
 		bool m_usingGuizmo;
+		enum SE_EDITOR_PANELS m_hoveredPanel;
 	};
 }
