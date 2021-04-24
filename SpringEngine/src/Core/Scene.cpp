@@ -46,6 +46,18 @@ namespace SE
 		return m_registeredActors.size()-1;
 	}
 
+	void Scene::unregisterActor(Actor* actorToUnregister)
+	{
+		for (std::vector<Actor*>::iterator actor = m_registeredActors.begin(); actor != m_registeredActors.end(); actor++)
+		{
+			if (*actor == actorToUnregister)
+			{
+				m_registeredActors.erase(actor);
+				break;
+			}
+		}
+	}
+
 	void Scene::onEvent(Event& ev)
 	{
 		SE_PROFILE_FUNCTION();

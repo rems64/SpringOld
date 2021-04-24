@@ -18,10 +18,15 @@ namespace SE
 
 	glm::mat4 CameraComponent::getView()
 	{
-		return glm::lookAt(
-			m_location.getGlm(),
-			glm::vec3(0, 0, 0),
-			glm::vec3(0, 0, 1));
+		//return glm::lookAt(
+		//	m_location.getGlm(),
+		//	glm::vec3(0, 0, 0),
+		//	glm::vec3(0, 0, 1));
+		//return glm::inverse(getLocalTransform());
+
+		//return glm::inverse(glm::translate(glm::toMat4(glm::quat(m_rotation.getGlm())), m_location.getGlm()));
+
+		return glm::inverse(getTransform());
 	}
 
 	glm::mat4 CameraComponent::getProjection()

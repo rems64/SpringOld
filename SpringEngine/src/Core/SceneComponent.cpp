@@ -1,4 +1,6 @@
 #include <SpringEngine/Core/SceneComponent.hpp>
+#include <SpringEngine/Core/Scene.hpp>
+#include <SpringEngine/Core/Actor.hpp>
 
 namespace SE
 {
@@ -19,11 +21,6 @@ namespace SE
 	void SceneComponent::updateTransform()
 	{
 		m_transform = glm::translate(glm::mat4(1.0f), m_location.getGlm()) * glm::toMat4(glm::quat(m_rotation.getGlm())) * glm::scale(glm::mat4(1.0f), m_scale.getGlm());
-		onUpdateTransform();
-	}
-
-	void SceneComponent::onUpdateTransform()
-	{
 		for (ActorComponent* component : m_components)
 		{
 			SceneComponent* sceneComponent = static_cast<SceneComponent*>(component);
@@ -32,6 +29,11 @@ namespace SE
 				sceneComponent->updateHierarchicalTransform(&(m_hierarchicalTransform * m_transform));
 			}
 		}
+		onUpdateTransform();
+	}
+
+	void SceneComponent::onUpdateTransform()
+	{
 	}
 
 	void SceneComponent::updateHierarchicalTransform(glm::mat4* transform)
@@ -63,11 +65,22 @@ namespace SE
 	{
 		if (m_isRoot)
 		{
-			SE_CORE_ERROR("Root");
+			while (!m_components.empty())
+			{
+				m_components[0]->destroy();
+			};
+			m_actorRoot->getScene()->unregisterActor(m_actorRoot);
+			delete m_actorRoot;
+			delete this;
 		}
 		else
 		{
 			getOwner()->removeComponent(this);
+			for (auto component : m_components)
+			{
+				m_owner->addComponent<ActorComponent>(component);
+				component->setOwner(m_owner);
+			}
 			postDestroy();
 			delete this;
 		}

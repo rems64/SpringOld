@@ -1,5 +1,6 @@
 #include <SpringEditor/EditorLayer.hpp>
 #include <SpringEngine/Core/Math.hpp>
+#include <SpringEditor/EditorPropertiesPanel.hpp>
 
 namespace SpringEditor
 {
@@ -18,16 +19,19 @@ namespace SpringEditor
 	{
 		SE::Application::get().getMainWindow().setVSync(true);
 		m_framebuffer = new SE::Framebuffer(SE::Vector2ui(1920, 1080));
-		m_editorCamera = new SE::CameraComponent(nullptr);
-		m_editorCamera->setLocation(SE::Vector3f(10.0, 10.0, 6.));
-		m_currentScene->setCurrentCamera(m_editorCamera);
+		m_editorCamera = new EditorCamera();
+		m_editorCamera->getRoot()->setLocation(SE::Vector3f(0.0, 0.0, 6.));
+		m_currentScene->setCurrentCamera(m_editorCamera->getCamera());
 
+		EditorPropertiesPanel::setEditorLayer(this);
 
-		SE::Actor* particleActor = new SE::Actor();
-		SE::ParticleEmitterComponent* particEmitComp = new SE::ParticleEmitterComponent(particleActor->getRoot());
-		particleActor->addComponent<SE::ParticleEmitterComponent>(particEmitComp);
-		m_currentScene->registerActor(particleActor);
-		m_currentScene->registerRenderedComponent(particEmitComp, true);
+		//SE::Actor* particleActor = new SE::Actor();
+		//SE::ParticleEmitterComponent* particEmitComp = new SE::ParticleEmitterComponent(particleActor->getRoot());
+		//particleActor->addComponent<SE::ParticleEmitterComponent>(particEmitComp);
+		//m_currentScene->registerActor(particleActor);
+		//m_currentScene->registerRenderedComponent(particEmitComp, true);
+
+		SE::Application::get().getImGuiLayer()->setBlockEvent(false);
 	}
 
 	void EditorLayer::onEvent(SE::Event& event)
@@ -104,8 +108,18 @@ namespace SpringEditor
 				if (m_selectedComponent)
 				{
 					auto temp = m_selectedComponent->getActorOwner();
-					m_selectedComponent->destroy();
-					m_selectedComponent = temp->getRoot();
+					if (temp->getRoot() == m_selectedComponent)
+					{
+						m_selectedComponent->destroy();
+						m_selectedComponent = nullptr;
+					}
+					else
+					{
+						auto temp = m_selectedComponent->getOwner();
+						m_selectedComponent->destroy();
+						m_selectedComponent = static_cast<SE::SceneComponent*>(temp);
+					}
+					break;
 				}
 			default:
 				SE_CORE_TRACE("Key ({})", event.getKeyCode());
@@ -121,7 +135,7 @@ namespace SpringEditor
 		if (((uint32_t)m_framebuffer->getWidth() != (uint32_t)m_viewport.x() || (uint32_t)m_framebuffer->getHeight() != (uint32_t)m_viewport.y()) && (m_viewport.x()!=0 && m_viewport.y()!=0))
 		{
 			m_framebuffer->resize((uint32_t)m_viewport.x(), (uint32_t)m_viewport.y());
-			m_editorCamera->setRatio((float)(m_viewport.x() / m_viewport.y()));
+			m_editorCamera->getCamera()->setRatio((float)(m_viewport.x() / m_viewport.y()));
 			//m_editorCamera->setRatio(4.f/3.f);
 			//SE_CORE_TRACE("width: {} height: {}", m_viewport.x(), m_viewport.y());
 			//SE_CORE_TRACE("{} {} {} {}", m_framebuffer->getWidth(), m_viewport.x(), m_framebuffer->getHeight(), m_viewport.y());
@@ -132,7 +146,7 @@ namespace SpringEditor
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Rendering stuff
-		m_currentScene->update(deltaTime, m_editorCamera);
+		m_currentScene->update(deltaTime, m_editorCamera->getCamera());
 		//SE_CORE_TRACE("{} draw calls", nbrDrawCalls);
 
 		m_framebuffer->unbind();
@@ -217,7 +231,9 @@ namespace SpringEditor
 			//}
 			bool m_viewportFocused = ImGui::IsWindowFocused();
 			bool m_viewportHovered = ImGui::IsWindowHovered();
-			SE::Application::get().getImGuiLayer()->setBlockEvent(!m_viewportFocused && !m_viewportHovered);
+			if (ImGui::IsWindowHovered())
+				m_hoveredPanel = SE_EDITOR_PANELS::VIEWPORT;
+			//SE::Application::get().getImGuiLayer()->setBlockEvent(!m_viewportFocused && !m_viewportHovered);
 
 			if (m_usingGuizmo && m_selectedComponent)
 			{
@@ -229,13 +245,15 @@ namespace SpringEditor
 				bool snapping = SE::Application::get().isKeyPressed(SE::Key::LeftControl);
 				float snapIntervals[3] = { m_guizmoOperation==ImGuizmo::ROTATE ? 22.5f : 0.5f, m_guizmoOperation == ImGuizmo::ROTATE ? 22.5f : 0.5f, m_guizmoOperation == ImGuizmo::ROTATE ? 22.5f : 0.5f };
 
-				const glm::mat4& camProj = m_editorCamera->getProjection();
-				const glm::mat4& camView = m_editorCamera->getView();
-				glm::mat4 transform = m_selectedComponent->getLocalTransform();
-				glm::mat4 offset = m_selectedComponent->getParentTransform();
+				const glm::mat4& camProj = m_editorCamera->getCamera()->getProjection();
+				const glm::mat4& camView = m_editorCamera->getCamera()->getView();
+				glm::mat4 transform;
+				glm::mat4 offset;
+				transform = m_selectedComponent->getLocalTransform();
+				offset = m_selectedComponent->getParentTransform();
 				//ImGuizmo::DrawCubes(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(transform), 1);
 				//ImGuizmo::DrawGrid(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(transform), 5.f);
-				ImGuizmo::Manipulate(glm::value_ptr(camView), glm::value_ptr(camProj), m_guizmoOperation, ImGuizmo::WORLD, glm::value_ptr(transform), (float*)glm::value_ptr(offset), snapping ? snapIntervals : nullptr);
+				ImGuizmo::Manipulate(glm::value_ptr(camView), glm::value_ptr(camProj), m_guizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(transform), (float*)glm::value_ptr(offset), snapping ? snapIntervals : nullptr);
 
 				if (ImGuizmo::IsUsing())
 				{
@@ -261,6 +279,9 @@ namespace SpringEditor
 		
 		if (ImGui::Begin("Outliner"))
 		{
+			if (ImGui::IsWindowHovered())
+				m_hoveredPanel = SE_EDITOR_PANELS::OUTLINER;
+
 			if (ImGui::BeginPopupContextWindow(0, 1, false))
 			{
 				if (ImGui::MenuItem("Create actor"))
@@ -297,36 +318,61 @@ namespace SpringEditor
 
 		if (ImGui::Begin("Properties"))
 		{
-			if (ImGui::Button("Add component"))
+			if (ImGui::IsWindowHovered())
+				m_hoveredPanel = SE_EDITOR_PANELS::PROPERTIES;
+			if (m_selectedComponent)
 			{
-				ImGui::OpenPopup("Popup");
-			};
-			if (ImGui::BeginPopup("Popup"))
-			{
-				if (ImGui::MenuItem("Mesh"))
+				if (ImGui::Button("Add component"))
 				{
-					if (m_selectedComponent)
+					ImGui::OpenPopup("Popup");
+				};
+				if (ImGui::BeginPopup("Popup"))
+				{
+					if (ImGui::MenuItem("Mesh"))
 					{
 						SE::Mesh* mesh = new SE::Mesh();
 						SE::MeshComponent* meshComponent = new SE::MeshComponent(m_selectedComponent, mesh);
 						m_selectedComponent->addComponent<SE::MeshComponent>(meshComponent);
+						meshComponent->updateHierarchicalTransform(&m_selectedComponent->getTransform());
+						ImGui::CloseCurrentPopup();
 					}
-					ImGui::CloseCurrentPopup();
-				}
 
-				if (ImGui::MenuItem("Particle system"))
-				{
-					if (m_selectedComponent)
+					if (ImGui::MenuItem("Particle system"))
 					{
 						SE::ParticleEmitterComponent* particleEmitterComponent = new SE::ParticleEmitterComponent(m_selectedComponent);
 						m_selectedComponent->addComponent<SE::ParticleEmitterComponent>(particleEmitterComponent);
 						m_currentScene->registerRenderedComponent(particleEmitterComponent, true);
+						particleEmitterComponent->updateHierarchicalTransform(&m_selectedComponent->getTransform());
+						ImGui::CloseCurrentPopup();
 					}
-					ImGui::CloseCurrentPopup();
+					ImGui::EndPopup();
 				}
-				ImGui::EndPopup();
+				bool translated = SE::ImGuiMisc::coloredVector3Control("Location", m_selectedComponent->getLocationRef(), 80.f, 0.1f);
+				if (translated)
+				{
+					m_selectedComponent->updateTransform();
+				}
+				SE::Vector3f rotate = m_selectedComponent->getRotation();
+				rotate.x(glm::degrees(rotate.x()));
+				rotate.y(glm::degrees(rotate.y()));
+				rotate.z(glm::degrees(rotate.z()));
+				bool rotated = SE::ImGuiMisc::coloredVector3Control("Rotation", rotate, 80.f, 1.0f);
+				if (rotated)
+				{
+					rotate.x(glm::radians(rotate.x()));
+					rotate.y(glm::radians(rotate.y()));
+					rotate.z(glm::radians(rotate.z()));
+					m_selectedComponent->getRotationRef() = rotate;
+					m_selectedComponent->updateTransform();
+				}
+				bool scaled = SE::ImGuiMisc::coloredVector3Control("Scale", m_selectedComponent->getScaleRef(), 80.f, 0.01f);
+				if (scaled)
+				{
+					m_selectedComponent->updateTransform();
+				}
+				EditorPropertiesPanel::displayProperties(m_selectedComponent);
 			}
-			ImGui::TextUnformatted("Properties");
+
 		}
 		ImGui::End();// Properties
 
@@ -344,7 +390,7 @@ namespace SpringEditor
 		{
 			ImGuiTreeNodeFlags flags = ((m_selectedComponent == component) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Leaf;
 			bool opened = ImGui::TreeNodeEx((void*)0, flags, "Recursion error");
-			if (ImGui::IsItemClicked())
+			if (ImGui::IsItemClicked(0))
 			{
 				SE::SceneComponent* sceneComponent = static_cast<SE::SceneComponent*>(component);
 				if (sceneComponent)
@@ -363,7 +409,7 @@ namespace SpringEditor
 		uint32_t count = component->getComponentCount();
 		ImGuiTreeNodeFlags flags = ((m_selectedComponent == component) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | (count == 1 ? 0 : ImGuiTreeNodeFlags_Leaf);
 		bool opened = ImGui::TreeNodeEx((void*)0, flags, component->getName());
-		if (ImGui::IsItemClicked())
+		if (ImGui::IsItemClicked(0))
 		{
 			SE::SceneComponent* sceneComponent = static_cast<SE::SceneComponent*>(component);
 			if (sceneComponent)
@@ -388,6 +434,48 @@ namespace SpringEditor
 		{
 			std::vector<SE::Actor*> actorList = m_currentScene->importFBX(path.c_str());
 			m_selectedComponent = actorList[actorList.size() - 1]->getRoot();
+		}
+	}
+
+	void EditorLayer::openModelFromDialogToMeshComponent()
+	{
+		std::string path = SE::openFile("");
+		if (!path.empty())
+		{
+			SE_PROFILE_FUNCTION();
+			std::vector<SE::MeshImportInfo> list = SE::Application::get().getDataManager()->loadFBX(path.c_str());
+			if (list.size() == 1)
+			{
+				if (list[0].id >= 0)
+				{
+					static_cast<SE::MeshComponent*>(m_selectedComponent)->setInstance(SE::Application::get().getDataManager()->getRegisteredDataBlock<SE::Mesh>(list[0].id));
+				}
+
+			}
+			else if (list.size() > 1)
+			{
+				SE::SceneComponent* root = nullptr;
+				if (m_selectedComponent->isRoot())
+				{
+					root = new SE::SceneComponent(m_selectedComponent->getActorOwner()->getRoot());
+					m_selectedComponent->getActorOwner()->getRoot()->addComponent<SE::SceneComponent>(root);
+				}
+				else
+				{
+					root = new SE::SceneComponent(m_selectedComponent->getActorOwner()->getRoot());
+					static_cast<SE::SceneComponent*>(m_selectedComponent->getOwner())->addComponent<SE::SceneComponent>(root);
+				}
+				for (unsigned int i = 0; i < list.size(); i++)
+				{
+					if (list[i].id >= 0)
+					{
+						SE::Mesh* mesh = SE::Application::get().getDataManager()->getRegisteredDataBlock<SE::Mesh>(list[i].id);
+						SE::MeshComponent* meshComponent = new SE::MeshComponent(root, mesh);
+						root->addComponent<SE::MeshComponent>(meshComponent);
+						m_currentScene->registerRenderedComponent(meshComponent);
+					}
+				}
+			};
 		}
 	}
 }

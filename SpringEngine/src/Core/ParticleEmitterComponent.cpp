@@ -28,13 +28,14 @@ namespace SE
 		return 1;
 	}
 
-	void ParticleEmitterComponent::onUpdateTransform()
-	{
-	}
 
 	void ParticleEmitterComponent::tick(double deltaSeconds)
 	{
 		m_instance->update(deltaSeconds);
+		for (auto component : m_components)
+		{
+			component->tick(deltaSeconds);
+		}
 	}
 
 	void ParticleEmitterComponent::postDestroy()

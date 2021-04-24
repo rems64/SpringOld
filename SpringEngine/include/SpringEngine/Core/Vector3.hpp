@@ -22,6 +22,10 @@ namespace SE
 		inline T y() const { return m_y; };
 		inline T z() const { return m_z; };
 
+		inline T* xPtr() { return &m_x; };
+		inline T* yPtr() { return &m_y; };
+		inline T* zPtr() { return &m_z; };
+
 		inline void x(T value) { m_x = value; };
 		inline void y(T value) { m_y = value; };
 		inline void z(T value) { m_z = value; };

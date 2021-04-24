@@ -51,7 +51,7 @@ set(SRCS
 	"src/Core/Box2D.cpp"
 	"src/Graphics/Framebuffer.cpp"
 	"src/Core/FileDialogs.cpp"
-	 "src/Core/ParticleEmitter.cpp" "src/Core/Math.cpp" "src/Core/ParticleEmitterComponent.cpp")
+	 "src/Core/ParticleEmitter.cpp" "src/Core/Math.cpp" "src/Core/ParticleEmitterComponent.cpp" "src/UI/ImGuiMisc.cpp")
 
 set(IMGUI_SRCS
 	"lib/ImGui/imgui.cpp"

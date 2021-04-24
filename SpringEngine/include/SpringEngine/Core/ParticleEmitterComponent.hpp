@@ -20,9 +20,6 @@ namespace SE
 
 		virtual void postDestroy() override;
 
-	protected:
-		virtual void onUpdateTransform() override;
-
 	private:
 		ParticleEmitter* m_instance;
 	};

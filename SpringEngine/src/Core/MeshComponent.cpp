@@ -6,7 +6,10 @@ namespace SE
 	MeshComponent::MeshComponent(ActorComponent* owner, Mesh* instance) : RenderedComponent(owner), m_meshInstance(instance)
 	{
 		setName(instance->getName());
-		m_meshInstance->getMaterial()->updateShaderUniforms();
+		if (m_meshInstance->isValid())
+		{
+			m_meshInstance->getMaterial()->updateShaderUniforms();
+		};
 	}
 
 	MeshComponent::~MeshComponent()
@@ -15,8 +18,12 @@ namespace SE
 
 	int MeshComponent::drawCall() const
 	{
-		Renderer::drawIndexed(m_meshInstance->getVertexArray(), m_meshInstance->getIndexBuffer(), m_meshInstance->getMaterial(), &getTransform());
-		return 1;
+		if (m_meshInstance->isValid())
+		{
+			Renderer::drawIndexed(m_meshInstance->getVertexArray(), m_meshInstance->getIndexBuffer(), m_meshInstance->getMaterial(), &getTransform());
+			return 1;
+		}
+		return 0;
 	}
 
 	void MeshComponent::onUpdateTransform()

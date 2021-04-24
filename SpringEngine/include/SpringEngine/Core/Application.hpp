@@ -37,7 +37,6 @@ namespace SE
 
 		Window& getMainWindow();
 		inline DataManager* getDataManager() { return m_dataManager; };
-		inline Scene* getCurrentScene() { return m_worldLayer->getScene(); }
 		inline ImGuiContext* getImguiContext() { return ImGui::GetCurrentContext(); };
 		inline ImGuiLayer* getImGuiLayer() { return m_imGuiLayer; };
 

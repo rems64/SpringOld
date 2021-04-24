@@ -2,7 +2,7 @@
 
 namespace SE
 {
-	DataBlock::DataBlock() : SpringObject()
+	DataBlock::DataBlock() : SpringObject(), m_isValid(true)
 	{
 	}
 
