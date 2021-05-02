@@ -12,6 +12,7 @@ set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS
 
 # SpringEngine definitions
 add_compile_definitions(SE_PLATEFORM_WINDOWS)
+add_compile_definitions(SE_EDITOR)
 
 include_directories("../SpringEngine/include" "include/")
 

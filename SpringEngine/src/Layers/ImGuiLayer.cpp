@@ -12,10 +12,12 @@ void SE::ImGuiLayer::onAttach()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.Fonts->AddFontFromFileTTF("../../../../SpringEditor/ressources/Roboto/Roboto-Regular.ttf", 15);
+	io.Fonts->Build();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-	//ImGui::StyleColorsDark();
+	ImGui::StyleColorsDark();
 
 	Application& app = Application::get();
 	GLFWwindow* window = static_cast<GLFWwindow*>(app.getMainWindow().getNativeWindow());

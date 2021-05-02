@@ -71,7 +71,7 @@ namespace SE
 			(*actor)->tick(deltaSeconds);
 			//(*actor)->drawCall();
 		}
-		SE::Renderer::beginSceneDraw(cam);
+		SE::Renderer::beginSceneDraw(cam, this);
 		for (auto drawable : m_renderingList)
 		{
 			drawable->drawCall();
@@ -102,5 +102,36 @@ namespace SE
 				break;
 			}
 		}
+	}
+
+	void Scene::unregisterLight(LightComponent* light)
+	{
+		for (std::vector<LightComponent*>::iterator component = m_lightsList.begin(); component != m_lightsList.end(); component++)
+		{
+			if (*component == light)
+			{
+				m_lightsList.erase(component);
+				break;
+			}
+		}
+	}
+	std::ostream& operator<<(std::ostream& os, Scene& scene)
+	{
+		uint32_t nbr = 18;
+		os.write((char*)scene.getNameStr().size(), sizeof(size_t));
+		//os.write((char*)&scene.getNameStr(), scene.getNameStr().size());
+		os.write((char*)&nbr, 2);
+		return os;
+	}
+
+	std::istream& operator>>(std::istream& is, Scene& scene)
+	{
+		uint32_t size = 0;
+		std::string a;
+		uint32_t b = 0;
+		is.read((char*)size, sizeof(size_t));
+		//is.read((char*)&a, size);
+		is.read((char*)&b, 2);
+		return is;
 	}
 }

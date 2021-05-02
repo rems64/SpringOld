@@ -4,6 +4,7 @@ namespace SE
 {
 	Mesh::Mesh() : DataBlock(), m_va(), m_vb(), m_vbl(), m_ib(), m_material()
 	{
+		setName("Default mesh");
 		m_isValid = false;
 	}
 

@@ -10,6 +10,11 @@ namespace SE
 		{
 			m_meshInstance->getMaterial()->updateShaderUniforms();
 		};
+
+		// Temp workaround
+		u_subMeshes = 42;
+		addEditorProperty({ SE_EDITOR_PROPERTY_TYPE::MeshAssetInput, "Mesh", (void*)m_meshInstance });
+		addEditorProperty({ SE_EDITOR_PROPERTY_TYPE::IntInput, "Sub meshes", (void*)&u_subMeshes });
 	}
 
 	MeshComponent::~MeshComponent()

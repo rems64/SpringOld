@@ -10,6 +10,9 @@
 	#error SpringEngine should only run on a Windows machine
 #endif
 
+#define SE_CLASS(...)
+#define SE_PROPERTY(...)
+
 /*
 #ifdef SE_DEBUG
 	#define SE_MP(path) std::string buf(path); \

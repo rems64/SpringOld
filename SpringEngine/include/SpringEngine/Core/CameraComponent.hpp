@@ -9,6 +9,7 @@ namespace SE
 	{
 	public:
 		CameraComponent(ActorComponent* owner);
+		CameraComponent(Actor* owner, bool root);
 		virtual ~CameraComponent();
 
 		glm::mat4 getViewProjection();

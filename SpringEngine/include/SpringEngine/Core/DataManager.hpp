@@ -22,6 +22,7 @@ namespace SE
 		DataManager();
 		~DataManager();
 
+
 		std::vector<MeshImportInfo> loadFBX(const char* path);
 		
 
@@ -41,6 +42,9 @@ namespace SE
 		{
 			return static_cast<T*>(m_dataBlocks.find(id)->second);
 		}
+
+		bool saveScene(Scene* scene, const char* path);
+		bool loadScene(Scene* scene, const char* path);
 	private:
 		std::vector<std::shared_ptr<Texture>> m_textures;
 		std::map<unsigned long, DataBlock*> m_dataBlocks;

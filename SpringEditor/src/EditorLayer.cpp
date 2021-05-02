@@ -4,7 +4,7 @@
 
 namespace SpringEditor
 {
-	EditorLayer::EditorLayer() : SE::Layer("Editor layer"), m_viewport(), m_framebuffer(), m_currentScene(std::make_shared<SE::Scene>()), m_editorCamera(), m_guizmoOperation(ImGuizmo::TRANSLATE), m_selectedComponent(nullptr)
+	EditorLayer::EditorLayer() : SE::Layer("Editor layer"), m_viewport(), m_framebuffer(), m_currentScene(std::make_shared<SE::Scene>()), m_editorCamera(), m_guizmoOperation(ImGuizmo::TRANSLATE), m_selectedComponent(nullptr), m_guizmoSpace(ImGuizmo::LOCAL)
 	{
 
 	}
@@ -12,16 +12,19 @@ namespace SpringEditor
 	EditorLayer::~EditorLayer()
 	{
 		delete m_framebuffer;
-		delete m_editorCamera;
+		
+		//delete m_editorCamera; // TEMPORARY DLETED IN SCENE
 	}
 
 	void EditorLayer::onAttach()
 	{
 		SE::Application::get().getMainWindow().setVSync(true);
 		m_framebuffer = new SE::Framebuffer(SE::Vector2ui(1920, 1080));
+
 		m_editorCamera = new EditorCamera();
 		m_editorCamera->getRoot()->setLocation(SE::Vector3f(0.0, 0.0, 6.));
 		m_currentScene->setCurrentCamera(m_editorCamera->getCamera());
+		m_currentScene->registerActor(m_editorCamera);
 
 		EditorPropertiesPanel::setEditorLayer(this);
 
@@ -104,25 +107,43 @@ namespace SpringEditor
 				{
 					openModelFromDialog();
 				}
+				break;
 			case SE::Key::Delete:
 				if (m_selectedComponent)
 				{
-					auto temp = m_selectedComponent->getActorOwner();
-					if (temp->getRoot() == m_selectedComponent)
+					if (m_selectedComponent == m_editorCamera->getRoot())
 					{
-						m_selectedComponent->destroy();
-						m_selectedComponent = nullptr;
+						SE_CORE_WARN("Deleti.... wait what? Can't delete editor camera xD");
+						break;
 					}
-					else
+					if (m_hoveredPanel != SE_EDITOR_PANELS::PROPERTIES)
 					{
-						auto temp = m_selectedComponent->getOwner();
-						m_selectedComponent->destroy();
-						m_selectedComponent = static_cast<SE::SceneComponent*>(temp);
+						auto temp = m_selectedComponent->getActorOwner();
+						if (temp->getRoot() == m_selectedComponent)
+						{
+							m_selectedComponent->destroy();
+							m_selectedComponent = nullptr;
+						}
+						else
+						{
+							auto temp = m_selectedComponent->getOwner();
+							m_selectedComponent->destroy();
+							m_selectedComponent = static_cast<SE::SceneComponent*>(temp);
+						}
+						break;
 					}
-					break;
+				}
+			case SE::Key::Space:
+				if (m_guizmoSpace == ImGuizmo::LOCAL)
+				{
+					m_guizmoSpace = ImGuizmo::WORLD;
+				}
+				else if (m_guizmoSpace == ImGuizmo::WORLD)
+				{
+					m_guizmoSpace = ImGuizmo::LOCAL;
 				}
 			default:
-				SE_CORE_TRACE("Key ({})", event.getKeyCode());
+				//SE_CORE_TRACE("Key ({})", event.getKeyCode());
 				break;
 		}
 		return false;
@@ -198,12 +219,20 @@ namespace SpringEditor
 				if (ImGui::MenuItem("Open...", "Ctrl+O"))
 				{
 					SE_CORE_INFO("Open");
-					openModelFromDialog();
+					std::string path = SE::openFile(".ses");
+					SE::Application::get().getDataManager()->loadScene(m_currentScene.get(), path.c_str());
 				}
 
 				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
 				{
-					SE_CORE_INFO("Save as");
+					SE_CORE_INFO("Saving as....");
+					std::string path = SE::saveFile(".ses");
+					if (path.find(".ses") == std::string::npos)
+					{
+						SE_CORE_TRACE("Automatically adding extension...");
+						path += ".ses";
+					}
+					SE::Application::get().getDataManager()->saveScene(m_currentScene.get(), path.c_str());
 				}
 
 				if (ImGui::MenuItem("Exit"))
@@ -253,7 +282,7 @@ namespace SpringEditor
 				offset = m_selectedComponent->getParentTransform();
 				//ImGuizmo::DrawCubes(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(transform), 1);
 				//ImGuizmo::DrawGrid(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(transform), 5.f);
-				ImGuizmo::Manipulate(glm::value_ptr(camView), glm::value_ptr(camProj), m_guizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(transform), (float*)glm::value_ptr(offset), snapping ? snapIntervals : nullptr);
+				ImGuizmo::Manipulate(glm::value_ptr(camView), glm::value_ptr(camProj), m_guizmoOperation, m_guizmoSpace, glm::value_ptr(transform), (float*)glm::value_ptr(offset), snapping ? snapIntervals : nullptr);
 
 				if (ImGuizmo::IsUsing())
 				{
@@ -322,6 +351,16 @@ namespace SpringEditor
 				m_hoveredPanel = SE_EDITOR_PANELS::PROPERTIES;
 			if (m_selectedComponent)
 			{
+				std::string* name = nullptr;
+				if(m_selectedComponent->isRoot())
+				{
+					name = &m_selectedComponent->getRootActor()->getNameStr();
+				}
+				else
+				{
+					name = &m_selectedComponent->getNameStr();
+				}
+				ImGui::InputText("##ComponentName", name);
 				if (ImGui::Button("Add component"))
 				{
 					ImGui::OpenPopup("Popup");
@@ -343,6 +382,15 @@ namespace SpringEditor
 						m_selectedComponent->addComponent<SE::ParticleEmitterComponent>(particleEmitterComponent);
 						m_currentScene->registerRenderedComponent(particleEmitterComponent, true);
 						particleEmitterComponent->updateHierarchicalTransform(&m_selectedComponent->getTransform());
+						ImGui::CloseCurrentPopup();
+					}
+
+					if (ImGui::MenuItem("Point light"))
+					{
+						SE::PointLightComponent* pointLightComponent = new SE::PointLightComponent(m_selectedComponent);
+						m_selectedComponent->addComponent<SE::PointLightComponent>(pointLightComponent);
+						m_currentScene->registerLight(pointLightComponent);
+						pointLightComponent->updateHierarchicalTransform(&m_selectedComponent->getTransform());
 						ImGui::CloseCurrentPopup();
 					}
 					ImGui::EndPopup();
@@ -370,6 +418,7 @@ namespace SpringEditor
 				{
 					m_selectedComponent->updateTransform();
 				}
+
 				EditorPropertiesPanel::displayProperties(m_selectedComponent);
 			}
 
@@ -382,10 +431,10 @@ namespace SpringEditor
 	void EditorLayer::drawActorComponentInList(SE::ActorComponent* component)
 	{
 		SE_PROFILE_FUNCTION()
-			if (m_actorComponentRecursiveDepth > 10)
-			{
-				return;
-			}
+		if (m_actorComponentRecursiveDepth > 10)
+		{
+			return;
+		}
 		if ((std::find(m_actorComponentRecursiveStack.begin(), m_actorComponentRecursiveStack.end(), component) != m_actorComponentRecursiveStack.end()) && (true))
 		{
 			ImGuiTreeNodeFlags flags = ((m_selectedComponent == component) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Leaf;
@@ -449,6 +498,7 @@ namespace SpringEditor
 				if (list[0].id >= 0)
 				{
 					static_cast<SE::MeshComponent*>(m_selectedComponent)->setInstance(SE::Application::get().getDataManager()->getRegisteredDataBlock<SE::Mesh>(list[0].id));
+					m_currentScene->registerRenderedComponent(static_cast<SE::RenderedComponent*>(m_selectedComponent));
 				}
 
 			}

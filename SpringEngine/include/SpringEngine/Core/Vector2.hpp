@@ -11,7 +11,7 @@ namespace SE
 		Vector2() : m_x(0), m_y(0) {};
 		Vector2(T x, T y) : m_x(x), m_y(y) {};
 		template <typename U>
-		Vector2(const Vector2<U>& src) : m_x(static_cast<T>(src.m_x)), m_y(static_cast<T>(src.y())) {};
+		Vector2(const Vector2<U>& src) : m_x(static_cast<T>(src.x())), m_y(static_cast<T>(src.y())) {};
 
 		~Vector2()
 		{
@@ -27,7 +27,7 @@ namespace SE
 
 		inline glm::vec2 getGlm() const { return glm::vec2(m_x, m_y); };
 
-	private:
+	protected:
 		T m_x;
 		T m_y;
 	};
@@ -50,7 +50,7 @@ namespace SE
 	template <typename T>
 	inline Vector2<T> operator -(const Vector2<T>& left, const Vector2<T>& right)
 	{
-		return Vector3<T>(left.m_x - right.m_x, left.m_y - right.m_y, left.m_z - right.m_z);
+		return Vector2<T>(left.x() - right.x(), left.y() - right.y());
 	}
 
 	template <typename T>
@@ -65,13 +65,13 @@ namespace SE
 	template <typename T>
 	inline Vector2<T> operator *(const T left, const Vector2<T>& right)
 	{
-		return Vector2<T>(left * right.m_x, left * right.m_y);
+		return Vector2<T>(left * right.x(), left * right.y());
 	}
 
 	template <typename T>
 	inline Vector2<T> operator *(const Vector2<T>& left, const T right)
 	{
-		return Vector2<T>(left.m_x * right, left.m_y * right);
+		return Vector2<T>(left.x() * right, left.y() * right);
 	}
 
 	template <typename T>

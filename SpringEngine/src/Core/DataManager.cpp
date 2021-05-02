@@ -26,7 +26,7 @@ namespace SE
 		std::vector<MeshImportInfo> meshList;
 		Assimp::Importer* importer = new Assimp::Importer();
 
-		const aiScene* aScene = importer->ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
+		const aiScene* aScene = importer->ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace);
 		if (!aScene)
 		{
 			SE_CORE_ERROR("Failed to read file {0}", path);
@@ -67,6 +67,30 @@ namespace SE
 						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::DIFFUSE, SE_MATERIAL_PROPERTY_TYPE::COLOR, Vector3f(color.r, color.g, color.b)));
 					}
 				}
+
+				aScene->mMaterials[i]->Get(AI_MATKEY_TEXTURE(aiTextureType_NORMALS, 0), texture_file);
+				if (auto texture = aScene->GetEmbeddedTexture(texture_file.C_Str()))
+				{
+					SE_CORE_WARN("Embeded textures are not managed yet");
+				}
+				else
+				{
+					if (texture_file.length > 0)
+					{
+						std::string texturePath = path;
+						size_t pos = texturePath.find_last_of("/\\");
+						texturePath = texturePath.substr(0, pos + 1).append(texture_file.C_Str());
+						Texture* idx = loadTexture(texturePath.c_str());
+						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::NORMAL, SE_MATERIAL_PROPERTY_TYPE::TEXTURE, idx));
+					}
+					else
+					{
+						SE_CORE_INFO("No texture, using color");
+						aiColor3D color(0.f, 0.f, 0.f);
+						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::NORMAL, SE_MATERIAL_PROPERTY_TYPE::COLOR, Vector3f(0.0, 0.0, 0.0)));
+					}
+				}
+				newMaterial->updateShaderUniforms();
 				materials.push_back(newMaterial);
 			}
 		}
@@ -92,6 +116,7 @@ namespace SE
 				}
 				bool hasNormals = meshes[meshIdx]->HasNormals();
 				bool hasUVs = meshes[meshIdx]->HasTextureCoords(0);
+				bool hasTangAndBitang = meshes[meshIdx]->HasTangentsAndBitangents();
 				std::vector<float> finalVertices;
 				for (unsigned int i = 0; i < meshes[meshIdx]->mNumVertices; i++)
 				{
@@ -111,6 +136,17 @@ namespace SE
 						finalVertices.push_back(meshes[meshIdx]->mTextureCoords[0][i].x);
 						finalVertices.push_back(meshes[meshIdx]->mTextureCoords[0][i].y);
 					}
+
+					if (hasTangAndBitang)
+					{
+						finalVertices.push_back(meshes[meshIdx]->mTangents[i].x);
+						finalVertices.push_back(meshes[meshIdx]->mTangents[i].y);
+						finalVertices.push_back(meshes[meshIdx]->mTangents[i].z);
+
+						finalVertices.push_back(meshes[meshIdx]->mBitangents[i].x);
+						finalVertices.push_back(meshes[meshIdx]->mBitangents[i].y);
+						finalVertices.push_back(meshes[meshIdx]->mBitangents[i].z);
+					}
 				}
 				VertexBuffer* vb = new VertexBuffer();
 				vb->setBuffer(finalVertices.data(), finalVertices.size() * sizeof(float));
@@ -122,6 +158,8 @@ namespace SE
 				vbl->Push<float>(3);
 				vbl->Push<float>(3);
 				vbl->Push<float>(2);
+				vbl->Push<float>(3);
+				vbl->Push<float>(3);
 
 				VertexArray* va = new VertexArray();
 				va->addBuffer(*vb, *vbl);
@@ -159,5 +197,23 @@ namespace SE
 		newTexture->loadPNG(path, false, false);
 		m_textures.emplace_back(std::shared_ptr<Texture>(newTexture));
 		return newTexture;
+	}
+
+	bool DataManager::saveScene(Scene* scene, const char* path)
+	{
+		SE_CORE_TRACE("Location : {0}", path);
+		SE_CORE_TRACE("Number of actors : {0}", scene->m_registeredActors.size());
+		std::ofstream file(path, std::ios::binary | std::ios::out);
+		//file.write((char*)scene, sizeof(*scene));
+		file << *scene;
+		return true;
+	}
+
+	bool DataManager::loadScene(Scene* scene, const char* path)
+	{
+		std::ifstream file(path, std::ios::binary | std::ios::out);
+		file >> *scene;
+		SE_CORE_INFO("Succesfully read");
+		return true;
 	}
 }

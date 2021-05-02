@@ -6,6 +6,7 @@
 
 #include <SpringEngine/Core/Application.hpp>
 #include <SpringEngine/Core/Mesh.hpp>
+#include <SpringEngine/Core/PointLightComponent.hpp>
 
 namespace SE
 {
@@ -24,12 +25,14 @@ namespace SE
 	glm::mat4 Renderer::m_VP = glm::mat4(1.0f);
 	glm::mat4 Renderer::m_view = glm::mat4(1.0f);
 	unsigned int Renderer::m_sceneDrawCalls = 0;
+	std::vector<LightComponent*>* Renderer::m_sceneLights = nullptr;
 
-	void Renderer::beginSceneDraw(CameraComponent* cam)
+	void Renderer::beginSceneDraw(CameraComponent* cam, Scene* scene)
 	{
 		m_VP = cam->getViewProjection();
 		m_view = cam->getView();
 		m_sceneDrawCalls = 0;
+		m_sceneLights = scene->getLights();
 	}
 
 	int Renderer::endSceneDraw()
@@ -45,6 +48,25 @@ namespace SE
 		material->bind();
 		material->setProjectionMatrix(m_VP * (*transform));
 		material->bindTextures();
+		for (uint32_t i=0; i<m_sceneLights->size(); i++)
+		{
+			auto pointLight = dynamic_cast<PointLightComponent*>(m_sceneLights->at(i));
+			if (pointLight)
+			{
+				char buffer[50];
+				sprintf(buffer, "pointLights[%i].position", i);
+				material->getShader()->setUniform3f(buffer, pointLight->getLocation().x(), pointLight->getLocation().y(), pointLight->getLocation().z());
+				sprintf(buffer, "pointLights[%i].color", i);
+				material->getShader()->setUniform3f(buffer, pointLight->getColor().x(), pointLight->getColor().y(), pointLight->getColor().z());
+				sprintf(buffer, "pointLights[%i].power", i);
+				material->getShader()->setUniform1f(buffer, pointLight->getPower());
+			}
+		}
+
+
+		//material->setViewMatrix(m_view);
+
+		material->setModelMatrix(*transform);
 		GLCall(glDrawElements(GL_TRIANGLES, indexBuffer->getCount(), GL_UNSIGNED_INT, NULL));
 		material->unbindTextures();
 		material->unbind();

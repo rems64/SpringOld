@@ -27,5 +27,9 @@
 #include <SpringEngine/Core/RenderedComponent.hpp>
 #include <SpringEngine/Core/MeshComponent.hpp>
 #include <SpringEngine/Core/ParticleEmitterComponent.hpp>
+#include <SpringEngine/Core/LightComponent.hpp>
+#include <SpringEngine/Core/PointLightComponent.hpp>
 
 #include <SpringEngine/UI/ImGuiMisc.hpp>
+
+#include <SpringEngine/Editor/EditorEditable.hpp>

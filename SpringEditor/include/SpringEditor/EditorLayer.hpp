@@ -36,6 +36,7 @@ namespace SpringEditor
 		uint32_t m_actorComponentRecursiveDepth;
 		std::vector<SE::ActorComponent*> m_actorComponentRecursiveStack;
 		ImGuizmo::OPERATION m_guizmoOperation;
+		ImGuizmo::MODE m_guizmoSpace;
 		bool m_usingGuizmo;
 		enum SE_EDITOR_PANELS m_hoveredPanel;
 	};

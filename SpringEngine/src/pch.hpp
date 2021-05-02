@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <forward_list>
 #include <string>
 #include <chrono>
 #include <ofbx.h>

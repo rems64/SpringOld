@@ -1,4 +1,6 @@
 #include <SpringEngine/Core/RenderedComponent.hpp>
+#include <SpringEngine/Core/Actor.hpp>
+#include <SpringEngine/Core/Scene.hpp>
 
 namespace SE
 {
@@ -8,5 +10,10 @@ namespace SE
 
 	RenderedComponent::~RenderedComponent()
 	{
+	}
+
+	void RenderedComponent::postDestroy()
+	{
+		getActorOwner()->getScene()->unregisterRenderedComponent(this);
 	}
 }
