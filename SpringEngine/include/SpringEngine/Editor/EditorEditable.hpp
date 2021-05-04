@@ -5,11 +5,13 @@ namespace SE
 	enum class EditorPropertyTypes : uint8_t
 	{
 		None = 0,
-		TextInput = 1,
-		IntInput = 2,
-		FloatInput = 3,
-		TextureInput = 4,
-		MeshAssetInput = 5
+		TextInput,
+		IntInput,
+		FloatInput,
+		BoolInput,
+		ColorInput,
+		TextureInput,
+		MeshAssetInput
 	};
 	typedef enum EditorPropertyTypes SE_EDITOR_PROPERTY_TYPE;
 
@@ -18,6 +20,7 @@ namespace SE
 		SE_EDITOR_PROPERTY_TYPE type;
 		std::string name;
 		void* value;
+		float speed = 1.0f;
 	};
 	class EditorEditable
 	{

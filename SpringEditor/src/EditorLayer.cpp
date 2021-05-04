@@ -1,6 +1,7 @@
 #include <SpringEditor/EditorLayer.hpp>
 #include <SpringEngine/Core/Math.hpp>
 #include <SpringEditor/EditorPropertiesPanel.hpp>
+#include <SpringEngine/Core/EditorCameraComponent.hpp>
 
 namespace SpringEditor
 {
@@ -24,7 +25,6 @@ namespace SpringEditor
 		m_editorCamera = new EditorCamera();
 		m_editorCamera->getRoot()->setLocation(SE::Vector3f(0.0, 0.0, 6.));
 		m_currentScene->setCurrentCamera(m_editorCamera->getCamera());
-		m_currentScene->registerActor(m_editorCamera);
 
 		EditorPropertiesPanel::setEditorLayer(this);
 
@@ -105,7 +105,13 @@ namespace SpringEditor
 			case SE::Key::O:
 				if (SE::Application::get().isKeyPressed(SE::Key::LeftControl) || SE::Application::get().isKeyPressed(SE::Key::RightControl))
 				{
-					openModelFromDialog();
+					openScene();
+				}
+				break;
+			case SE::Key::S:
+				if (SE::Application::get().isKeyPressed(SE::Key::LeftControl) || SE::Application::get().isKeyPressed(SE::Key::RightControl))
+				{
+					saveScene();
 				}
 				break;
 			case SE::Key::Delete:
@@ -157,6 +163,7 @@ namespace SpringEditor
 		{
 			m_framebuffer->resize((uint32_t)m_viewport.x(), (uint32_t)m_viewport.y());
 			m_editorCamera->getCamera()->setRatio((float)(m_viewport.x() / m_viewport.y()));
+			m_editorCamera->getCamera()->setViewport(m_viewport.x(), m_viewport.y());
 			//m_editorCamera->setRatio(4.f/3.f);
 			//SE_CORE_TRACE("width: {} height: {}", m_viewport.x(), m_viewport.y());
 			//SE_CORE_TRACE("{} {} {} {}", m_framebuffer->getWidth(), m_viewport.x(), m_framebuffer->getHeight(), m_viewport.y());
@@ -167,6 +174,7 @@ namespace SpringEditor
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Rendering stuff
+		m_editorCamera->tick(deltaTime);
 		m_currentScene->update(deltaTime, m_editorCamera->getCamera());
 		//SE_CORE_TRACE("{} draw calls", nbrDrawCalls);
 
@@ -219,20 +227,13 @@ namespace SpringEditor
 				if (ImGui::MenuItem("Open...", "Ctrl+O"))
 				{
 					SE_CORE_INFO("Open");
-					std::string path = SE::openFile(".ses");
-					SE::Application::get().getDataManager()->loadScene(m_currentScene.get(), path.c_str());
+					openScene();
 				}
 
-				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+				if (ImGui::MenuItem("Save As...", "Ctrl+S"))
 				{
 					SE_CORE_INFO("Saving as....");
-					std::string path = SE::saveFile(".ses");
-					if (path.find(".ses") == std::string::npos)
-					{
-						SE_CORE_TRACE("Automatically adding extension...");
-						path += ".ses";
-					}
-					SE::Application::get().getDataManager()->saveScene(m_currentScene.get(), path.c_str());
+					saveScene();
 				}
 
 				if (ImGui::MenuItem("Exit"))
@@ -278,21 +279,21 @@ namespace SpringEditor
 				const glm::mat4& camView = m_editorCamera->getCamera()->getView();
 				glm::mat4 transform;
 				glm::mat4 offset;
-				transform = m_selectedComponent->getLocalTransform();
 				offset = m_selectedComponent->getParentTransform();
+				transform = m_selectedComponent->getLocalTransform();
 				//ImGuizmo::DrawCubes(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(transform), 1);
-				//ImGuizmo::DrawGrid(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(transform), 5.f);
-				ImGuizmo::Manipulate(glm::value_ptr(camView), glm::value_ptr(camProj), m_guizmoOperation, m_guizmoSpace, glm::value_ptr(transform), (float*)glm::value_ptr(offset), snapping ? snapIntervals : nullptr);
-
+				//ImGuizmo::DrawGrid(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(offset), 5.f);
+				ImGuizmo::Manipulate(glm::value_ptr(camView), glm::value_ptr(camProj), m_guizmoOperation, m_guizmoSpace, glm::value_ptr(transform), nullptr, snapping ? snapIntervals : nullptr);
+				//transform *= glm::inverse(offset);
 				if (ImGuizmo::IsUsing())
 				{
 					glm::vec3 translation, rotation, scale;
 					ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(translation), glm::value_ptr(rotation), glm::value_ptr(scale));
 					rotation = glm::radians(rotation);
 
-					glm::vec3 deltaRotation = rotation - m_selectedComponent->getRotation().getGlm();
+					//glm::vec3 deltaRotation = rotation - m_selectedComponent->getRotation().getGlm();
 					m_selectedComponent->setLocation(SE::Vector3f(translation));
-					m_selectedComponent->addRotation(SE::Vector3f(deltaRotation));
+					m_selectedComponent->setRotation(SE::Vector3f(rotation));
 					m_selectedComponent->setScale(SE::Vector3f(scale));
 				}
 			}
@@ -395,30 +396,6 @@ namespace SpringEditor
 					}
 					ImGui::EndPopup();
 				}
-				bool translated = SE::ImGuiMisc::coloredVector3Control("Location", m_selectedComponent->getLocationRef(), 80.f, 0.1f);
-				if (translated)
-				{
-					m_selectedComponent->updateTransform();
-				}
-				SE::Vector3f rotate = m_selectedComponent->getRotation();
-				rotate.x(glm::degrees(rotate.x()));
-				rotate.y(glm::degrees(rotate.y()));
-				rotate.z(glm::degrees(rotate.z()));
-				bool rotated = SE::ImGuiMisc::coloredVector3Control("Rotation", rotate, 80.f, 1.0f);
-				if (rotated)
-				{
-					rotate.x(glm::radians(rotate.x()));
-					rotate.y(glm::radians(rotate.y()));
-					rotate.z(glm::radians(rotate.z()));
-					m_selectedComponent->getRotationRef() = rotate;
-					m_selectedComponent->updateTransform();
-				}
-				bool scaled = SE::ImGuiMisc::coloredVector3Control("Scale", m_selectedComponent->getScaleRef(), 80.f, 0.01f);
-				if (scaled)
-				{
-					m_selectedComponent->updateTransform();
-				}
-
 				EditorPropertiesPanel::displayProperties(m_selectedComponent);
 			}
 
@@ -527,5 +504,29 @@ namespace SpringEditor
 				}
 			};
 		}
+	}
+
+	void EditorLayer::openScene()
+	{
+		std::string path = SE::openFile(".ses");
+		if (path.empty())
+		{
+			return;
+		}
+		SE::Application::get().getDataManager()->loadScene(m_currentScene.get(), path.c_str());
+	}
+
+	void EditorLayer::saveScene()
+	{
+		std::string path = SE::saveFile(".ses");
+		if (path.empty())
+		{
+			return;
+		}
+		if (path.find(".ses") == std::string::npos)
+		{
+			path += ".ses";
+		}
+		SE::Application::get().getDataManager()->saveScene(m_currentScene.get(), path.c_str());
 	}
 }

@@ -134,4 +134,15 @@ namespace SE
 		is.read((char*)&b, 2);
 		return is;
 	}
+
+	void Scene::clear()
+	{
+		for (auto actor : m_registeredActors)
+		{
+			delete actor;
+		}
+		m_registeredActors.clear();
+		m_renderingList.clear();
+		m_lightsList.clear();
+	}
 }

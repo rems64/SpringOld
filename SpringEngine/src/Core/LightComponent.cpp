@@ -7,6 +7,7 @@ namespace SE
 	LightComponent::LightComponent(ActorComponent* owner) : SceneComponent(owner), m_color(1.0f, 1.0f, 1.0f)
 	{
 		setName("Default light");
+		addEditorProperty({ SE_EDITOR_PROPERTY_TYPE::ColorInput, "Color", (void*)&m_color });
 	}
 
 	LightComponent::~LightComponent()

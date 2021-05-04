@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SpringEngine/core.hpp>
+#include <SpringEngine/Core/Vector3.hpp>
 
 namespace SE
 {
@@ -15,6 +16,13 @@ namespace SE
 	{
 		const char *name;
 		unsigned int id;
+	};
+
+	enum class SceneLoadMode : uint32_t
+	{
+		OVERRIDE = 0,
+		ADD = 1,
+		SUBTRACT = 2
 	};
 	class SE_API DataManager
 	{
@@ -44,7 +52,19 @@ namespace SE
 		}
 
 		bool saveScene(Scene* scene, const char* path);
-		bool loadScene(Scene* scene, const char* path);
+		bool loadScene(Scene* scene, const char* path, enum SceneLoadMode mode = SceneLoadMode::OVERRIDE);
+		template <typename T>
+		nlohmann::json vec3ToJson(Vector3<T> vec)
+		{
+			nlohmann::json j = { {"x", vec.x()}, { "y", vec.y() }, { "z", vec.z() } };
+			return j;
+		}
+
+		template <typename T>
+		Vector3<T> jsonToVec3(nlohmann::json json)
+		{
+			return Vector3<T>(json.at("x").get<T>(), json.at("y").get<T>(), json.at("z").get<T>());
+		}
 	private:
 		std::vector<std::shared_ptr<Texture>> m_textures;
 		std::map<unsigned long, DataBlock*> m_dataBlocks;

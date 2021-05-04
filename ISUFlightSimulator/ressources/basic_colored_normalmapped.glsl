@@ -39,14 +39,11 @@ in vec3 vertex_worldspace;
 in vec3 vertex_cameraspace;
 in vec3 normal_worldspace;
 in mat3 tbn_matrix;
-in vec3 normal;
 
 
 uniform vec3 u_diffuse_color;
 uniform sampler2D u_diffuse_texture;
 uniform sampler2D u_normal_texture;
-
-uniform vec3 u_camera_location;
 
 struct PointLight {
     vec3 position;
@@ -56,11 +53,15 @@ struct PointLight {
 #define NBR_POINT_LIGHTS 8
 uniform PointLight pointLights[NBR_POINT_LIGHTS];
 
+const float ambientStrength = 0.8f;
+const vec3 ambientColor = vec3(1.0, 1.0, 1.0);
+
 void main()
 {
-    color = texture(u_diffuse_texture, UV)*0.5 + vec4(u_diffuse_color.xyz, 1.0);
-    vec3 texNormal = normal_worldspace;
-
+    color = (texture(u_diffuse_texture, UV)*0.5 + vec4(u_diffuse_color.xyz, 1.0)) * vec4((ambientColor * ambientStrength), 1.0);
+    vec3 texNormal = texture(u_normal_texture, UV).rgb;
+    texNormal = texNormal * 2.0 - 1.0;  // From 0;1 to -1;1
+    texNormal = normalize(tbn_matrix * texNormal);
     vec3 viewDir = normalize(vec3(0.0, 0.0, 6.0) - vertex_worldspace.xyz);
     //color = vec4(0.0, 0.0, 0.0, 1.0);
     //color = vec4(abs(normal).xyz, 1.0);

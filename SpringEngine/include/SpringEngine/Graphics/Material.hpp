@@ -58,6 +58,8 @@ namespace SE
 
 		void updateShaderUniforms();
 
+		void pickShader(bool normalMapped);
+
 		/** Set the scene projection matrix.
 		 * This should be called from the renderer before the draw call. 
 		 * [WARNING] The shader HAS TO be bound before calling this function

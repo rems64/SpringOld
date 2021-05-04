@@ -4,7 +4,7 @@
 
 namespace SE
 {
-	class SE_API PointLightComponent : public LightComponent, public EditorEditable
+	class SE_API PointLightComponent : public LightComponent
 	{
 	public:
 		PointLightComponent(ActorComponent* owner);

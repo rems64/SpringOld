@@ -42,6 +42,8 @@ namespace SE
 		std::vector<LightComponent*>* getLights() { return &m_lightsList; };
 		void registerLight(LightComponent* light) { m_lightsList.push_back(light); };
 		void unregisterLight(LightComponent* light);
+
+		void clear();
 	private:
 		std::vector<Actor*> m_registeredActors;
 		std::vector<RenderedComponent*> m_renderingList;

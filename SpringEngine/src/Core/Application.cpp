@@ -47,6 +47,8 @@ namespace SE
 
 		m_imGuiLayer = new ImGuiLayer();
 		s_instance->pushOverlay(m_imGuiLayer);
+
+		Renderer::initDebugShaders();
 	}
 
 	Application::Application(const Application& src) : m_windows(src.m_windows), m_appRunning(src.m_appRunning), m_windowsNbr(src.m_windowsNbr), m_imGuiLayer(src.m_imGuiLayer), m_dataManager(src.m_dataManager)

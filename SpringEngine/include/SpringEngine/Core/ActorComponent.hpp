@@ -11,6 +11,8 @@ namespace SE
 	public:
 		ActorComponent();
 		ActorComponent(ActorComponent* owner);
+
+		friend class DataManager;
 		virtual ~ActorComponent();
 
 		template<typename T>

@@ -36,6 +36,16 @@ namespace SE
 		m_shader->unbind();
 	}
 
+	void Material::pickShader(bool normalMapped)
+	{
+		if (normalMapped)
+		{
+			delete m_shader;
+			m_shader = new Shader("../../../../ISUFlightSimulator/ressources/basic_colored_normalmapped.glsl");
+			m_shader->compile();
+		}
+	}
+
 	uint32_t getTextureIndexFromName(SE_MATERIAL_PROPERTY_NAME name)
 	{
 		switch (name)

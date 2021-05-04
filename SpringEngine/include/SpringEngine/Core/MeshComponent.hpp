@@ -24,5 +24,6 @@ namespace SE
 	private:
 		Mesh* m_meshInstance;
 		uint32_t u_subMeshes;
+		bool m_debugDrawNormals;
 	};
 }

@@ -85,7 +85,7 @@ namespace SE
 			return modified;
 		}
 
-		bool ImGuiMisc::dataBlockSelector(const char* label, SE::DataBlock* datablock, float labelWidth)
+		bool ImGuiMisc::dataBlockSelector(const char* label, SE::DataBlock* datablock, float speed, float labelWidth)
 		{
 			ImGui::PushID(label);
 
@@ -103,7 +103,7 @@ namespace SE
 			return 0;
 		}
 
-		bool ImGuiMisc::intSelector(const char* label, int* value, float labelWidth)
+		bool ImGuiMisc::intSelector(const char* label, int* value, float speed, float labelWidth)
 		{
 			ImGui::PushID(label);
 
@@ -111,7 +111,7 @@ namespace SE
 			ImGui::SetColumnWidth(0, labelWidth);
 			ImGui::Text(label);
 			ImGui::NextColumn();
-			ImGui::DragInt("", value);
+			ImGui::DragInt("", value, speed);
 			ImGui::EndColumns();
 			//ImGui::NextColumn();
 			//ImGui::Columns(1);
@@ -121,7 +121,7 @@ namespace SE
 			return 0;
 		}
 		
-		bool ImGuiMisc::floatSelector(const char* label, float* value, float labelWidth)
+		bool ImGuiMisc::floatSelector(const char* label, float* value, float speed, float labelWidth)
 		{
 			ImGui::PushID(label);
 
@@ -129,7 +129,47 @@ namespace SE
 			ImGui::SetColumnWidth(0, labelWidth);
 			ImGui::Text(label);
 			ImGui::NextColumn();
-			ImGui::DragFloat("", value);
+			ImGui::DragFloat("", value, speed);
+			ImGui::EndColumns();
+			//ImGui::NextColumn();
+			//ImGui::Columns(1);
+
+			ImGui::PopID();
+
+			return 0;
+		}
+
+		bool ImGuiMisc::boolSelector(const char* label, bool* value, float labelWidth)
+		{
+			ImGui::PushID(label);
+
+			ImGui::BeginColumns("columns3", 2, ImGuiColumnsFlags_NoResize);
+			ImGui::SetColumnWidth(0, labelWidth);
+			ImGui::Text(label);
+			ImGui::NextColumn();
+			ImGui::Checkbox("", value);
+			ImGui::EndColumns();
+			//ImGui::NextColumn();
+			//ImGui::Columns(1);
+
+			ImGui::PopID();
+
+			return 0;
+		}
+
+		bool ImGuiMisc::colorSelector(const char* label, SE::Vector3f* value, float labelWidth)
+		{
+			ImGui::PushID(label);
+
+			ImGui::BeginColumns("columns3", 2, ImGuiColumnsFlags_NoResize);
+			ImGui::SetColumnWidth(0, labelWidth);
+			ImGui::Text(label);
+			ImGui::NextColumn();
+			float color[3] = { *value->xPtr(), *value->yPtr(), *value->zPtr() };
+			ImGui::ColorEdit3("##color", color, ImGuiColorEditFlags_NoInputs);
+			value->x(color[0]);
+			value->y(color[1]);
+			value->z(color[2]);
 			ImGui::EndColumns();
 			//ImGui::NextColumn();
 			//ImGui::Columns(1);

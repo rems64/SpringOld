@@ -1,5 +1,5 @@
 #include <SpringEngine/SpringEngine.hpp>
-#include <SpringEditor/EditorCamera.hpp>
+#include <SpringEngine/Editor/EditorCamera.hpp>
 
 namespace SpringEditor
 {
@@ -26,6 +26,9 @@ namespace SpringEditor
 
 		void openModelFromDialog();
 		void openModelFromDialogToMeshComponent();
+
+		void openScene();
+		void saveScene();
 
 	private:
 		SE::Vector2<float> m_viewport;
