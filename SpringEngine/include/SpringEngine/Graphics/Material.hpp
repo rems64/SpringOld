@@ -20,7 +20,8 @@ namespace SE
 	{
 		NONE,
 		DIFFUSE,
-		ROUGHNESS
+		ROUGHNESS,
+		NORMAL
 	};
 
 	struct SE_API MaterialProperty
@@ -57,6 +58,8 @@ namespace SE
 
 		void updateShaderUniforms();
 
+		void pickShader(bool normalMapped);
+
 		/** Set the scene projection matrix.
 		 * This should be called from the renderer before the draw call. 
 		 * [WARNING] The shader HAS TO be bound before calling this function
@@ -65,14 +68,17 @@ namespace SE
 		 */
 		void setProjectionMatrix(glm::mat4 projection) const;
 		void setViewMatrix(glm::mat4 view) const;
+		void setModelMatrix(glm::mat4 model) const;
 
-		inline Shader* getShader() { return m_shader; };
+		inline Shader* getShader() const { return m_shader; };
 		MaterialProperty* getProperty(SE_MATERIAL_PROPERTY_NAME name);
 
 		bool registerProperty(MaterialProperty property);
 
 		void bindTextures() const;
 		void unbindTextures() const;
+
+		Shader* getShader() { return m_shader; };
 	private:
 		Shader* m_shader;
 		std::vector<MaterialProperty> m_properties;

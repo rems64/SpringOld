@@ -12,13 +12,15 @@ set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS
 
 # SpringEngine definitions
 add_compile_definitions(SE_PLATEFORM_WINDOWS)
+add_compile_definitions(SE_EDITOR)
 
 include_directories("../SpringEngine/include" "include/")
 
 set(SRCS
 	"src/SpringEditorApp.cpp"
 	"src/EditorLayer.cpp"
- "src/EditorCamera.cpp" "src/EditorPropertiesPanel.cpp")
+	"src/EditorPropertiesPanel.cpp"
+)
 
 set(IMGUI_SRCS
 	"../SpringEngine/lib/ImGui/imgui.cpp"

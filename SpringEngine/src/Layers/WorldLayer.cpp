@@ -40,7 +40,7 @@ namespace SE
 
 		// TO UPDATE in order to accord with the new standalone camera style
 
-		Renderer::beginSceneDraw(m_currentScene->getCurrentCamera());
+		Renderer::beginSceneDraw(m_currentScene->getCurrentCamera(), m_currentScene.get());
 		m_currentScene->update(deltaTime, m_currentScene->getCurrentCamera());
 		int nbrDrawCalls = Renderer::endSceneDraw();
 		

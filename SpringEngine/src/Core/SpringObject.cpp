@@ -10,4 +10,9 @@ namespace SE
 	SpringObject::~SpringObject()
 	{
 	}
+
+	void SpringObject::setName(const char* name)
+	{
+		m_name = name;
+	};
 };

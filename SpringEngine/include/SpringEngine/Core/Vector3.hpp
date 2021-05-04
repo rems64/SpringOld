@@ -34,6 +34,12 @@ namespace SE
 		{
 			return glm::vec3(m_x, m_y, m_z);
 		}
+
+		T length()
+		{
+			return std::sqrt(m_x * m_x  + m_y * m_y + m_z * m_z);
+		}
+
 	protected:
 		T m_x;
 		T m_y;
@@ -59,7 +65,7 @@ namespace SE
 	template <typename T>
 	inline Vector3<T> operator -(const Vector3<T>& left, const Vector3<T>& right)
 	{
-		return Vector3<T>(left.m_x - right.m_x, left.m_y - right.m_y, left.m_z - right.m_z);
+		return Vector3<T>(left.x() - right.x(), left.y() - right.y(), left.z() - right.z());
 	}
 
 	template <typename T>

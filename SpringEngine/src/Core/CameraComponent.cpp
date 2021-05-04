@@ -7,6 +7,10 @@ namespace SE
 		setName("Default camera component");
 	}
 
+	CameraComponent::CameraComponent(Actor* owner, bool root) : SceneComponent(owner, root), m_ratio(1.0f)
+	{
+	}
+
 	CameraComponent::~CameraComponent()
 	{
 	}

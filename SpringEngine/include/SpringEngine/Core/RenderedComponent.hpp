@@ -12,6 +12,8 @@ namespace SE
 
 		virtual int drawCall() const = 0; // Called by the rendered, return the number of sub-drawcalls
 
+		virtual void postDestroy() override;
+
 	private:
 
 	};

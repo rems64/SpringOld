@@ -7,7 +7,7 @@
 
 namespace SE
 {
-	Material::Material() : m_shader(new Shader("ressources/basic_colored.glsl")), m_properties()
+	Material::Material() : m_shader(new Shader("../../../../ISUFlightSimulator/ressources/basic_colored.glsl")), m_properties()
 	{
 		m_shader->compile();
 	}
@@ -36,6 +36,27 @@ namespace SE
 		m_shader->unbind();
 	}
 
+	void Material::pickShader(bool normalMapped)
+	{
+		if (normalMapped)
+		{
+			delete m_shader;
+			m_shader = new Shader("../../../../ISUFlightSimulator/ressources/basic_colored_normalmapped.glsl");
+			m_shader->compile();
+		}
+	}
+
+	uint32_t getTextureIndexFromName(SE_MATERIAL_PROPERTY_NAME name)
+	{
+		switch (name)
+		{
+			case (SE_MATERIAL_PROPERTY_NAME::DIFFUSE):
+				return 0;
+			case (SE_MATERIAL_PROPERTY_NAME::NORMAL):
+				return 1;
+		}
+	}
+
 	void Material::updateShaderUniforms()
 	{
 		bind();
@@ -57,6 +78,16 @@ namespace SE
 					strcpy(location, "u_diffuse_color");
 				}
 				break;
+			case(SE_MATERIAL_PROPERTY_NAME::NORMAL):
+				if (m_properties[i].m_type == SE_MATERIAL_PROPERTY_TYPE::TEXTURE)
+				{
+					strcpy(location, "u_normal_texture");
+				}
+				else if (m_properties[i].m_type == SE_MATERIAL_PROPERTY_TYPE::COLOR)
+				{
+					strcpy(location, "u_normal_color");
+				}
+				break;
 			case(SE_MATERIAL_PROPERTY_NAME::ROUGHNESS):
 				strcpy(location, "u_roughness");
 				break;
@@ -64,7 +95,7 @@ namespace SE
 			if (m_properties[i].m_type == SE_MATERIAL_PROPERTY_TYPE::TEXTURE)
 			{
 				m_shader->bind();
-				m_shader->setUniform1i(location, 0);
+				m_shader->setUniform1i(location, getTextureIndexFromName(m_properties[i].m_name));
 			}
 			else if (m_properties[i].m_type == SE_MATERIAL_PROPERTY_TYPE::COLOR)
 			{
@@ -86,6 +117,11 @@ namespace SE
 	void Material::setViewMatrix(glm::mat4 matrix) const			// WARNING : Has to be bound
 	{
 		m_shader->setUniformMat4f("u_view", matrix);
+	}
+
+	void Material::setModelMatrix(glm::mat4 matrix) const			// WARNING : Has to be bound
+	{
+		m_shader->setUniformMat4f("u_model", matrix);
 	}
 
 	MaterialProperty* Material::getProperty(SE_MATERIAL_PROPERTY_NAME name)
@@ -119,7 +155,7 @@ namespace SE
 		{
 			if (m_properties[i].m_type == SE_MATERIAL_PROPERTY_TYPE::TEXTURE)
 			{
-				m_properties[i].m_texture->bind(0);
+				m_properties[i].m_texture->bind(getTextureIndexFromName(m_properties[i].m_name));
 			}
 		}
 	}

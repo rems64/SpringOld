@@ -12,6 +12,9 @@ namespace SE
 	public:
 		SceneComponent(ActorComponent* owner);
 		SceneComponent(Actor* owner, bool root);
+
+		friend class DataManager;
+
 		virtual ~SceneComponent();
 
 		void setLocation(Vector3f& loc) { m_location = loc; updateTransform(); };
@@ -37,12 +40,18 @@ namespace SE
 
 		virtual void updateHierarchicalTransform(glm::mat4* transform);
 
+		virtual glm::quat getOrientation() {return glm::quat(m_rotation.getGlm()); };
+		virtual Vector3f getUp() { return Vector3f(glm::rotate(getOrientation(), glm::vec3(0.0f, 1.0f, 0.0f))); };
+		virtual Vector3f getRight() { return Vector3f(glm::rotate(getOrientation(), glm::vec3(1.0f, 0.0f, 0.0f))); };
+		virtual Vector3f getForward() { return Vector3f(glm::rotate(getOrientation(), glm::vec3(0.0f, 0.0f, 1.0f))); };
+
 		virtual ActorComponent* getOwner() override { return (m_isRoot ? nullptr : m_owner); };
 		virtual Actor* getRootActor() { return m_actorRoot; };
 
 		Actor* getActorOwner();
 
 		bool isRoot() { return m_isRoot; };
+		void setRoot(bool root) { m_isRoot = root; };
 
 		virtual void destroy() override;
 

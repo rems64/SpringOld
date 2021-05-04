@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <forward_list>
 #include <string>
 #include <chrono>
 #include <ofbx.h>
@@ -30,8 +31,11 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <ImGuizmo.h>
+
+#include <nlohmann/json.hpp>

@@ -11,7 +11,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_compile_definitions(SE_DEBUG)
 endif()
 
-include_directories( "include/" "lib/ImGui" "lib/ImGuizmo-master" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include" "lib/Assimp/Include")
+include_directories( "include/" "lib/ImGui" "lib/ImGuizmo-master" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include" "lib/Assimp/Include" "lib/json/include" )
 
 set(SRCS
 	
@@ -51,7 +51,17 @@ set(SRCS
 	"src/Core/Box2D.cpp"
 	"src/Graphics/Framebuffer.cpp"
 	"src/Core/FileDialogs.cpp"
-	 "src/Core/ParticleEmitter.cpp" "src/Core/Math.cpp" "src/Core/ParticleEmitterComponent.cpp" "src/UI/ImGuiMisc.cpp")
+	"src/Core/ParticleEmitter.cpp"
+	"src/Core/Math.cpp"
+	"src/Core/ParticleEmitterComponent.cpp"
+	"src/UI/ImGuiMisc.cpp"
+	"src/Core/Asset.cpp"
+	"src/Core/AssetsManager.cpp"
+	"src/Core/LightComponent.cpp"
+	"src/Core/Light.cpp"
+	"src/Core/PointLightComponent.cpp"
+	"src/Editor/EditorCamera.cpp"
+	 "src/Core/EditorCameraComponent.cpp")
 
 set(IMGUI_SRCS
 	"lib/ImGui/imgui.cpp"
@@ -71,7 +81,7 @@ set(OPENFBX_SRCS
 
 add_library(SpringEngine SHARED ${SRCS} ${IMGUI_SRCS} ${OPENFBX_SRCS})
 
-target_include_directories(SpringEngine PUBLIC "lib/ImGui" "lib/ImGuizmo-master" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include" "lib/OpenFBX/include" "lib/Assimp/Include/")
+target_include_directories(SpringEngine PUBLIC "lib/ImGui" "lib/ImGuizmo-master" "lib/ImGui/backends" "lib/GLFW/include" "lib/GLEW/include" "include/external" "lib/spdlog/include" "lib/OpenFBX/include" "lib/Assimp/Include/" "lib/json/include" )
 #target_include_directories(test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}lib/FBXImporter/importer/include")
 
 find_package(OpengL REQUIRED COMPONENTS OpengL)

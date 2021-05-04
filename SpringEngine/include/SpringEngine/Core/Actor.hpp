@@ -7,12 +7,15 @@ namespace SE
 {
 	class ActorComponent;
 	class SceneComponent;
+	class DataManager;
 	class Scene;
 	class SE_API Actor : public SpringObject
 	{
 	public:
 		Actor();
 		virtual ~Actor();
+
+		friend class DataManager;
 
 		template<typename T>
 		void addComponent(T* component)

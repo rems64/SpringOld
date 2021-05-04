@@ -10,9 +10,10 @@ namespace SE
 		SpringObject();
 		virtual ~SpringObject();
 
-		virtual const char* getName() { return m_name; };
-		virtual void setName(const char* name) { m_name = name; };
-	private:
-		const char* m_name;
+		virtual const char* getName() const { return m_name.c_str(); };
+		virtual std::string& getNameStr() { return m_name; };
+		virtual void setName(const char* name);
+	protected:
+		std::string m_name;
 	};
 }
