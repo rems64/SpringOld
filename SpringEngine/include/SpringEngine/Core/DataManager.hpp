@@ -36,7 +36,7 @@ namespace SE
 
 		// Textures
 		Texture* getDefaultTexture();
-		Texture* loadTexture(const char* path);
+		Texture* loadTexture(const char* path, bool flip=false);
 
 		template<class T>
 		int registerDataBlock(T* dataBlock)

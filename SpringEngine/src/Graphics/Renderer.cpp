@@ -85,12 +85,13 @@ namespace SE
 		m_sceneDrawCalls++;
 	}
 
-	void Renderer::drawDebugNormals(const VertexArray* vertexArray, const IndexBuffer* indexBuffer, const glm::mat4* transform)
+	void Renderer::drawDebugNormals(const VertexArray* vertexArray, const IndexBuffer* indexBuffer, const glm::mat4* transform, float drawLength)
 	{
 		vertexArray->bind();
 		indexBuffer->bind();
 		m_normalDebugShader->bind();
 		m_normalDebugShader->setUniformMat4f("u_projection", m_VP * (*transform));
+		m_normalDebugShader->setUniform1f("u_normal_length", drawLength);
 		GLCall(glDrawElements(GL_TRIANGLES, indexBuffer->getCount(), GL_UNSIGNED_INT, NULL));
 		m_normalDebugShader->unbind();
 		vertexArray->unbind();

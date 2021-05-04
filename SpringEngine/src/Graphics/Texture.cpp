@@ -113,7 +113,7 @@ namespace SE
 
     bool Texture::loadPNG(const std::string& path, unsigned int depth, bool invert)
     {
-        stbi_set_flip_vertically_on_load(0);
+        stbi_set_flip_vertically_on_load(m_flipped);
         data = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, STBI_rgb_alpha);
         if (!data)
         {

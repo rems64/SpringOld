@@ -21,6 +21,8 @@ namespace SE
 		std::string name;
 		void* value;
 		float speed = 1.0f;
+		//bool shouldDisplay = true;
+		std::function<bool(void)> shouldDisplay = [](void) {return true; };
 	};
 	class EditorEditable
 	{

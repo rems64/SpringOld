@@ -26,12 +26,14 @@ namespace SE
 		void bind(unsigned int slot = 0);
 		void unbind();
 		const unsigned int get() const;
+		void setFlipped(bool flipped) { m_flipped = flipped; };
 
 	protected:
 		int m_width;
 		int m_height;
 		int m_imageSize;
 		int m_BPP;
+		bool m_flipped;
 		unsigned int m_texture;
 		unsigned char* data;
 	};

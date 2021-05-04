@@ -58,7 +58,7 @@ namespace SE
 						std::string texturePath = path;
 						size_t pos = texturePath.find_last_of("/\\");
 						texturePath = texturePath.substr(0, pos+1).append(texture_file.C_Str());
-						Texture* idx = loadTexture(texturePath.c_str());
+						Texture* idx = loadTexture(texturePath.c_str(), true);
 						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::DIFFUSE, SE_MATERIAL_PROPERTY_TYPE::TEXTURE, idx));
 					}
 					else
@@ -85,7 +85,7 @@ namespace SE
 						std::string texturePath = path;
 						size_t pos = texturePath.find_last_of("/\\");
 						texturePath = texturePath.substr(0, pos + 1).append(texture_file.C_Str());
-						Texture* idx = loadTexture(texturePath.c_str());
+						Texture* idx = loadTexture(texturePath.c_str(), true);
 						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::NORMAL, SE_MATERIAL_PROPERTY_TYPE::TEXTURE, idx));
 						newMaterial->pickShader(true);
 					}
@@ -196,10 +196,11 @@ namespace SE
 		return nullptr;
 	}
 
-	Texture* DataManager::loadTexture(const char* path)
+	Texture* DataManager::loadTexture(const char* path, bool flip)
 	{
 		SE_PROFILE_FUNCTION();
 		Texture* newTexture = new SE::Texture();
+		newTexture->setFlipped(flip);
 		newTexture->loadPNG(path, false, false);
 		m_textures.emplace_back(std::shared_ptr<Texture>(newTexture));
 		return newTexture;

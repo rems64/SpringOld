@@ -24,7 +24,7 @@ layout (triangles) in;
 layout (line_strip, max_vertices = 6) out;
 
 in vec3 normal[];
-const float mag = 0.1f;
+uniform float u_normal_length = 10.0f;
 
 uniform mat4 u_projection;
 
@@ -33,7 +33,7 @@ void main()
     gl_Position = gl_in[0].gl_Position;
     EmitVertex();
 
-    gl_Position = gl_in[0].gl_Position + u_projection * (vec4(normal[0], 0.0)*mag);
+    gl_Position = gl_in[0].gl_Position + u_projection * (vec4(normal[0], 0.0)*u_normal_length);
     EmitVertex();
 
     EndPrimitive();
@@ -41,7 +41,7 @@ void main()
     gl_Position = gl_in[1].gl_Position;
     EmitVertex();
 
-    gl_Position = gl_in[1].gl_Position + u_projection * (vec4(normal[1], 0.0)*mag);
+    gl_Position = gl_in[1].gl_Position + u_projection * (vec4(normal[1], 0.0)*u_normal_length);
     EmitVertex();
 
     EndPrimitive();
@@ -49,7 +49,7 @@ void main()
     gl_Position = gl_in[2].gl_Position;
     EmitVertex();
 
-    gl_Position = gl_in[2].gl_Position + u_projection * (vec4(normal[2], 0.0)*mag);
+    gl_Position = gl_in[2].gl_Position + u_projection * (vec4(normal[2], 0.0)*u_normal_length);
     EmitVertex();
 
     EndPrimitive();

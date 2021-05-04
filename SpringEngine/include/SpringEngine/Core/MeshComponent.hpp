@@ -25,5 +25,6 @@ namespace SE
 		Mesh* m_meshInstance;
 		uint32_t u_subMeshes;
 		bool m_debugDrawNormals;
+		float m_debugNormalsLength;
 	};
 }

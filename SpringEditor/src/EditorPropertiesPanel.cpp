@@ -53,6 +53,10 @@ namespace SpringEditor
 		{
 			for (SE::EditorProperty property : *editorComponent->getProperties())
 			{
+				if (!property.shouldDisplay())
+				{
+					continue;
+				}
 				switch (property.type)
 				{
 				case SE::EditorPropertyTypes::IntInput:
