@@ -2,6 +2,7 @@
 
 #include <SpringEngine/Core/SpringObject.hpp>
 #include <SpringEngine/core.hpp>
+#include <SpringEngine/Events/Event.hpp>
 
 namespace SE
 {
@@ -16,6 +17,8 @@ namespace SE
 		virtual ~Actor();
 
 		friend class DataManager;
+
+		virtual void onEvent(Event& ev);
 
 		template<typename T>
 		void addComponent(T* component)
@@ -35,7 +38,8 @@ namespace SE
 
 		SceneComponent* getRoot() { return m_rootComponent; };
 
-		virtual void tick(double deltaSeconds);
+		virtual void editorUpdate(double deltaSeconds);
+		virtual void update(double deltaSeconds);
 		virtual void drawCall();
 
 		virtual void setScene(Scene* scene) { m_scene = scene; };

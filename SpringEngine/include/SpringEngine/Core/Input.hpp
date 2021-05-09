@@ -1,5 +1,12 @@
 #pragma once
 
+#include <SpringEngine/core.hpp>
+
+namespace SE
+{
+	class InputManager;
+}
+
 namespace SE
 {
 	using KeyCode = uint16_t;
@@ -192,4 +199,14 @@ namespace SE
 			ButtonMiddle = Button2
 		};
 	}
+
+	struct SE_API Axis
+	{
+		std::map<KeyCode, float> contributors;
+		float getValue(InputManager* inputManager);
+		void addContributor(KeyCode key, float value)
+		{
+			contributors.insert(std::make_pair(key, value));
+		}
+	};
 }

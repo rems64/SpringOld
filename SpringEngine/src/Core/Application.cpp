@@ -5,26 +5,34 @@ namespace SE
 {
 	Application* Application::s_instance = nullptr;
 
-	Application::Application(std::string name) : m_windows(), m_name(name), m_appRunning(true), m_windowsNbr(0), m_frameRate(60), m_dataManager(new DataManager())
+	Application::Application(std::string name) : m_windows(), m_name(name), m_appRunning(true), m_windowsNbr(0), m_frameRate(60), m_dataManager(new DataManager()), m_inputManager(new InputManager())
 	{
+
+		// Logging system
 		Log::init();
 		SE_CORE_WARN("Application \"{0}\" started", name);
+
+		// Unique instance
 		if (s_instance != nullptr)
 			SE_CORE_ERROR("Application has already been created");
 		s_instance = this;
+
+		//Glfw init
 		init();
 
+		//Profile application
 		Instrumentor::get().beginSession("Application");
-		SE_PROFILE_SCOPE("Initialisaing app");
+		SE_PROFILE_SCOPE("Initialising app");
 
+		//Main window
 		Window* win = new Window(name.c_str());
 		win->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
 		m_windows.push_back(win);
 		m_windowsNbr++;
-
 		win->makeContextCurrent();
 		win->setVSync(true);
 
+		//Glew init
 		unsigned int glewInitResult = glewInit();
 		if (glewInitResult)
 		{
@@ -32,26 +40,27 @@ namespace SE
 			abort;
 		}
 
-		//glfwWindowHint(GLFW_SAMPLES, 16);
+		//OpenGL stuff
 		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glDepthFunc(GL_LEQUAL);
 		glDepthRange(0.0f, 1.0f);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		glEnable(GL_BLEND);
 
-		//m_worldLayer = new WorldLayer();
-		//s_instance->pushLayer(m_worldLayer);
-
+		//Setup basic layers
 		m_imGuiLayer = new ImGuiLayer();
 		s_instance->pushOverlay(m_imGuiLayer);
 
+		//Init renderer
 		Renderer::initDebugShaders();
+
+		//Link Inputmanager
+		m_inputManager->setLinkedApp(this);
 	}
 
-	Application::Application(const Application& src) : m_windows(src.m_windows), m_appRunning(src.m_appRunning), m_windowsNbr(src.m_windowsNbr), m_imGuiLayer(src.m_imGuiLayer), m_dataManager(src.m_dataManager)
+	Application::Application(const Application& src) : m_windows(src.m_windows), m_appRunning(src.m_appRunning), m_windowsNbr(src.m_windowsNbr), m_imGuiLayer(src.m_imGuiLayer), m_dataManager(src.m_dataManager), m_inputManager(src.m_inputManager)
 	{
 	}
 
@@ -194,18 +203,6 @@ namespace SE
 	double Application::getFPS()
 	{
 		return m_frameRate;
-	}
-
-	bool Application::isKeyPressed(const KeyCode key)
-	{
-		auto state = glfwGetKey((GLFWwindow*)getMainWindow().getNativeWindow(), static_cast<int32_t>(key));
-		return state == GLFW_PRESS || state == GLFW_REPEAT;
-	}
-
-	bool Application::isMouseButtonDown(const MouseCode button)
-	{
-		auto state = glfwGetMouseButton((GLFWwindow*)getMainWindow().getNativeWindow(), static_cast<int32_t>(button));
-		return state == GLFW_PRESS;
 	}
 
 	Vector2d Application::getMousePosition()

@@ -4,8 +4,9 @@
 
 namespace SE
 {
-	SceneComponent::SceneComponent(ActorComponent* owner) : ActorComponent(owner), m_location(0.0, 0.0, 0.0), m_rotation(0.0, 0.0, 0.0), m_scale(1.0, 1.0, 1.0), m_transform(), m_hierarchicalTransform(glm::mat4(1.0f)), m_isRoot(false)
+	SceneComponent::SceneComponent(SceneComponent* owner) : ActorComponent(owner), m_location(0.0, 0.0, 0.0), m_rotation(0.0, 0.0, 0.0), m_scale(1.0, 1.0, 1.0), m_transform(), m_hierarchicalTransform(glm::mat4(1.0f)), m_isRoot(false)
 	{
+		updateHierarchicalTransform(&owner->getTransform());
 		updateTransform();
 	}
 

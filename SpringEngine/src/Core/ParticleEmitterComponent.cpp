@@ -5,7 +5,7 @@
 
 namespace SE
 {
-	ParticleEmitterComponent::ParticleEmitterComponent(ActorComponent* owner) : RenderedComponent(owner), m_instance(new ParticleEmitter(this))
+	ParticleEmitterComponent::ParticleEmitterComponent(SceneComponent* owner) : RenderedComponent(owner), m_instance(new ParticleEmitter(this))
 	{
 		m_instance->getMaterial()->updateShaderUniforms();
 	}
@@ -29,12 +29,21 @@ namespace SE
 	}
 
 
-	void ParticleEmitterComponent::tick(double deltaSeconds)
+	void ParticleEmitterComponent::editorUpdate(double deltaSeconds)
 	{
 		m_instance->update(deltaSeconds);
 		for (auto component : m_components)
 		{
-			component->tick(deltaSeconds);
+			component->editorUpdate(deltaSeconds);
+		}
+	}
+
+	void ParticleEmitterComponent::update(double deltaSeconds)
+	{
+		m_instance->update(deltaSeconds);
+		for (auto component : m_components)
+		{
+			component->update(deltaSeconds);
 		}
 	}
 

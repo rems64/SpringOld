@@ -13,5 +13,6 @@ namespace SpringEditor
 		static void setEditorLayer(EditorLayer* layer) { m_editorLayer = layer; };
 	private:
 		static EditorLayer* m_editorLayer;
+		static float m_labelsColumnWidth;
 	};
 }

@@ -103,16 +103,20 @@ namespace SpringEditor
 				}
 				break;
 			case SE::Key::O:
-				if (SE::Application::get().isKeyPressed(SE::Key::LeftControl) || SE::Application::get().isKeyPressed(SE::Key::RightControl))
+				if (SE::Application::get().getInputManager()->isKeyPressed(SE::Key::LeftControl) || SE::Application::get().getInputManager()->isKeyPressed(SE::Key::RightControl))
 				{
 					openScene();
 				}
 				break;
 			case SE::Key::S:
-				if (SE::Application::get().isKeyPressed(SE::Key::LeftControl) || SE::Application::get().isKeyPressed(SE::Key::RightControl))
+				if (SE::Application::get().getInputManager()->isKeyPressed(SE::Key::LeftControl) || SE::Application::get().getInputManager()->isKeyPressed(SE::Key::RightControl))
 				{
 					saveScene();
 				}
+				break;
+			case SE::Key::C:
+				if(m_selectedComponent)
+					m_editorCamera->setTarget(m_selectedComponent->getLocation());
 				break;
 			case SE::Key::Delete:
 				if (m_selectedComponent)
@@ -174,8 +178,8 @@ namespace SpringEditor
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Rendering stuff
-		m_editorCamera->tick(deltaTime);
-		m_currentScene->update(deltaTime, m_editorCamera->getCamera());
+		m_editorCamera->editorUpdate(deltaTime);
+		m_currentScene->editorUpdate(deltaTime, m_editorCamera->getCamera());
 		//SE_CORE_TRACE("{} draw calls", nbrDrawCalls);
 
 		m_framebuffer->unbind();
@@ -272,7 +276,7 @@ namespace SpringEditor
 				ImGuizmo::SetRect(ImGui::GetWindowContentRegionMin().x + ImGui::GetWindowPos().x, ImGui::GetWindowContentRegionMin().y + ImGui::GetWindowPos().y, m_viewport.x(), m_viewport.y());
 
 				// Snapping
-				bool snapping = SE::Application::get().isKeyPressed(SE::Key::LeftControl);
+				bool snapping = SE::Application::get().getInputManager()->isKeyPressed(SE::Key::LeftControl);
 				float snapIntervals[3] = { m_guizmoOperation==ImGuizmo::ROTATE ? 22.5f : 0.5f, m_guizmoOperation == ImGuizmo::ROTATE ? 22.5f : 0.5f, m_guizmoOperation == ImGuizmo::ROTATE ? 22.5f : 0.5f };
 
 				const glm::mat4& camProj = m_editorCamera->getCamera()->getProjection();
@@ -281,10 +285,12 @@ namespace SpringEditor
 				glm::mat4 offset;
 				offset = m_selectedComponent->getParentTransform();
 				transform = m_selectedComponent->getLocalTransform();
+				transform = offset * transform;
 				//ImGuizmo::DrawCubes(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(transform), 1);
 				//ImGuizmo::DrawGrid(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(offset), 5.f);
 				ImGuizmo::Manipulate(glm::value_ptr(camView), glm::value_ptr(camProj), m_guizmoOperation, m_guizmoSpace, glm::value_ptr(transform), nullptr, snapping ? snapIntervals : nullptr);
 				//transform *= glm::inverse(offset);
+				transform = glm::inverse(offset) * transform;
 				if (ImGuizmo::IsUsing())
 				{
 					glm::vec3 translation, rotation, scale;
@@ -318,7 +324,15 @@ namespace SpringEditor
 				{
 					m_currentScene->registerActor(new SE::Actor());
 				}
-					
+				if (ImGui::MenuItem("Create pawn"))
+				{
+					m_currentScene->registerActor(new SE::Pawn());
+				}
+				if (ImGui::MenuItem("Create character"))
+				{
+					m_currentScene->registerActor(new SE::Character());
+				}
+
 
 				ImGui::EndPopup();
 			}
@@ -373,7 +387,6 @@ namespace SpringEditor
 						SE::Mesh* mesh = new SE::Mesh();
 						SE::MeshComponent* meshComponent = new SE::MeshComponent(m_selectedComponent, mesh);
 						m_selectedComponent->addComponent<SE::MeshComponent>(meshComponent);
-						meshComponent->updateHierarchicalTransform(&m_selectedComponent->getTransform());
 						ImGui::CloseCurrentPopup();
 					}
 
@@ -382,7 +395,6 @@ namespace SpringEditor
 						SE::ParticleEmitterComponent* particleEmitterComponent = new SE::ParticleEmitterComponent(m_selectedComponent);
 						m_selectedComponent->addComponent<SE::ParticleEmitterComponent>(particleEmitterComponent);
 						m_currentScene->registerRenderedComponent(particleEmitterComponent, true);
-						particleEmitterComponent->updateHierarchicalTransform(&m_selectedComponent->getTransform());
 						ImGui::CloseCurrentPopup();
 					}
 
@@ -391,7 +403,6 @@ namespace SpringEditor
 						SE::PointLightComponent* pointLightComponent = new SE::PointLightComponent(m_selectedComponent);
 						m_selectedComponent->addComponent<SE::PointLightComponent>(pointLightComponent);
 						m_currentScene->registerLight(pointLightComponent);
-						pointLightComponent->updateHierarchicalTransform(&m_selectedComponent->getTransform());
 						ImGui::CloseCurrentPopup();
 					}
 					ImGui::EndPopup();

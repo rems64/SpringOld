@@ -46,7 +46,7 @@ uniform vec3 u_diffuse_color;
 uniform sampler2D u_diffuse_texture;
 uniform sampler2D u_normal_texture;
 
-uniform vec3 u_camera_location;
+uniform vec3 u_camera_location = vec3(0.0, 0.0, 6.0);
 
 struct PointLight {
     vec3 position;
@@ -61,7 +61,7 @@ void main()
     color = texture(u_diffuse_texture, UV)*0.5 + vec4(u_diffuse_color.xyz, 1.0);
     vec3 texNormal = normal_worldspace;
 
-    vec3 viewDir = normalize(vec3(0.0, 0.0, 6.0) - vertex_worldspace.xyz);
+    vec3 viewDir = normalize(u_camera_location - vertex_worldspace.xyz);
     //color = vec4(0.0, 0.0, 0.0, 1.0);
     //color = vec4(abs(normal).xyz, 1.0);
     for(int i = 0; i < NBR_POINT_LIGHTS; i++)
@@ -84,5 +84,6 @@ void main()
             specular *= attenuation;
             color += vec4(diffuse+specular, 0.0);
         }
+        //color = vec4(vec3(pow(dot(viewDir, normal_worldspace), 4.0)), 1.0);
     }
 }

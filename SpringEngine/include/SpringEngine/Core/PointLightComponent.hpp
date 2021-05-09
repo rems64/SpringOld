@@ -7,7 +7,7 @@ namespace SE
 	class SE_API PointLightComponent : public LightComponent
 	{
 	public:
-		PointLightComponent(ActorComponent* owner);
+		PointLightComponent(SceneComponent* owner);
 		~PointLightComponent();
 
 		float getPower() { return m_power; };

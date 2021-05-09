@@ -2,7 +2,7 @@
 
 namespace SE
 {
-	EditorCameraComponent::EditorCameraComponent(ActorComponent* owner) : CameraComponent(owner), m_yaw(0.0f), m_pitch(0.0f), m_distance(100.f), m_cameraTargetPoint(0.0, 0.0, 0.0)
+	EditorCameraComponent::EditorCameraComponent(SceneComponent* owner) : CameraComponent(owner), m_yaw(0.0f), m_pitch(0.0f), m_distance(100.f), m_cameraTargetPoint(0.0, 0.0, 0.0)
 	{
 
 	}

@@ -4,7 +4,7 @@
 
 namespace SE
 {
-	RenderedComponent::RenderedComponent(ActorComponent* owner) : SceneComponent(owner)
+	RenderedComponent::RenderedComponent(SceneComponent* owner) : SceneComponent(owner)
 	{
 	}
 

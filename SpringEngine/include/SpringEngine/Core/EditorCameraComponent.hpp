@@ -10,7 +10,7 @@ namespace SE
 	class SE_API EditorCameraComponent : public CameraComponent
 	{
 	public:
-		EditorCameraComponent(ActorComponent* owner);
+		EditorCameraComponent(SceneComponent* owner);
 		EditorCameraComponent(Actor* owner, bool root);
 		~EditorCameraComponent();
 
@@ -19,6 +19,7 @@ namespace SE
 		virtual glm::mat4 getView() override;
 		virtual glm::quat getOrientation() override { return glm::quat(glm::vec3(-m_pitch, -m_yaw, 0.0f)); };
 		virtual Vector3f getForward() override { return Vector3f(glm::rotate(getOrientation(), glm::vec3(0.0f, 0.0f, -1.0f))); };
+		void setTarget(Vector3f loc) { m_cameraTargetPoint = loc; };
 	private:
 		float m_yaw;
 		float m_pitch;

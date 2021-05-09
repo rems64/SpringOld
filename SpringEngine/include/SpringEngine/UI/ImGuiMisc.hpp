@@ -9,12 +9,12 @@ namespace SE
 	class SE_API ImGuiMisc
 	{
 	public:
-		static bool coloredVector3Control(const char* label, SE::Vector3f& vector, float speed = 0.1f, float labelWidth = 80.f);
-		static bool dataBlockSelector(const char* label, SE::DataBlock* datablock, float speed=1.0f, float labelWidth = 80.f);
-		static bool intSelector(const char* label, int* value, float speed = 1.0f, float labelWidth = 80.f);
-		static bool floatSelector(const char* label, float* value, float speed = 1.0f, float labelWidth = 80.f);
-		static bool boolSelector(const char* label, bool* value, float labelWidth = 80.f);
-		static bool colorSelector(const char* label, SE::Vector3f* value, float labelWidth = 80.f);
+		static bool coloredVector3Control(const char* label, const char* columnId, SE::Vector3f& vector, float& labelWidth, float speed = 0.1f);
+		static bool dataBlockSelector(const char* label, const char* columnId, SE::DataBlock* datablock, float& labelWidth, float speed = 1.0f);
+		static bool intSelector(const char* label, const char* columnId, int* value, float& labelWidth, float speed = 1.0f);
+		static bool floatSelector(const char* label, const char* columnId, float* value, float& labelWidth, float speed = 1.0f);
+		static bool boolSelector(const char* label, const char* columnId, bool* value, float& labelWidth);
+		static bool colorSelector(const char* label, const char* columnId, SE::Vector3f* value, float& labelWidth);
 	};
 }
 

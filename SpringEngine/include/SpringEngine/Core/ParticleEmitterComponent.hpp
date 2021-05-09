@@ -11,12 +11,13 @@ namespace SE
 	class SE_API ParticleEmitterComponent : public RenderedComponent
 	{
 	public:
-		ParticleEmitterComponent(ActorComponent* owner);
+		ParticleEmitterComponent(SceneComponent* owner);
 		virtual ~ParticleEmitterComponent();
 
 		virtual int drawCall() const override;
 
-		virtual void tick(double deltaSeconds) override;
+		virtual void editorUpdate(double deltaSeconds) override;
+		virtual void update(double deltaSeconds) override;
 
 		virtual void postDestroy() override;
 

@@ -14,7 +14,6 @@ out vec2 UV;
 out vec3 vertex_worldspace;
 out vec3 vertex_cameraspace;
 out vec3 normal_worldspace;
-out vec3 normal;
 out mat3 tbn_matrix;
 
 void main()
@@ -26,9 +25,9 @@ void main()
 
     vec3 tangent_worldspace   = normalize(vec3(u_model * vec4(tangent_modelspace,   0.0)));
     vec3 bitangent_worldspace = normalize(vec3(u_model * vec4(bitangent_modelspace, 0.0)));
-    normal_worldspace    = normalize(vec3(u_model * vec4(normal_modelspace,    0.0)));
-    tbn_matrix = mat3(tangent_worldspace, bitangent_worldspace, normal_worldspace);
-    normal = normal_modelspace;
+    normal_worldspace         = normalize(vec3(u_model * vec4(normal_modelspace,    0.0)));
+
+    tbn_matrix = mat3(tangent_worldspace, -bitangent_worldspace, normal_worldspace);
 };
 
 //shader fragment
@@ -45,6 +44,8 @@ uniform vec3 u_diffuse_color;
 uniform sampler2D u_diffuse_texture;
 uniform sampler2D u_normal_texture;
 
+uniform vec3 u_camera_location = vec3(0.0, 0.0, 6.0);
+
 struct PointLight {
     vec3 position;
     vec3 color;
@@ -59,10 +60,10 @@ const vec3 ambientColor = vec3(1.0, 1.0, 1.0);
 void main()
 {
     color = (texture(u_diffuse_texture, UV)*0.5 + vec4(u_diffuse_color.xyz, 1.0)) * vec4((ambientColor * ambientStrength), 1.0);
-    vec3 texNormal = texture(u_normal_texture, UV).rgb;
-    texNormal = texNormal * 2.0 - 1.0;  // From 0;1 to -1;1
+    vec3 texNormal = texture(u_normal_texture, UV).xyz;
+    texNormal.xy = normalize(texNormal.xy * 2.0 - 1.0);  // From 0;1 to -1;1
     texNormal = normalize(tbn_matrix * texNormal);
-    vec3 viewDir = normalize(vec3(0.0, 0.0, 6.0) - vertex_worldspace.xyz);
+    vec3 viewDir = normalize(u_camera_location - vertex_worldspace.xyz);
     //color = vec4(0.0, 0.0, 0.0, 1.0);
     //color = vec4(abs(normal).xyz, 1.0);
     for(int i = 0; i < NBR_POINT_LIGHTS; i++)
@@ -83,7 +84,9 @@ void main()
             float attenuation = pointLights[i].power / dist;
             diffuse *= attenuation;
             specular *= attenuation;
-            color += vec4(diffuse+specular, 0.0);
+            color += vec4(diffuse, 0.0);
+            color = vec4(diff);
         }
     }
+    //color = vec4(texNormal, 1.0);
 }

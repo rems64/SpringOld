@@ -10,7 +10,7 @@ namespace SE
 	class SE_API MeshComponent : public RenderedComponent, public EditorEditable
 	{
 	public:
-		MeshComponent(ActorComponent* owner, Mesh* instance);
+		MeshComponent(SceneComponent* owner, Mesh* instance);
 		virtual ~MeshComponent();
 
 		virtual int drawCall() const override;

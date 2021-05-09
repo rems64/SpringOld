@@ -61,15 +61,18 @@ namespace SE
 	void Scene::onEvent(Event& ev)
 	{
 		SE_PROFILE_FUNCTION();
+		for (auto actor : m_registeredActors)
+		{
+			actor->onEvent(ev);
+		}
 	}
 
-	void Scene::update(double deltaSeconds, CameraComponent* cam)
+	void Scene::editorUpdate(double deltaSeconds, CameraComponent* cam)
 	{
 		SE_PROFILE_FUNCTION();
 		for (std::vector<Actor*>::iterator actor = m_registeredActors.begin(); actor != m_registeredActors.end(); actor++)
 		{
-			(*actor)->tick(deltaSeconds);
-			//(*actor)->drawCall();
+			(*actor)->editorUpdate(deltaSeconds);
 		}
 		SE::Renderer::beginSceneDraw(cam, this);
 		for (auto drawable : m_renderingList)
@@ -77,7 +80,21 @@ namespace SE
 			drawable->drawCall();
 		}
 		SE::Renderer::endSceneDraw();
-		//int nbrDrawCalls = SE::Renderer::endSceneDraw();
+	}
+
+	void Scene::update(double deltaSeconds, CameraComponent* cam)
+	{
+		SE_PROFILE_FUNCTION();
+		for (std::vector<Actor*>::iterator actor = m_registeredActors.begin(); actor != m_registeredActors.end(); actor++)
+		{
+			(*actor)->update(deltaSeconds);
+		}
+		SE::Renderer::beginSceneDraw(cam, this);
+		for (auto drawable : m_renderingList)
+		{
+			drawable->drawCall();
+		}
+		SE::Renderer::endSceneDraw();
 	}
 
 	void Scene::registerRenderedComponent(RenderedComponent* component, bool front)

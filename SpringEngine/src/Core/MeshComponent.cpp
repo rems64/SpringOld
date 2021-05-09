@@ -3,7 +3,7 @@
 
 namespace SE
 {
-	MeshComponent::MeshComponent(ActorComponent* owner, Mesh* instance) : RenderedComponent(owner), m_meshInstance(instance), m_debugDrawNormals(false), m_debugNormalsLength(1.0f)
+	MeshComponent::MeshComponent(SceneComponent* owner, Mesh* instance) : RenderedComponent(owner), m_meshInstance(instance), m_debugDrawNormals(false), m_debugNormalsLength(1.0f)
 	{
 		setName(instance->getName());
 		if (m_meshInstance->isValid())

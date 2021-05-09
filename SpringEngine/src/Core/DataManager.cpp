@@ -81,7 +81,7 @@ namespace SE
 				{
 					if (texture_file.length > 0)
 					{
-						SE_CORE_TRACE("Normal map found?? {0}", texture_file.C_Str());
+						SE_CORE_TRACE("Using normal map ({0})", texture_file.C_Str());
 						std::string texturePath = path;
 						size_t pos = texturePath.find_last_of("/\\");
 						texturePath = texturePath.substr(0, pos + 1).append(texture_file.C_Str());

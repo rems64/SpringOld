@@ -4,9 +4,10 @@
 namespace SpringEditor
 {
 	EditorLayer* EditorPropertiesPanel::m_editorLayer = nullptr;
+	float EditorPropertiesPanel::m_labelsColumnWidth = 80.f;
 	void EditorPropertiesPanel::displayProperties(SE::SceneComponent* component)
 	{
-		bool translated = SE::ImGuiMisc::coloredVector3Control("Location", component->getLocationRef(), 0.1f, 80.f);
+		bool translated = SE::ImGuiMisc::coloredVector3Control("Location", "propertiesLeftColumn", component->getLocationRef(), m_labelsColumnWidth, 0.1f);
 		if (translated)
 		{
 			component->updateTransform();
@@ -15,7 +16,7 @@ namespace SpringEditor
 		rotate.x(glm::degrees(rotate.x()));
 		rotate.y(glm::degrees(rotate.y()));
 		rotate.z(glm::degrees(rotate.z()));
-		bool rotated = SE::ImGuiMisc::coloredVector3Control("Rotation", rotate, 1.0f, 80.f);
+		bool rotated = SE::ImGuiMisc::coloredVector3Control("Rotation", "propertiesLeftColumn", rotate, m_labelsColumnWidth, 1.0f);
 		if (rotated)
 		{
 			rotate.x(glm::radians(rotate.x()));
@@ -24,7 +25,7 @@ namespace SpringEditor
 			component->getRotationRef() = rotate;
 			component->updateTransform();
 		}
-		bool scaled = SE::ImGuiMisc::coloredVector3Control("Scale", component->getScaleRef(), 0.01f, 80.f);
+		bool scaled = SE::ImGuiMisc::coloredVector3Control("Scale", "propertiesLeftColumn", component->getScaleRef(), m_labelsColumnWidth, 0.01f);
 		if (scaled)
 		{
 			component->updateTransform();
@@ -60,16 +61,16 @@ namespace SpringEditor
 				switch (property.type)
 				{
 				case SE::EditorPropertyTypes::IntInput:
-					SE::ImGuiMisc::intSelector(property.name.c_str(), (int*)(property.value), property.speed);
+					SE::ImGuiMisc::intSelector(property.name.c_str(), "propertiesLeftColumn", (int*)(property.value), m_labelsColumnWidth, property.speed);
 					break;
 				case SE::EditorPropertyTypes::FloatInput:
-					SE::ImGuiMisc::floatSelector(property.name.c_str(), (float*)(property.value), property.speed);
+					SE::ImGuiMisc::floatSelector(property.name.c_str(), "propertiesLeftColumn", (float*)(property.value), m_labelsColumnWidth, property.speed);
 					break;
 				case SE::EditorPropertyTypes::BoolInput:
-					SE::ImGuiMisc::boolSelector(property.name.c_str(), (bool*)(property.value));
+					SE::ImGuiMisc::boolSelector(property.name.c_str(), "propertiesLeftColumn", (bool*)(property.value), m_labelsColumnWidth);
 					break;
 				case SE::EditorPropertyTypes::ColorInput:
-					SE::ImGuiMisc::colorSelector(property.name.c_str(), (SE::Vector3f*)(property.value), property.speed);
+					SE::ImGuiMisc::colorSelector(property.name.c_str(), "propertiesLeftColumn", (SE::Vector3f*)(property.value), m_labelsColumnWidth);
 					break;
 				default:
 					break;

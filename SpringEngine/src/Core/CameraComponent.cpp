@@ -2,7 +2,7 @@
 
 namespace SE
 {
-	CameraComponent::CameraComponent(ActorComponent* owner) : SceneComponent(owner), m_ratio(1.0f)
+	CameraComponent::CameraComponent(SceneComponent* owner) : SceneComponent(owner), m_ratio(1.0f)
 	{
 		setName("Default camera component");
 	}

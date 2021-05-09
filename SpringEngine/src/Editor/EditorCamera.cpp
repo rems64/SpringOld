@@ -15,21 +15,21 @@ EditorCamera::~EditorCamera()
 
 }
 
-void EditorCamera::tick(double deltaSeconds)
+void EditorCamera::editorUpdate(double deltaSeconds)
 {
-	if (SE::Application::get().isKeyPressed(SE::Key::LeftAlt) || SE::Application::get().isKeyPressed(SE::Key::RightAlt))
+	if (SE::Application::get().getInputManager()->isKeyPressed(SE::Key::LeftAlt) || SE::Application::get().getInputManager()->isKeyPressed(SE::Key::RightAlt))
 	{
 		const SE::Vector2<float> mouseLoc(SE::Application::get().getMousePosition());
 		SE::Vector2<float> delta = (mouseLoc - m_previousMouseLoc) * 0.003f;
 		m_previousMouseLoc = mouseLoc;
 
-		if (SE::Application::get().isMouseButtonDown(SE::Mouse::ButtonLeft))
+		if (SE::Application::get().getInputManager()->isMouseButtonDown(SE::Mouse::ButtonLeft))
 		{
 			float yawSign = m_editorCameraComponent->getUp().y() < 0 ? -1.0f : 1.0f;
 			m_editorCameraComponent->m_yaw += yawSign * delta.x() * 0.8f;
 			m_editorCameraComponent->m_pitch += delta.y() * 0.8f;
 		}
-		else if (SE::Application::get().isMouseButtonDown(SE::Mouse::ButtonMiddle))
+		else if (SE::Application::get().getInputManager()->isMouseButtonDown(SE::Mouse::ButtonMiddle))
 		{
 			float x = std::min(m_editorCameraComponent->m_viewportWidth / 1000.0f, 2.4f);
 			float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
@@ -39,7 +39,7 @@ void EditorCamera::tick(double deltaSeconds)
 			m_editorCameraComponent->m_cameraTargetPoint += m_editorCameraComponent->getRight() * delta.x() * m_editorCameraComponent->m_distance * xFactor * -1.0f;
 			m_editorCameraComponent->m_cameraTargetPoint += m_editorCameraComponent->getUp() * delta.y() * m_editorCameraComponent->m_distance * yFactor;
 		}
-		else if (SE::Application::get().isMouseButtonDown(SE::Mouse::ButtonRight))
+		else if (SE::Application::get().getInputManager()->isMouseButtonDown(SE::Mouse::ButtonRight))
 		{
 			float distance = m_editorCameraComponent->m_distance * 0.2f;
 			distance = std::max(distance, 0.0f);

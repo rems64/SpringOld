@@ -9,7 +9,7 @@ namespace SE
 	class SE_API LightComponent : public SceneComponent, public EditorEditable
 	{
 	public:
-		LightComponent(ActorComponent* owner);
+		LightComponent(SceneComponent* owner);
 		~LightComponent();
 
 		Vector3f& getColor() { return m_color; };

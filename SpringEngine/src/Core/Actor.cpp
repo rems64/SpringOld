@@ -15,11 +15,24 @@ namespace SE
 	{
 	}
 
-	void Actor::tick(double deltaSeconds)
+	void Actor::onEvent(Event& ev)
+	{
+
+	}
+
+	void Actor::editorUpdate(double deltaSeconds)
 	{
 		for (auto component : *m_rootComponent->getComponents())
 		{
-			component->tick(deltaSeconds);
+			component->editorUpdate(deltaSeconds);
+		}
+	}
+
+	void Actor::update(double deltaSeconds)
+	{
+		for (auto component : *m_rootComponent->getComponents())
+		{
+			component->update(deltaSeconds);
 		}
 	}
 

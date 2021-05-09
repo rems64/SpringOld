@@ -22,6 +22,9 @@
 #include <SpringEngine/Events/KeyEvents.hpp>
 
 #include <SpringEngine/Core/Actor.hpp>
+#include <SpringEngine/Core/Pawn.hpp>
+#include <SpringEngine/Core/Character.hpp>
+
 #include <SpringEngine/Core/ActorComponent.hpp>
 #include <SpringEngine/Core/SceneComponent.hpp>
 #include <SpringEngine/Core/RenderedComponent.hpp>

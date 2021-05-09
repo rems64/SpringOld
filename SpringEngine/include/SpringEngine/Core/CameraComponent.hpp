@@ -8,7 +8,7 @@ namespace SE
 	class SE_API CameraComponent : public SceneComponent
 	{
 	public:
-		CameraComponent(ActorComponent* owner);
+		CameraComponent(SceneComponent* owner);
 		CameraComponent(Actor* owner, bool root);
 		virtual ~CameraComponent();
 

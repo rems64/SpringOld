@@ -39,5 +39,6 @@ namespace SE
 		static unsigned int m_sceneDrawCalls;
 		static std::vector<LightComponent*>* m_sceneLights;
 		static Shader* m_normalDebugShader;
+		static Vector3f m_sceneCameraLocation;
 	};
 }

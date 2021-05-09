@@ -14,6 +14,7 @@
 #include <SpringEngine/Layers/WorldLayer.hpp>
 #include <SpringEngine/Graphics/Renderer.hpp>
 #include <SpringEngine/Core/DataManager.hpp>
+#include <SpringEngine/Core/InputManager.hpp>
 #include <SpringEngine/Core/Scene.hpp>
 
 #include<SpringEngine/core.hpp>
@@ -39,6 +40,7 @@ namespace SE
 		inline DataManager* getDataManager() { return m_dataManager; };
 		inline ImGuiContext* getImguiContext() { return ImGui::GetCurrentContext(); };
 		inline ImGuiLayer* getImGuiLayer() { return m_imGuiLayer; };
+		inline InputManager* getInputManager() { return m_inputManager; };
 
 		void onEvent(Event& event);
 
@@ -49,8 +51,6 @@ namespace SE
 		bool onWindowResizeEvent(WindowResizeEvent& event);
 		bool onWindowMoveEvent(WindowMoveEvent& event);
 
-		bool isKeyPressed(const KeyCode key);
-		bool isMouseButtonDown(const MouseCode button);
 		Vector2d getMousePosition();
 
 		double getFPS();
@@ -70,6 +70,7 @@ namespace SE
 		ImGuiLayer* m_imGuiLayer;
 		WorldLayer* m_worldLayer;
 		DataManager* m_dataManager;
+		InputManager* m_inputManager;
 		
 		std::chrono::high_resolution_clock::time_point m_loopStart;
 		std::chrono::high_resolution_clock::time_point m_loopEnd;
@@ -78,3 +79,5 @@ namespace SE
 
 	Application* CreateApplication();
 };
+
+#define Input Application::get()->getInputManager()

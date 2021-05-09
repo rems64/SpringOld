@@ -24,6 +24,7 @@ namespace SE
 		friend std::istream& operator>>(std::istream& is, Scene& scene);
 
 		void onEvent(Event& ev);
+		void editorUpdate(double deltaSeconds, CameraComponent* cam);
 		void update(double deltaSeconds, CameraComponent* cam);
 
 		bool addComponentToScene(Component* component);

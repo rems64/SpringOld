@@ -25,6 +25,7 @@ namespace SE
 	glm::mat4 Renderer::m_VP = glm::mat4(1.0f);
 	glm::mat4 Renderer::m_view = glm::mat4(1.0f);
 	unsigned int Renderer::m_sceneDrawCalls = 0;
+	Vector3f Renderer::m_sceneCameraLocation = Vector3f(0.0, 0.0, 0.0);
 	std::vector<LightComponent*>* Renderer::m_sceneLights = nullptr;
 	Shader* Renderer::m_normalDebugShader = nullptr;
 
@@ -40,6 +41,7 @@ namespace SE
 		m_view = cam->getView();
 		m_sceneDrawCalls = 0;
 		m_sceneLights = scene->getLights();
+		m_sceneCameraLocation = cam->getLocation();
 	}
 
 	int Renderer::endSceneDraw()
@@ -55,6 +57,7 @@ namespace SE
 		material->bind();
 		material->setProjectionMatrix(m_VP * (*transform));
 		material->bindTextures();
+		material->getShader()->setUniform3f("u_camera_location", m_sceneCameraLocation);
 		for (uint32_t i=0; i<m_sceneLights->size(); i++)
 		{
 			auto pointLight = dynamic_cast<PointLightComponent*>(m_sceneLights->at(i));

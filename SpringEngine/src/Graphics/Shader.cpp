@@ -163,7 +163,7 @@ namespace SE
         if (location == -1)
         {
             //std::cout << "Uniform doesn't exist" << std::endl;
-            SE_CORE_TRACE("Uniform {0} doesn't exist", name);
+            //SE_CORE_TRACE("Uniform {0} doesn't exist", name);
         }
 
         return location;

@@ -48,10 +48,17 @@ namespace SE
 		uint32_t getComponentCount() { return m_components.size(); };
 		std::vector<ActorComponent*>* getComponents() { return &m_components; };
 
-		virtual void tick(double deltaSeconds) {
+		virtual void editorUpdate(double deltaSeconds) {
 			for (auto component : m_components)
 			{
-				component->tick(deltaSeconds);
+				component->editorUpdate(deltaSeconds);
+			};
+		};
+
+		virtual void update(double deltaSeconds) {
+			for (auto component : m_components)
+			{
+				component->update(deltaSeconds);
 			};
 		};
 
