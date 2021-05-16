@@ -78,6 +78,7 @@ namespace SE
 	};
 
 	Application* CreateApplication();
-};
 
-#define Input Application::get()->getInputManager()
+	//using Application::get()->getInputManager() SE_Input;
+	//using Application::get()->getDataManager() SE_DataManager;
+};

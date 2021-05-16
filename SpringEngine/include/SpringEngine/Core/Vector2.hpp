@@ -19,8 +19,8 @@ namespace SE
 
 		inline T x() const { return m_x; };
 		inline T y() const { return m_y; };
-		inline T* xPtr() const { return &m_x; };
-		inline T* yPtr() const { return &m_y; };
+		inline T* xPtr() { return &m_x; };
+		inline T* yPtr() { return &m_y; };
 
 		inline void x(T x) { m_x = x; };
 		inline void y(T y) { m_y = y; };
@@ -56,8 +56,8 @@ namespace SE
 	template <typename T>
 	inline Vector2<T>& operator -=(Vector2<T>& left, const Vector2<T>& right)
 	{
-		left.m_x -= right.m_x;
-		left.m_y -= right.m_y;
+		*left.xPtr() -= right.x();
+		*left.yPtr() -= right.y();
 
 		return left;
 	}

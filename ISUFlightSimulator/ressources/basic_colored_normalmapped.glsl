@@ -32,7 +32,10 @@ void main()
 
 //shader fragment
 #version 330 core
-out vec4 color;
+//out vec4 color;
+layout (location = 0) out vec4 color;
+layout (location = 1) out int index;
+
 in vec2 UV;
 in vec3 vertex_worldspace;
 in vec3 vertex_cameraspace;
@@ -41,6 +44,7 @@ in mat3 tbn_matrix;
 
 
 uniform vec3 u_diffuse_color;
+uniform int u_index;
 uniform sampler2D u_diffuse_texture;
 uniform sampler2D u_normal_texture;
 
@@ -61,11 +65,9 @@ void main()
 {
     color = (texture(u_diffuse_texture, UV)*0.5 + vec4(u_diffuse_color.xyz, 1.0)) * vec4((ambientColor * ambientStrength), 1.0);
     vec3 texNormal = texture(u_normal_texture, UV).xyz;
-    texNormal.xy = normalize(texNormal.xy * 2.0 - 1.0);  // From 0;1 to -1;1
+    texNormal = normalize(texNormal * 2.0 - 1.0);  // From 0;1 to -1;1
     texNormal = normalize(tbn_matrix * texNormal);
     vec3 viewDir = normalize(u_camera_location - vertex_worldspace.xyz);
-    //color = vec4(0.0, 0.0, 0.0, 1.0);
-    //color = vec4(abs(normal).xyz, 1.0);
     for(int i = 0; i < NBR_POINT_LIGHTS; i++)
     {
         if(pointLights[i].power!=0.0)
@@ -85,8 +87,8 @@ void main()
             diffuse *= attenuation;
             specular *= attenuation;
             color += vec4(diffuse, 0.0);
-            color = vec4(diff);
+            //color = vec4(texNormal, 1.0);
         }
     }
-    //color = vec4(texNormal, 1.0);
+    index = u_index;
 }

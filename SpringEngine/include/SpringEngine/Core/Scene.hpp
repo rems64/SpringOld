@@ -33,6 +33,7 @@ namespace SE
 		int registerActor(Actor* actor);
 		void unregisterActor(Actor* actor);
 		std::vector<Actor*>* getRegisteredActors() { return &m_registeredActors; };
+		std::vector<RenderedComponent*>* getRenderedComponents() { return &m_renderingList; };
 
 		void registerRenderedComponent(RenderedComponent* component, bool front=false);
 		void unregisterRenderedComponent(RenderedComponent* component);

@@ -28,11 +28,38 @@ namespace SE
 	Vector3f Renderer::m_sceneCameraLocation = Vector3f(0.0, 0.0, 0.0);
 	std::vector<LightComponent*>* Renderer::m_sceneLights = nullptr;
 	Shader* Renderer::m_normalDebugShader = nullptr;
+	VertexArray* Renderer::m_screenVA = nullptr;
+	VertexBuffer* Renderer::m_screenVB = nullptr;
+	VertexBufferLayout* Renderer::m_screenVBL = nullptr;
+	Shader* Renderer::m_screenShader = nullptr;
+	int Renderer::m_debugIndex = 0;
+
+	float screenShape[24] = {
+		-1.0f,  1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 0.0f,
+		 1.0f, -1.0f, 1.0f, 0.0f,
+
+		-1.0f,  1.0f, 0.0f, 1.0f,
+		 1.0f, -1.0f, 1.0f, 0.0f,
+		 1.0f,  1.0f, 1.0f, 1.0f
+	};
+
 
 	void Renderer::initDebugShaders()
 	{
 		m_normalDebugShader = new Shader("../../../../ISUFlightSimulator/ressources/basic_normal_debug.glsl");
 		m_normalDebugShader->compile();
+
+		m_screenShader = new Shader("../../../../ISUFlightSimulator/ressources/screen.glsl");
+		m_screenShader->compile();
+
+		m_screenVA = new VertexArray();
+		m_screenVB = new VertexBuffer();
+		m_screenVB->setBuffer(screenShape, sizeof(screenShape));
+		m_screenVBL = new VertexBufferLayout();
+		m_screenVBL->Push<float>(2);
+		m_screenVBL->Push<float>(2);
+		m_screenVA->addBuffer(*m_screenVB, *m_screenVBL);
 	}
 
 	void Renderer::beginSceneDraw(CameraComponent* cam, Scene* scene)
@@ -80,6 +107,7 @@ namespace SE
 		//material->setViewMatrix(m_view);
 
 		material->setModelMatrix(*transform);
+		material->getShader()->setUniform1i("u_index", m_debugIndex);
 		GLCall(glDrawElements(GL_TRIANGLES, indexBuffer->getCount(), GL_UNSIGNED_INT, NULL));
 		material->unbindTextures();
 		material->unbind();
@@ -121,5 +149,21 @@ namespace SE
 		GLCall(glDrawElementsInstanced(GL_TRIANGLES, count, GL_UNSIGNED_INT, indices, inputCount));
 		material->unbind();
 		m_sceneDrawCalls++;
+	}
+
+	void Renderer::renderToScreen(Framebuffer* framebuffer)
+	{
+		glDisable(GL_DEPTH_TEST);
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+		GLCall(glClear(GL_COLOR_BUFFER_BIT));
+
+		m_screenShader->bind();
+		m_screenVA->bind();
+		GLCall(glActiveTexture(GL_TEXTURE0));
+		GLCall(glBindTexture(GL_TEXTURE_2D, framebuffer->getColorAttachmentRendererID(0)));
+		m_screenShader->setUniform1i("u_framebuffer", 0);
+
+		GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
 	}
 }

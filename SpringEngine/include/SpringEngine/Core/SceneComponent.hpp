@@ -29,6 +29,12 @@ namespace SE
 		Vector3f getRotation() { return m_rotation; };
 		Vector3f getScale() { return m_scale; };
 
+		Vector3f getWorldLocation() {
+			return Vector3f(m_hierarchicalTransform * glm::vec4(m_location.getGlm(), 1.0));
+		};
+		Vector3f getWorldRotation() { return Vector3f(m_hierarchicalTransform * glm::vec4(m_rotation.getGlm(), 0.0)); };
+		Vector3f getWorldScale() { return Vector3f(m_hierarchicalTransform * glm::vec4(m_scale.getGlm(), 0.0)); };
+
 		Vector3f& getLocationRef() { return m_location; };
 		Vector3f& getRotationRef() { return m_rotation; };
 		Vector3f& getScaleRef() { return m_scale; };

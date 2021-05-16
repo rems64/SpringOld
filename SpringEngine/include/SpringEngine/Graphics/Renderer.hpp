@@ -7,6 +7,7 @@
 #include <SpringEngine/Graphics/VertexArray.hpp>
 #include <SpringEngine/Graphics/Material.hpp>
 #include <SpringEngine/Graphics/IndexBuffer.hpp>
+#include <SpringEngine/Graphics/Framebuffer.hpp>
 #include <SpringEngine/Core/LightComponent.hpp>
 #include <SpringEngine/Core/PointLightComponent.hpp>
 
@@ -30,8 +31,12 @@ namespace SE
 
 		static void Renderer::drawDebugNormals(const VertexArray* vertexArray, const IndexBuffer* indexBuffer, const glm::mat4* transform, float drawLength = 1.0);
 
+		static void Renderer::renderToScreen(Framebuffer* framebuffer);
+
 		static unsigned int getSceneDrawCalls() { return m_sceneDrawCalls; };
 		static unsigned int getLightsNbr() { return m_sceneLights->size(); };
+
+		static void setDebugIndex(int index) { m_debugIndex = index; };
 		// API END
 	private:
 		static glm::mat4 m_VP;
@@ -40,5 +45,11 @@ namespace SE
 		static std::vector<LightComponent*>* m_sceneLights;
 		static Shader* m_normalDebugShader;
 		static Vector3f m_sceneCameraLocation;
+
+		static Shader* m_screenShader;
+		static VertexArray* m_screenVA;
+		static VertexBuffer* m_screenVB;
+		static VertexBufferLayout* m_screenVBL;
+		static int m_debugIndex;
 	};
 }

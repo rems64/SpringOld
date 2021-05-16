@@ -12,9 +12,9 @@ namespace SE
 	{
 		setName("Default character");
 		Mesh* mesh = new Mesh();
-		MeshComponent* meshComp = new MeshComponent(m_rootComponent, mesh);
-		meshComp->setName("Character mesh");
-		addComponent<MeshComponent>(meshComp);
+		m_characterMesh = new MeshComponent(m_rootComponent, mesh);
+		m_characterMesh->setName("Character mesh");
+		addComponent<MeshComponent>(m_characterMesh);
 	}
 
 	Character::~Character()
@@ -51,11 +51,15 @@ namespace SE
 
 	void Character::update(double deltaTime)
 	{
-		m_rootComponent->addLocation(m_rootComponent->getForward() * SE::Application::get().getInputManager()->getAxis(0) * (float)deltaTime * 0.002f);
-		m_rootComponent->addLocation(m_rootComponent->getRight() * SE::Application::get().getInputManager()->getAxis(1) * (float)deltaTime * 0.002f);
+		m_rootComponent->addLocation(m_rootComponent->getForward() * SE::Application::get().getInputManager()->getAxis(0) * (float)deltaTime * 0.003f);
+		m_rootComponent->addLocation(m_rootComponent->getRight() * SE::Application::get().getInputManager()->getAxis(1) * (float)deltaTime * 0.003f);
+		m_rootComponent->addRotation(m_rootComponent->getUp() * SE::Application::get().getInputManager()->getAxis(2) * (float)deltaTime * -0.003f);
 	}
 
 	void Character::editorUpdate(double deltaTime)
 	{
+		m_rootComponent->addLocation(m_rootComponent->getForward() * SE::Application::get().getInputManager()->getAxis(0) * (float)deltaTime * 0.003f);
+		m_rootComponent->addLocation(m_rootComponent->getRight() * SE::Application::get().getInputManager()->getAxis(1) * (float)deltaTime * 0.003f);
+		m_rootComponent->addRotation(m_rootComponent->getUp() * SE::Application::get().getInputManager()->getAxis(2) * (float)deltaTime * -0.003f);
 	}
 }

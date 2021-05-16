@@ -58,9 +58,11 @@ void main()
 
 //shader fragment
 #version 330 core
-out vec4 color;
+layout(location = 0) out vec4 color;
+layout(location = 1) out int index;
 
 void main()
 {
     color = vec4(.137, .380, .867, 1.0);
+    index = 0;
 }

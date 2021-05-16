@@ -33,7 +33,7 @@ void main()
 
 //shader fragment
 #version 330 core
-out vec4 color;
+layout(location = 0) out vec4 color;
 in vec2 UV;
 in vec3 vertex_worldspace;
 in vec3 vertex_cameraspace;

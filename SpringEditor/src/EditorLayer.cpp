@@ -5,7 +5,7 @@
 
 namespace SpringEditor
 {
-	EditorLayer::EditorLayer() : SE::Layer("Editor layer"), m_viewport(), m_framebuffer(), m_currentScene(std::make_shared<SE::Scene>()), m_editorCamera(), m_guizmoOperation(ImGuizmo::TRANSLATE), m_selectedComponent(nullptr), m_guizmoSpace(ImGuizmo::LOCAL)
+	EditorLayer::EditorLayer() : SE::Layer("Editor layer"), m_viewport(), m_framebuffer(), m_currentScene(std::make_shared<SE::Scene>()), m_editorCamera(), m_guizmoOperation(ImGuizmo::TRANSLATE), m_selectedComponent(nullptr), m_hoveredComponent(nullptr), m_guizmoSpace(ImGuizmo::LOCAL), m_draggingGuizmo(false), m_changedSelection(false)
 	{
 
 	}
@@ -40,6 +40,8 @@ namespace SpringEditor
 	void EditorLayer::onEvent(SE::Event& event)
 	{
 		SE::EventDispatcher disp(event);
+		disp.Dispatch<SE::MousePressed>(SE_BIND_EVENT(EditorLayer::onMouseButtonPressedEvent));
+		disp.Dispatch<SE::MouseReleased>(SE_BIND_EVENT(EditorLayer::onMouseButtonReleasedEvent));
 		disp.Dispatch<SE::KeyPressedEvent>(SE_BIND_EVENT(EditorLayer::onKeyPressedEvent));
 		m_currentScene->onEvent(event);
 	}
@@ -115,8 +117,10 @@ namespace SpringEditor
 				}
 				break;
 			case SE::Key::C:
-				if(m_selectedComponent)
-					m_editorCamera->setTarget(m_selectedComponent->getLocation());
+				if (m_selectedComponent)
+				{
+					m_editorCamera->setTarget(m_selectedComponent->getWorldLocation());
+				}
 				break;
 			case SE::Key::Delete:
 				if (m_selectedComponent)
@@ -159,6 +163,36 @@ namespace SpringEditor
 		return false;
 	}
 
+	bool EditorLayer::onMouseButtonPressedEvent(SE::MousePressed& event)
+	{
+		if (event.getButton() == 0)
+		{
+			if (m_hoveredPanel == SE_EDITOR_PANELS::VIEWPORT)
+			{
+				if (!SE::Application::get().getInputManager()->isKeyPressed(SE::Key::LeftAlt) && !SE::Application::get().getInputManager()->isKeyPressed(SE::Key::RightAlt))
+				{
+					m_changedSelection = true;
+				}
+			}
+		}
+		return true;
+	}
+
+	bool EditorLayer::onMouseButtonReleasedEvent(SE::MouseReleased& event)
+	{
+		if (event.getButton() == 0)
+		{
+			if (m_hoveredPanel == SE_EDITOR_PANELS::VIEWPORT)
+			{
+				if (!SE::Application::get().getInputManager()->isKeyPressed(SE::Key::LeftAlt) && !SE::Application::get().getInputManager()->isKeyPressed(SE::Key::RightAlt))
+				{
+					m_changedSelection = false;
+				}
+			}
+		}
+		return true;
+	}
+
 	void EditorLayer::onUpdate(double deltaTime)
 	{
 		SE_PROFILE_FUNCTION();
@@ -177,10 +211,26 @@ namespace SpringEditor
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		m_framebuffer->clear(1, -1);
+
 		// Rendering stuff
 		m_editorCamera->editorUpdate(deltaTime);
 		m_currentScene->editorUpdate(deltaTime, m_editorCamera->getCamera());
 		//SE_CORE_TRACE("{} draw calls", nbrDrawCalls);
+
+		if (m_hoveredPanel == SE_EDITOR_PANELS::VIEWPORT)
+		{
+			SE::Vector2d mousePos = SE::Application::get().getMousePosition();
+			mousePos -= SE::Vector2d(m_viewportLimits[0], m_viewportLimits[1]);
+			glm::vec2 viewportSize = glm::vec2(m_viewportLimits[2] - m_viewportLimits[0], m_viewportLimits[3] - m_viewportLimits[1]);
+			mousePos.y(viewportSize.y - mousePos.y());
+			int mX = (int)mousePos.x();
+			int mY = (int)mousePos.y();
+			glReadBuffer(GL_COLOR_ATTACHMENT1);
+			int pixelData = -1;
+			glReadPixels(mX, mY, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+			m_hoveredComponent = pixelData <= -1 ? nullptr : m_currentScene->getRenderedComponents()->at(pixelData);
+		}
 
 		m_framebuffer->unbind();
 	}
@@ -253,7 +303,7 @@ namespace SpringEditor
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		if (ImGui::Begin("Viewport"))
 		{
-			uint32_t bufferId = m_framebuffer->getColorAttachmentRendererID();
+			uint32_t bufferId = m_framebuffer->getColorAttachmentRendererID(0);
 			m_viewport.x(ImGui::GetContentRegionAvail().x);
 			m_viewport.y(ImGui::GetContentRegionAvail().y);
 			ImGui::Image(reinterpret_cast<void*>(bufferId), ImVec2{ m_viewport.x(), m_viewport.y() }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
@@ -268,12 +318,16 @@ namespace SpringEditor
 			if (ImGui::IsWindowHovered())
 				m_hoveredPanel = SE_EDITOR_PANELS::VIEWPORT;
 			//SE::Application::get().getImGuiLayer()->setBlockEvent(!m_viewportFocused && !m_viewportHovered);
+			m_viewportLimits[0] = ImGui::GetWindowContentRegionMin().x + ImGui::GetWindowPos().x;
+			m_viewportLimits[1] = ImGui::GetWindowContentRegionMin().y + ImGui::GetWindowPos().y;
+			m_viewportLimits[2] = ImGui::GetWindowContentRegionMin().x + ImGui::GetWindowPos().x + m_viewport.x();
+			m_viewportLimits[3] = ImGui::GetWindowContentRegionMin().y + ImGui::GetWindowPos().y + m_viewport.y();
 
 			if (m_usingGuizmo && m_selectedComponent)
 			{
 				ImGuizmo::SetOrthographic(false);
 				ImGuizmo::SetDrawlist();
-				ImGuizmo::SetRect(ImGui::GetWindowContentRegionMin().x + ImGui::GetWindowPos().x, ImGui::GetWindowContentRegionMin().y + ImGui::GetWindowPos().y, m_viewport.x(), m_viewport.y());
+				ImGuizmo::SetRect(m_viewportLimits[0], m_viewportLimits[1], m_viewport.x(), m_viewport.y());
 
 				// Snapping
 				bool snapping = SE::Application::get().getInputManager()->isKeyPressed(SE::Key::LeftControl);
@@ -293,6 +347,7 @@ namespace SpringEditor
 				transform = glm::inverse(offset) * transform;
 				if (ImGuizmo::IsUsing())
 				{
+					m_draggingGuizmo = true;
 					glm::vec3 translation, rotation, scale;
 					ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(translation), glm::value_ptr(rotation), glm::value_ptr(scale));
 					rotation = glm::radians(rotation);
@@ -302,6 +357,36 @@ namespace SpringEditor
 					m_selectedComponent->setRotation(SE::Vector3f(rotation));
 					m_selectedComponent->setScale(SE::Vector3f(scale));
 				}
+				else
+				{
+					m_draggingGuizmo = false;
+				}
+			}
+			if (!m_draggingGuizmo && m_changedSelection)
+			{
+				if (m_hoveredComponent)
+				{
+					if (m_selectedComponent)
+					{
+						if (m_selectedComponent->getActorOwner()->getRoot() == m_selectedComponent)
+						{
+							m_selectedComponent = m_hoveredComponent;
+						}
+						else
+						{
+							m_selectedComponent = m_hoveredComponent->getActorOwner()->getRoot();
+						}
+					}
+					else
+					{
+						m_selectedComponent = m_hoveredComponent->getActorOwner()->getRoot();
+					}
+				}
+				else
+				{
+					m_selectedComponent = nullptr;
+				}
+				m_changedSelection = false;
 			}
 		}
         ImGui::End();

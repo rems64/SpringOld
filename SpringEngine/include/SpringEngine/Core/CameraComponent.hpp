@@ -21,6 +21,10 @@ namespace SE
 			m_viewportWidth = width;
 			m_viewportHeight = height;
 		}
+		virtual Vector3f getForward() override { return Vector3f(glm::rotate(getOrientation(), glm::vec3(0.0f, 0.0f, -1.0f))); };
+		virtual Vector3f getUp() override { return Vector3f(glm::rotate(getOrientation(), glm::vec3(0.0f, 1.0f, 0.0f))); };
+		virtual Vector3f getRight() override { return Vector3f(glm::rotate(getOrientation(), glm::vec3(1.0f, 0.0f, 0.0f))); };
+
 	protected:
 		float m_ratio;
 		float m_viewportWidth;

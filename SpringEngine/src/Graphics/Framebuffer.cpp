@@ -10,20 +10,22 @@ namespace SE
 	Framebuffer::~Framebuffer()
 	{
 		GLCall(glDeleteFramebuffers(1, &m_id));
-		GLCall(glDeleteTextures(1, &m_colorAttachment));
+		GLCall(glDeleteTextures(2, m_colorAttachment.data()));
 		GLCall(glDeleteTextures(1, &m_depthAttachment));
 	}
 
 	void Framebuffer::invalidate()
 	{
+		uint32_t number = 2;
+		m_colorAttachment.resize(number);
 		if (m_size.x() == 0 || m_size.y() == 0)
 		{
 			return;
 		}
-		if (m_id!=0)
+		if (m_id != 0)
 		{
 			GLCall(glDeleteFramebuffers(1, &m_id));
-			GLCall(glDeleteTextures(1, &m_colorAttachment));
+			GLCall(glDeleteTextures(number, m_colorAttachment.data()));
 			GLCall(glDeleteTextures(1, &m_depthAttachment));
 			m_depthAttachment = 0;
 			m_id = 0;
@@ -31,16 +33,28 @@ namespace SE
 
 		GLCall(glCreateFramebuffers(1, &m_id));
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_id));
+		GLCall(glCreateTextures(GL_TEXTURE_2D, number, m_colorAttachment.data()));
 
-		GLCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_colorAttachment));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_colorAttachment));
+
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_colorAttachment[0]));
 
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_size.x(), m_size.y(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 		//GLCall(glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_samples, GL_RGBA8, m_size.x(), m_size.y(), GL_FALSE));
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorAttachment[0], 0));
 
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorAttachment, 0));
+
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_colorAttachment[1]));
+
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, m_size.x(), m_size.y(), 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, nullptr));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		//GLCall(glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_samples, GL_RGBA8, m_size.x(), m_size.y(), GL_FALSE));
+
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_colorAttachment[1], 0));
+
+
 
 		GLCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_depthAttachment));
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_depthAttachment));
@@ -52,6 +66,12 @@ namespace SE
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
 			SE_CORE_ERROR("Something went wrong with the framebuffer {}", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+		}
+
+		if (m_colorAttachment.size() > 1)
+		{
+			GLenum buffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+			glDrawBuffers(m_colorAttachment.size(), buffers);
 		}
 
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
@@ -84,8 +104,8 @@ namespace SE
 		invalidate();
 	}
 
-	void Framebuffer::clear(int value)
+	void Framebuffer::clear(int index, int value)
 	{
-		glClearTexImage(m_colorAttachment, 0, GL_RGBA8, GL_INT, &value);
+		GLCall(glClearTexImage(m_colorAttachment[index], 0, GL_RED_INTEGER, GL_INT, &value));
 	}
 }

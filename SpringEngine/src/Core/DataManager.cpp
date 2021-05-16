@@ -1,7 +1,7 @@
 #include <SpringEngine/Core/DataManager.hpp>
 
-#include <SpringEngine/Misc/Logger.hpp>
 #include <SpringEngine/Core/Scene.hpp>
+//#include <SpringEngine/Misc/Logger.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -10,6 +10,7 @@
 #include <SpringEngine/Graphics/Texture.hpp>
 #include <SpringEngine/Core/Mesh.hpp>
 #include <SpringEngine/Core/Actor.hpp>
+#include <SpringEngine/Core/Character.hpp>
 #include <SpringEngine/Editor/EditorCamera.hpp>
 
 namespace SE
@@ -292,5 +293,25 @@ namespace SE
 			scene->registerActor(actor);
 		}
 		return true;
+	}
+
+	Actor* DataManager::createMeshActor(const char* path, Scene* scene)
+	{
+		SE::Actor* actor = new Actor();
+		std::vector<SE::MeshImportInfo> meshes = loadFBX(path);
+		MeshComponent* mesh = new MeshComponent(actor->getRoot(), getRegisteredDataBlock<Mesh>(meshes[0].id));
+		scene->registerActor(actor);
+		scene->registerRenderedComponent(mesh);
+		return actor;
+	}
+
+	Character* DataManager::createCharacter(const char* path, Scene* scene)
+	{
+		SE::Character* actor = new Character();
+		std::vector<SE::MeshImportInfo> meshes = loadFBX(path);
+		MeshComponent* mesh = new MeshComponent(actor->getCharacterMesh(), getRegisteredDataBlock<Mesh>(meshes[0].id));
+		scene->registerActor(actor);
+		scene->registerRenderedComponent(mesh);
+		return actor;
 	}
 }

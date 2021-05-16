@@ -75,9 +75,12 @@ namespace SE
 			(*actor)->editorUpdate(deltaSeconds);
 		}
 		SE::Renderer::beginSceneDraw(cam, this);
+		uint32_t i = 0;
 		for (auto drawable : m_renderingList)
 		{
+			SE::Renderer::setDebugIndex(i);
 			drawable->drawCall();
+			i++;
 		}
 		SE::Renderer::endSceneDraw();
 	}

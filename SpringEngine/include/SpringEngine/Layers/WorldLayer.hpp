@@ -3,6 +3,8 @@
 #include <SpringEngine/Core/Layer.hpp>
 #include <SpringEngine/Misc/Logger.hpp>
 #include <SpringEngine/Core/Scene.hpp>
+#include <SpringEngine/Graphics/Framebuffer.hpp>
+#include <SpringEngine/Graphics/Shader.hpp>
 
 #include <SpringEngine/core.hpp>
 
@@ -27,5 +29,7 @@ namespace SE
 
 	private:
 		std::shared_ptr<Scene> m_currentScene;
+		SE::Vector2f m_viewport;
+		SE::Framebuffer* m_framebuffer;
 	};
 }

@@ -10,6 +10,8 @@ namespace SE
 	class Material;
 	class Mesh;
 	class DataBlock;
+	class Actor;
+	class Character;
 
 
 	struct MeshImportInfo
@@ -53,6 +55,9 @@ namespace SE
 
 		bool saveScene(Scene* scene, const char* path);
 		bool loadScene(Scene* scene, const char* path, enum SceneLoadMode mode = SceneLoadMode::OVERRIDE);
+
+		Actor* createMeshActor(const char* path, Scene* scene);
+		Character* createCharacter(const char* path, Scene* scene);
 		template <typename T>
 		nlohmann::json vec3ToJson(Vector3<T> vec)
 		{

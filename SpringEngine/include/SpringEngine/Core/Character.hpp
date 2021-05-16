@@ -7,6 +7,7 @@
 
 namespace SE
 {
+	class MeshComponent;
 	class SE_API Character : public Pawn
 	{
 	public:
@@ -19,8 +20,10 @@ namespace SE
 
 		virtual void update(double deltaTime) override;
 		virtual void editorUpdate(double deltaTime) override;
+		virtual MeshComponent* getCharacterMesh() { return m_characterMesh; };
 
 	private:
 		virtual int onKeyPressedEvent(KeyPressedEvent& event);
+		MeshComponent* m_characterMesh;
 	};
 }

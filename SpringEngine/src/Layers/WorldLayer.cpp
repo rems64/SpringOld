@@ -2,6 +2,7 @@
 
 #include <SpringEngine/Graphics/Renderer.hpp>
 #include <SpringEngine/Core/Actor.hpp>
+#include <SpringEngine/Core/Application.hpp>
 
 namespace SE
 {
@@ -11,10 +12,13 @@ namespace SE
 
 	void WorldLayer::onAttach()
 	{
+		m_framebuffer = new SE::Framebuffer(SE::Vector2ui(1920, 1080));
+
 		Actor* cameraActor = new Actor();
 		CameraComponent* cam = new CameraComponent(cameraActor->getRoot());
 		//cameraActor->getRoot()->setLocation(Vector3f(4.0, 4.0, 6.0));
-		cam->setLocation(Vector3f(4.0, 4.0, 6.0));
+		cam->setLocation(Vector3f(-4.0, 8.0, 0.0));
+		cam->setRotation(Vector3f(-1.057079632679, -1.57079632679, 0.0));
 		m_currentScene->registerActor(cameraActor);
 		m_currentScene->setCurrentCamera(cam);
 	}
@@ -35,19 +39,33 @@ namespace SE
 
 	void WorldLayer::onUpdate(double deltaTime)
 	{
-		//Renderer::renderSceneElement(&m_element);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		m_viewport.x(SE::Application::get().getMainWindow().getSize().x);
+		m_viewport.y(SE::Application::get().getMainWindow().getSize().y);
+		if (((uint32_t)m_framebuffer->getWidth() != (uint32_t)m_viewport.x() || (uint32_t)m_framebuffer->getHeight() != (uint32_t)m_viewport.y()) && (m_viewport.x() != 0 && m_viewport.y() != 0))
+		{
+			m_framebuffer->resize((uint32_t)m_viewport.x(), (uint32_t)m_viewport.y());
+			m_currentScene->getCurrentCamera()->setViewport(m_viewport.x(), m_viewport.y());
+			m_currentScene->getCurrentCamera()->setRatio(m_viewport.x() / m_viewport.y());
+			//SE_CORE_TRACE("Resize");
+		}
 
-		// TO UPDATE in order to accord with the new standalone camera style
+		m_framebuffer->bind();
+
+		glClearColor(0.0, 0.0, 0.0, 1.0);
+		glEnable(GL_DEPTH_TEST);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		Renderer::beginSceneDraw(m_currentScene->getCurrentCamera(), m_currentScene.get());
 		m_currentScene->update(deltaTime, m_currentScene->getCurrentCamera());
-		int nbrDrawCalls = Renderer::endSceneDraw();
-		
-		//SE_CORE_TRACE("Rendered scene with {0} draw calls", nbrDrawCalls);
+		Renderer::endSceneDraw();
+
+		// Render to screen
+		Renderer::renderToScreen(m_framebuffer);
+		//m_framebuffer->unbind();
 	}
 
 	void WorldLayer::onImGuiRender()
 	{
+		Renderer::renderToScreen(m_framebuffer);
 	}
 }

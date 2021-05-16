@@ -23,14 +23,17 @@ void main()
 
 //shader fragment
 #version 330 core
-out vec4 color;
+layout (location = 0) out vec4 color;
+layout (location = 1) out int index;
 in vec2 UV;
 
 uniform vec3 u_diffuse_color;
 uniform sampler2D u_diffuse_texture;
+uniform int u_index;
 
 void main()
 {
     color = texture(u_diffuse_texture, UV);
+    index = u_index;
     //color = vec4(gl_FragCoord.z, 0.0, 0.0, 1.0);
 }

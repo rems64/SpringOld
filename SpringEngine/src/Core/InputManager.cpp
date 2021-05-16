@@ -19,6 +19,11 @@ namespace SE
 		moveRight.addContributor(Key::D,  1.0);
 		moveRight.addContributor(Key::Q, -1.0);
 		m_axis.emplace_back(moveRight);
+
+		Axis turn;
+		turn.addContributor(Key::A, -1.0);
+		turn.addContributor(Key::E,  1.0);
+		m_axis.emplace_back(turn);
 	}
 	bool InputManager::isKeyPressed(const KeyCode key)
 	{
