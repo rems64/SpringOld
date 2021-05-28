@@ -24,7 +24,7 @@ namespace SE
 		m_transform = glm::translate(glm::mat4(1.0f), m_location.getGlm()) * glm::toMat4(glm::quat(m_rotation.getGlm())) * glm::scale(glm::mat4(1.0f), m_scale.getGlm());
 		for (ActorComponent* component : m_components)
 		{
-			SceneComponent* sceneComponent = static_cast<SceneComponent*>(component);
+			SceneComponent* sceneComponent = dynamic_cast<SceneComponent*>(component);
 			if (sceneComponent)
 			{
 				sceneComponent->updateHierarchicalTransform(&(m_hierarchicalTransform * m_transform));

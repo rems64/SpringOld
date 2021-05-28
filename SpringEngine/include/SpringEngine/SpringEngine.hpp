@@ -32,6 +32,7 @@
 #include <SpringEngine/Core/ParticleEmitterComponent.hpp>
 #include <SpringEngine/Core/LightComponent.hpp>
 #include <SpringEngine/Core/PointLightComponent.hpp>
+#include <SpringEngine/Core/DirectionalLightComponent.hpp>
 
 #include <SpringEngine/UI/ImGuiMisc.hpp>
 

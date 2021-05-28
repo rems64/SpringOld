@@ -41,7 +41,7 @@ namespace SE
 		if (normalMapped)
 		{
 			delete m_shader;
-			m_shader = new Shader("../../../../ISUFlightSimulator/ressources/basic_colored_normalmapped.glsl");
+			m_shader = new Shader("../../../../ISUFlightSimulator/ressources/basic_deferred_object.glsl");
 			m_shader->compile();
 		}
 	}
@@ -54,6 +54,12 @@ namespace SE
 				return 0;
 			case (SE_MATERIAL_PROPERTY_NAME::NORMAL):
 				return 1;
+			case (SE_MATERIAL_PROPERTY_NAME::SPECULAR):
+				return 2;
+			case (SE_MATERIAL_PROPERTY_NAME::METALLIC):
+				return 3;
+			case (SE_MATERIAL_PROPERTY_NAME::ROUGHNESS):
+				return 4;
 		}
 	}
 
@@ -88,8 +94,14 @@ namespace SE
 					strcpy(location, "u_normal_color");
 				}
 				break;
+			case(SE_MATERIAL_PROPERTY_NAME::SPECULAR):
+				strcpy(location, "u_specularTexture");
+				break;
+			case(SE_MATERIAL_PROPERTY_NAME::METALLIC):
+				strcpy(location, "u_metallicTexture");
+				break;
 			case(SE_MATERIAL_PROPERTY_NAME::ROUGHNESS):
-				strcpy(location, "u_roughness");
+				strcpy(location, "u_roughnessTexture");
 				break;
 			}
 			if (m_properties[i].m_type == SE_MATERIAL_PROPERTY_TYPE::TEXTURE)

@@ -34,6 +34,16 @@ namespace SE
 		return 0;
 	}
 
+	int MeshComponent::shadowPassCall(DirectionalLightComponent* light) const
+	{
+		if (m_meshInstance->isValid())
+		{
+			Renderer::drawDirectionalLightDepth(light, m_meshInstance->getVertexArray(), m_meshInstance->getIndexBuffer(), &getTransform());
+			return 1;
+		}
+		return 0;
+	}
+
 	void MeshComponent::onUpdateTransform()
 	{
 	}

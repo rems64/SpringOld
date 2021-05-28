@@ -6,6 +6,7 @@
 namespace SE
 {
 	class ActorComponent;
+	class DirectionalLightComponent;
 	SE_CLASS()
 	class SE_API MeshComponent : public RenderedComponent, public EditorEditable
 	{
@@ -14,6 +15,7 @@ namespace SE
 		virtual ~MeshComponent();
 
 		virtual int drawCall() const override;
+		virtual int shadowPassCall(DirectionalLightComponent* light) const override;
 		Mesh* getInstance() { return m_meshInstance; };
 		void setInstance(Mesh* instance) { m_meshInstance = instance; };
 

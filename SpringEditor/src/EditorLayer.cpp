@@ -5,7 +5,7 @@
 
 namespace SpringEditor
 {
-	EditorLayer::EditorLayer() : SE::Layer("Editor layer"), m_viewport(), m_framebuffer(), m_currentScene(std::make_shared<SE::Scene>()), m_editorCamera(), m_guizmoOperation(ImGuizmo::TRANSLATE), m_selectedComponent(nullptr), m_hoveredComponent(nullptr), m_guizmoSpace(ImGuizmo::LOCAL), m_draggingGuizmo(false), m_changedSelection(false)
+	EditorLayer::EditorLayer() : SE::Layer("Editor layer"), m_viewport(), m_framebuffer(), m_deferredbuffer(), m_currentScene(std::make_shared<SE::Scene>()), m_editorCamera(), m_guizmoOperation(ImGuizmo::TRANSLATE), m_selectedComponent(nullptr), m_hoveredComponent(nullptr), m_guizmoSpace(ImGuizmo::LOCAL), m_draggingGuizmo(false), m_changedSelection(false)
 	{
 
 	}
@@ -20,7 +20,8 @@ namespace SpringEditor
 	void EditorLayer::onAttach()
 	{
 		SE::Application::get().getMainWindow().setVSync(true);
-		m_framebuffer = new SE::Framebuffer(SE::Vector2ui(1920, 1080));
+		m_deferredbuffer = new SE::Framebuffer(SE::Vector2ui(1920, 1080), { {SE::FramebufferAttachmentType::COLOR, 4}, {SE::FramebufferAttachmentType::COLOR, 3, true}, {SE::FramebufferAttachmentType::COLOR, 3, true}, {SE::FramebufferAttachmentType::COLOR, 4}, {SE::FramebufferAttachmentType::INTEGER, 1} });
+		m_framebuffer = new SE::Framebuffer(SE::Vector2ui(1920, 1080), { {SE::FramebufferAttachmentType::COLOR, 4} });
 
 		m_editorCamera = new EditorCamera();
 		m_editorCamera->getRoot()->setLocation(SE::Vector3f(0.0, 0.0, 6.));
@@ -200,6 +201,7 @@ namespace SpringEditor
 		if (((uint32_t)m_framebuffer->getWidth() != (uint32_t)m_viewport.x() || (uint32_t)m_framebuffer->getHeight() != (uint32_t)m_viewport.y()) && (m_viewport.x()!=0 && m_viewport.y()!=0))
 		{
 			m_framebuffer->resize((uint32_t)m_viewport.x(), (uint32_t)m_viewport.y());
+			m_deferredbuffer->resize((uint32_t)m_viewport.x(), (uint32_t)m_viewport.y());
 			m_editorCamera->getCamera()->setRatio((float)(m_viewport.x() / m_viewport.y()));
 			m_editorCamera->getCamera()->setViewport(m_viewport.x(), m_viewport.y());
 			//m_editorCamera->setRatio(4.f/3.f);
@@ -207,17 +209,20 @@ namespace SpringEditor
 			//SE_CORE_TRACE("{} {} {} {}", m_framebuffer->getWidth(), m_viewport.x(), m_framebuffer->getHeight(), m_viewport.y());
 		}
 
-		m_framebuffer->bind();
+		m_deferredbuffer->bind();
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_framebuffer->clear(1, -1);
+		m_deferredbuffer->clear(4, -1);
 
 		// Rendering stuff
 		m_editorCamera->editorUpdate(deltaTime);
 		m_currentScene->editorUpdate(deltaTime, m_editorCamera->getCamera());
 		//SE_CORE_TRACE("{} draw calls", nbrDrawCalls);
 
+		SE::Renderer::deferredShadingDrawCall(m_deferredbuffer, m_framebuffer);
+
+		m_deferredbuffer->bind();
 		if (m_hoveredPanel == SE_EDITOR_PANELS::VIEWPORT)
 		{
 			SE::Vector2d mousePos = SE::Application::get().getMousePosition();
@@ -226,13 +231,31 @@ namespace SpringEditor
 			mousePos.y(viewportSize.y - mousePos.y());
 			int mX = (int)mousePos.x();
 			int mY = (int)mousePos.y();
-			glReadBuffer(GL_COLOR_ATTACHMENT1);
-			int pixelData = -1;
-			glReadPixels(mX, mY, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
-			m_hoveredComponent = pixelData <= -1 ? nullptr : m_currentScene->getRenderedComponents()->at(pixelData);
+			glReadBuffer(GL_COLOR_ATTACHMENT4);
+			m_pixelData = -1;
+			glReadPixels(mX, mY, 1, 1, GL_RED_INTEGER, GL_INT, &m_pixelData);
+			if(m_pixelData < m_currentScene->getRenderedComponents()->size())
+			{
+				m_hoveredComponent = m_pixelData <= -1 ? nullptr : m_currentScene->getRenderedComponents()->at(m_pixelData);
+			}
 		}
 
-		m_framebuffer->unbind();
+		if (m_selectedComponent)
+		{
+			auto it = find(m_currentScene->getRenderedComponents()->begin(), m_currentScene->getRenderedComponents()->end(), m_selectedComponent);
+
+			// If element was found
+			if (it != m_currentScene->getRenderedComponents()->end())
+			{
+
+				// calculating the index
+				// of K
+				int index = it - m_currentScene->getRenderedComponents()->begin();
+				SE::Renderer::outlineSelectedObject(m_deferredbuffer, m_framebuffer, index);
+			}
+		}
+
+		m_deferredbuffer->unbind();
 	}
 
 	void EditorLayer::onImGuiRender()
@@ -368,7 +391,7 @@ namespace SpringEditor
 				{
 					if (m_selectedComponent)
 					{
-						if (m_selectedComponent->getActorOwner()->getRoot() == m_selectedComponent)
+						if ((m_selectedComponent->getActorOwner()->getRoot() == m_selectedComponent) || ((m_selectedComponent->getActorOwner() == m_hoveredComponent->getActorOwner()) && (m_selectedComponent != m_hoveredComponent)))
 						{
 							m_selectedComponent = m_hoveredComponent;
 						}
@@ -488,6 +511,14 @@ namespace SpringEditor
 						SE::PointLightComponent* pointLightComponent = new SE::PointLightComponent(m_selectedComponent);
 						m_selectedComponent->addComponent<SE::PointLightComponent>(pointLightComponent);
 						m_currentScene->registerLight(pointLightComponent);
+						ImGui::CloseCurrentPopup();
+					}
+
+					if (ImGui::MenuItem("Directional light"))
+					{
+						SE::DirectionalLightComponent* directionalLightComponent = new SE::DirectionalLightComponent(m_selectedComponent);
+						m_selectedComponent->addComponent<SE::DirectionalLightComponent>(directionalLightComponent);
+						m_currentScene->registerLight(directionalLightComponent);
 						ImGui::CloseCurrentPopup();
 					}
 					ImGui::EndPopup();

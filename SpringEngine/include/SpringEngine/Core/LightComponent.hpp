@@ -10,12 +10,14 @@ namespace SE
 	{
 	public:
 		LightComponent(SceneComponent* owner);
-		~LightComponent();
+		virtual ~LightComponent();
 
 		Vector3f& getColor() { return m_color; };
 		void setColor(Vector3f color) { m_color = color; };
 
 		virtual void postDestroy() override;
+
+		virtual glm::mat4 getLightSpace() { return glm::mat4(1.0f); };
 
 	private:
 		Vector3f m_color;

@@ -41,7 +41,7 @@ namespace SE
 
 	void Character::jump()
 	{
-		m_rootComponent->addLocation(Vector3f(0.0f, 0.0f, 1.0f));
+		//m_rootComponent->addLocation(Vector3f(0.0f, 0.0f, 1.0f));
 	}
 
 	void Character::moveForward(float factor)

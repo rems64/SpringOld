@@ -34,7 +34,7 @@ void main()
 #version 330 core
 //out vec4 color;
 layout (location = 0) out vec4 color;
-layout (location = 1) out int index;
+layout (location = 4) out int index;
 
 in vec2 UV;
 in vec3 vertex_worldspace;

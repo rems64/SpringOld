@@ -31,7 +31,7 @@ void left_rotate_by_one(T arr[], int n)
 {
 
 	/* Shift operation to the left */
-	int temp = arr[0];
+	T temp = arr[0];
 	int i;
 	for (i = 0; i < n - 1; i++)
 		arr[i] = arr[i + 1];
@@ -52,7 +52,7 @@ void SE::DebugUILayer::onImGuiRender()
 	{
 
 		left_rotate_by_one(m_frameRateOverTime, SE_DEBUGUI_HISTOGRAM_COUNT);
-		m_frameRateOverTime[SE_DEBUGUI_HISTOGRAM_COUNT-1] = Application::get().getFPS();
+		m_frameRateOverTime[SE_DEBUGUI_HISTOGRAM_COUNT-1] = (float)Application::get().getFPS();
 
 		m_lastHistogramUpdate = currentTime;
 	}

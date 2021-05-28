@@ -55,6 +55,7 @@ namespace SE
 
 		//Init renderer
 		Renderer::initDebugShaders();
+		Renderer::initSSAO(64);
 
 		//Link Inputmanager
 		m_inputManager->setLinkedApp(this);

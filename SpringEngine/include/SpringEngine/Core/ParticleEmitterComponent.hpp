@@ -8,6 +8,7 @@
 namespace SE
 {
 	class ActorComponent;
+	class DirectionalLightComponent;
 	class SE_API ParticleEmitterComponent : public RenderedComponent
 	{
 	public:
@@ -15,6 +16,7 @@ namespace SE
 		virtual ~ParticleEmitterComponent();
 
 		virtual int drawCall() const override;
+		virtual int shadowPassCall(DirectionalLightComponent* light) const override { return 0; };
 
 		virtual void editorUpdate(double deltaSeconds) override;
 		virtual void update(double deltaSeconds) override;

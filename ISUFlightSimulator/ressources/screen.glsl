@@ -21,5 +21,5 @@ uniform sampler2D u_framebuffer;
 
 void main()
 {
-    color = texture(u_framebuffer, UV);
+    color = vec4(1.0) - texture(u_framebuffer, UV);
 }

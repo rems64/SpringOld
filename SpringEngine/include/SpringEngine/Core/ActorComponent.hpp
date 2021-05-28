@@ -45,7 +45,7 @@ namespace SE
 
 		virtual void postDestroy() {};
 
-		uint32_t getComponentCount() { return m_components.size(); };
+		size_t getComponentCount() { return m_components.size(); };
 		std::vector<ActorComponent*>* getComponents() { return &m_components; };
 
 		virtual void editorUpdate(double deltaSeconds) {

@@ -82,6 +82,19 @@ namespace SE
 			drawable->drawCall();
 			i++;
 		}
+		for (auto light : m_lightsList)
+		{
+			auto directionalLight = dynamic_cast<DirectionalLightComponent*>(light);
+			if (directionalLight)
+			{
+				directionalLight->getFramebuffer()->bind();
+				GLCall(glClear(GL_DEPTH_BUFFER_BIT));
+				for (auto drawable : m_renderingList)
+				{
+					drawable->shadowPassCall(directionalLight);
+				}
+			}
+		}
 		SE::Renderer::endSceneDraw();
 	}
 

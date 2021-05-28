@@ -20,6 +20,8 @@ namespace SE
 	{
 		NONE,
 		DIFFUSE,
+		SPECULAR,
+		METALLIC,
 		ROUGHNESS,
 		NORMAL
 	};

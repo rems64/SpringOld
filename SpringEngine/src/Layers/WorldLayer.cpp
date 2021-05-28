@@ -12,7 +12,7 @@ namespace SE
 
 	void WorldLayer::onAttach()
 	{
-		m_framebuffer = new SE::Framebuffer(SE::Vector2ui(1920, 1080));
+		m_framebuffer = new SE::Framebuffer(SE::Vector2ui(1920, 1080), {});
 
 		Actor* cameraActor = new Actor();
 		CameraComponent* cam = new CameraComponent(cameraActor->getRoot());

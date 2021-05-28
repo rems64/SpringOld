@@ -26,4 +26,7 @@ namespace SE
 			}
 		}
 	}
+
+	float randomFloat();
+	float lerp(float t, float min, float max);
 }

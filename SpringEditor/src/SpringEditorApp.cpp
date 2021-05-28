@@ -24,6 +24,7 @@ public:
 SE::Application* SE::CreateApplication()
 {
 	SE::Application* application = new SpringEditorApp();
+	application->getMainWindow().setVSync(true);
 	//application->getCurrentScene()->importFBX("ressources/textured.fbx");
 	return application;
 }

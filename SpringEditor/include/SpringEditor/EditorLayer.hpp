@@ -35,6 +35,7 @@ namespace SpringEditor
 	private:
 		SE::Vector2<float> m_viewport;
 		SE::Framebuffer* m_framebuffer;
+		SE::Framebuffer* m_deferredbuffer;
 		std::shared_ptr<SE::Scene> m_currentScene;
 		EditorCamera* m_editorCamera;
 		SE::SceneComponent* m_selectedComponent;
@@ -48,5 +49,6 @@ namespace SpringEditor
 		bool m_changedSelection;
 		enum SE_EDITOR_PANELS m_hoveredPanel;
 		float m_viewportLimits[4] = { 0.0, 0.0, 100.0, 100.0 };
+		int m_pixelData;
 	};
 }

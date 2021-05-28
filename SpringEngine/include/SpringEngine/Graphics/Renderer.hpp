@@ -10,6 +10,7 @@
 #include <SpringEngine/Graphics/Framebuffer.hpp>
 #include <SpringEngine/Core/LightComponent.hpp>
 #include <SpringEngine/Core/PointLightComponent.hpp>
+#include <SpringEngine/Core/DirectionalLightComponent.hpp>
 
 namespace SE
 {
@@ -21,6 +22,7 @@ namespace SE
 		//static void renderScene(Scene* scene, double deltaMillis);
 
 		static void initDebugShaders();
+		static void initSSAO(int samples);
 
 		// API
 		static void beginSceneDraw(CameraComponent* cam, Scene* scene);
@@ -32,15 +34,20 @@ namespace SE
 		static void Renderer::drawDebugNormals(const VertexArray* vertexArray, const IndexBuffer* indexBuffer, const glm::mat4* transform, float drawLength = 1.0);
 
 		static void Renderer::renderToScreen(Framebuffer* framebuffer);
+		static void Renderer::deferredShadingDrawCall(Framebuffer* input, Framebuffer* output);
+
+		static void Renderer::outlineSelectedObject(Framebuffer* input, Framebuffer* output, int selection);
+		static void Renderer::drawDirectionalLightDepth(DirectionalLightComponent* light, const VertexArray* vertexArray, const IndexBuffer* indexBuffer, const glm::mat4* transform);
 
 		static unsigned int getSceneDrawCalls() { return m_sceneDrawCalls; };
-		static unsigned int getLightsNbr() { return m_sceneLights->size(); };
+		static size_t getLightsNbr() { return m_sceneLights->size(); };
 
 		static void setDebugIndex(int index) { m_debugIndex = index; };
 		// API END
 	private:
 		static glm::mat4 m_VP;
 		static glm::mat4 m_view;
+		static glm::mat4 m_projection;
 		static unsigned int m_sceneDrawCalls;
 		static std::vector<LightComponent*>* m_sceneLights;
 		static Shader* m_normalDebugShader;
@@ -51,5 +58,15 @@ namespace SE
 		static VertexBuffer* m_screenVB;
 		static VertexBufferLayout* m_screenVBL;
 		static int m_debugIndex;
+
+		static Shader* m_deferredShader;
+		static Shader* m_outlineShader;
+		static Shader* m_lightDepthShader;
+
+		static int m_ssaoSamplesCount;
+		static std::vector<glm::vec3> m_ssaoSamples;
+		static int m_ssaoRandomsCount;
+		static std::vector<glm::vec3> m_ssaoRandoms;
+		static float m_ssaoDepth;
 	};
 }

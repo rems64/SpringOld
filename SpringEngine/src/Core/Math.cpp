@@ -10,4 +10,14 @@ namespace SE
 	{
 		return ((float)rand() / RAND_MAX) * (float)(max - min) + min;
 	}
+
+	float randomFloat()
+	{
+		return (float)rand() / RAND_MAX;
+	}
+
+	float lerp(float t, float min, float max)
+	{
+		return min + t * (max - min);
+	}
 }

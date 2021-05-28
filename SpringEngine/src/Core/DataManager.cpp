@@ -6,6 +6,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/pbrmaterial.h>
 #include <SpringEngine/Graphics/Material.hpp>
 #include <SpringEngine/Graphics/Texture.hpp>
 #include <SpringEngine/Core/Mesh.hpp>
@@ -72,7 +73,6 @@ namespace SE
 				}
 
 				texture_file.Clear();
-
 				aScene->mMaterials[i]->Get(AI_MATKEY_TEXTURE(aiTextureType_NORMALS, 0), texture_file);
 				if (auto texture = aScene->GetEmbeddedTexture(texture_file.C_Str()))
 				{
@@ -97,6 +97,87 @@ namespace SE
 						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::NORMAL, SE_MATERIAL_PROPERTY_TYPE::COLOR, Vector3f(0.0, 0.0, 0.0)));
 					}
 				}
+
+				texture_file.Clear();
+				aScene->mMaterials[i]->Get(AI_MATKEY_TEXTURE(aiTextureType_METALNESS, 0), texture_file);
+				if (auto texture = aScene->GetEmbeddedTexture(texture_file.C_Str()))
+				{
+					SE_CORE_WARN("Embeded textures are not managed yet");
+				}
+				else
+				{
+					if (texture_file.length > 0)
+					{
+						SE_CORE_TRACE("Using metallness map ({0})", texture_file.C_Str());
+						std::string texturePath = path;
+						size_t pos = texturePath.find_last_of("/\\");
+						texturePath = texturePath.substr(0, pos + 1).append(texture_file.C_Str());
+						Texture* idx = loadTexture(texturePath.c_str(), true);
+						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::METALLIC, SE_MATERIAL_PROPERTY_TYPE::TEXTURE, idx));
+						newMaterial->pickShader(true);
+					}
+					else
+					{
+						SE_CORE_INFO("No texture, using color");
+						aiColor3D color(0.f, 0.f, 0.f);
+						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::METALLIC, SE_MATERIAL_PROPERTY_TYPE::COLOR, Vector3f(0.0, 0.0, 0.0)));
+					}
+				}
+
+				texture_file.Clear();
+				//aScene->mMaterials[i]->Get(AI_MATKEY_TEXTURE(aiTextureType_REFLECTION, 0), texture_file);
+				aScene->mMaterials[i]->Get(AI_MATKEY_TEXTURE(aiTextureType_SHININESS, 0), texture_file);
+				if (auto texture = aScene->GetEmbeddedTexture(texture_file.C_Str()))
+				{
+					SE_CORE_WARN("Embeded textures are not managed yet");
+				}
+				else
+				{
+					if (texture_file.length > 0)
+					{
+						SE_CORE_TRACE("Using roughness map ({0})", texture_file.C_Str());
+						std::string texturePath = path;
+						size_t pos = texturePath.find_last_of("/\\");
+						texturePath = texturePath.substr(0, pos + 1).append(texture_file.C_Str());
+						Texture* idx = loadTexture(texturePath.c_str(), true);
+						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::ROUGHNESS, SE_MATERIAL_PROPERTY_TYPE::TEXTURE, idx));
+						newMaterial->pickShader(true);
+					}
+					else
+					{
+						SE_CORE_INFO("No texture, using color");
+						aiColor3D color(0.f, 0.f, 0.f);
+						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::ROUGHNESS, SE_MATERIAL_PROPERTY_TYPE::COLOR, Vector3f(0.0, 0.0, 0.0)));
+					}
+				}
+
+				texture_file.Clear();
+				aScene->mMaterials[i]->Get(AI_MATKEY_TEXTURE(aiTextureType_SPECULAR, 0), texture_file);
+				if (auto texture = aScene->GetEmbeddedTexture(texture_file.C_Str()))
+				{
+					SE_CORE_WARN("Embeded textures are not managed yet");
+				}
+				else
+				{
+					if (texture_file.length > 0)
+					{
+						SE_CORE_TRACE("Using metallness map ({0})", texture_file.C_Str());
+						std::string texturePath = path;
+						size_t pos = texturePath.find_last_of("/\\");
+						texturePath = texturePath.substr(0, pos + 1).append(texture_file.C_Str());
+						Texture* idx = loadTexture(texturePath.c_str(), true);
+						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::SPECULAR, SE_MATERIAL_PROPERTY_TYPE::TEXTURE, idx));
+						newMaterial->pickShader(true);
+					}
+					else
+					{
+						SE_CORE_INFO("No texture, using color");
+						aiColor3D color(0.f, 0.f, 0.f);
+						newMaterial->registerProperty(MaterialProperty(SE_MATERIAL_PROPERTY_NAME::SPECULAR, SE_MATERIAL_PROPERTY_TYPE::COLOR, Vector3f(0.0, 0.0, 0.0)));
+					}
+				}
+
+
 				newMaterial->updateShaderUniforms();
 				materials.push_back(newMaterial);
 			}

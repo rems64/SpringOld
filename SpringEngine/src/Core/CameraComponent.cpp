@@ -39,7 +39,7 @@ namespace SE
 			glm::radians(30.f),
 			m_ratio,
 			0.1f,
-			100.0f
+			1000.0f
 		);
 	}
 }

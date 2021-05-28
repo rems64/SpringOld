@@ -15,7 +15,7 @@ namespace SE
 	{
 	public:
 		WorldLayer();
-		~WorldLayer() = default;
+		virtual ~WorldLayer() = default;
 
 		virtual void onAttach() override;
 		virtual void onDetach() override;

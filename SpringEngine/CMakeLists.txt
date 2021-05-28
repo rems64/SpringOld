@@ -61,7 +61,7 @@ set(SRCS
 	"src/Core/Light.cpp"
 	"src/Core/PointLightComponent.cpp"
 	"src/Editor/EditorCamera.cpp"
-	 "src/Core/EditorCameraComponent.cpp" "src/Core/Pawn.cpp" "src/Core/Character.cpp" "src/Core/InputManager.cpp" "src/Core/Input.cpp")
+	 "src/Core/EditorCameraComponent.cpp" "src/Core/Pawn.cpp" "src/Core/Character.cpp" "src/Core/InputManager.cpp" "src/Core/Input.cpp" "src/Core/DirectionalLightComponent.cpp")
 
 set(IMGUI_SRCS
 	"lib/ImGui/imgui.cpp"
